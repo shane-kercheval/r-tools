@@ -6,7 +6,7 @@ source('../general/model_measurements.R', chdir=TRUE)
 #test_file("test_model_measurements.R")
 
 
-test_that("analytics edge: Unit 3: Logistic Regression - healthcare quality", {
+test_that("general: model_measurements", {
 
 	# example from https://en.wikipedia.org/wiki/Sensitivity_and_specificity (beware that they put the truth as columns and predictions as rows, whereas my tables are reverse, so the False Negative / False Positive will be swapped)
 	model_true_negatives = 1820

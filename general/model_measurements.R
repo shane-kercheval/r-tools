@@ -1,5 +1,7 @@
-# https://en.wikipedia.org/wiki/Sensitivity_and_specificity
-
+#######################################################################################################################################
+# provides a list of functions that help assess the quality of various models
+# e.g. https://en.wikipedia.org/wiki/Sensitivity_and_specificity
+#######################################################################################################################################
 sensitivity <- function(true_positives, total_actual_positives)
 {
 	return(true_positives / total_actual_positives)
@@ -64,12 +66,12 @@ logistics_regression_coefficients <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0,
 }
 logistic_response_function <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)
 {
-#e == exp(). This works because exp is the exponentiation function with base e. (http://stackoverflow.com/questions/9458536/r-programming-how-do-i-get-eulers-number)
+	#e == exp(). This works because exp is the exponentiation function with base e. (http://stackoverflow.com/questions/9458536/r-programming-how-do-i-get-eulers-number)
 	return( 1 / (1 + exp(-1* logistics_regression_coefficients(b=b, b1=b1, x1=x1, b2=b2, x2=x2, b3=b3, x3=x3, b4=b4, x4=x4, b5=b5, x5=x5))))
 }
 odds <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)
 {
-#e == exp(). This works because exp is the exponentiation function with base e. (http://stackoverflow.com/questions/9458536/r-programming-how-do-i-get-eulers-number)
+	#e == exp(). This works because exp is the exponentiation function with base e. (http://stackoverflow.com/questions/9458536/r-programming-how-do-i-get-eulers-number)
 	return(exp(logistics_regression_coefficients(b=b, b1=b1, x1=x1, b2=b2, x2=x2, b3=b3, x3=x3, b4=b4, x4=x4, b5=b5, x5=x5)))
 }
 logit <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)

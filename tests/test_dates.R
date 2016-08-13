@@ -91,3 +91,17 @@ test_that("general: dates", {
 	expect_that(df$day_of_year[df$date_string == '2016-01-04'], equals(4))
 	expect_that(df$day_of_month[df$date_string == '2016-01-04'], equals(4))
 })
+
+
+test_that("general: string_to_date", {
+	date_string = '2016-04-23'
+
+	converted_date = string_to_date(date_string=date_string)
+	year = as.numeric(format(converted_date, '%Y'))
+	month = as.numeric(format(converted_date, '%m'))
+	day = as.numeric(format(converted_date, '%d'))
+
+	expect_that(year, equals(2016))
+	expect_that(month, equals(4))
+	expect_that(day, equals(23))
+})

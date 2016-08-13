@@ -26,3 +26,10 @@ add_date_columns <- function(data_frame, date_column)
 	data_frame$day_of_month = as.numeric(format(data_frame[, date_column], '%d'))
 	return (data_frame)
 }
+#######################################################################################################################################
+# convert's string to date (e.g. '2016-01-20')
+#######################################################################################################################################
+string_to_date <-function(date_string)
+{
+	return (as.Date(date_string, format='%Y-%m-%d'))
+}

@@ -39,5 +39,4 @@ test_that("general: correlations", {
 	melted_correlations = melt(correlations)
 	correct_correlations = c(1.0000000, -1.0000000, 0.9847319, NA, -1.0000000, 1.0000000, -0.9847319, NA, 0.9847319, -0.9847319, 1.0000000, 0.5118338, NA,  NA, 0.5118338, 1.0000000)
 	expect_that(melted_correlations$value, equals(correct_correlations, tolerance=0.001))
-
 })

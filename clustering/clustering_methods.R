@@ -132,6 +132,7 @@ kmeans_merge_cluster_data <- function(kmeans_results, original_data_frame, merge
 {
 	cluster_data = get_numeric_logical_data(original_data_frame, merge_column)
 	dataset_na_omited = na.omit(cluster_data)
+	clusters_to_analyze = seq(from=num_clusters-plus_minus, to=num_clusters+plus_minus, by=1)
 	
 	cluster_data_frame = as.data.frame(sapply(kmeans_results, FUN=function(x) {return (x$cluster)}))
 	cluster_column_names = sapply(clusters_to_analyze, FUN=function(x) {return (sprintf('cluster_%s', x))})

@@ -111,18 +111,33 @@ kmeans_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, pl
 	cluster_data = get_numeric_logical_data(data_frame, merge_column)
 	dataset_na_omited = na.omit(cluster_data)
 	dataset_scaled = as.data.frame(lapply(dataset_na_omited[, -grep(merge_column, colnames(dataset_na_omited))], scale))
-
-	set.seed(seed_num)
-
+	
 	clusters_to_analyze = seq(from=num_clusters-plus_minus, to=num_clusters+plus_minus, by=1)
-
+	
 	kmeans_results = lapply(clusters_to_analyze, FUN=function(x) {
-		cluster_results = kmeans(cluster_data, x)
-		data_clusters = dataset_na_omited
-		data_clusters$cluster = cluster_results$cluster
-
-		return (list(cluster_results, data_clusters))
+		set.seed(123)
+		cluster_results = kmeans(dataset_scaled, x)
+		dataset_na_omited[sprintf('cluster_%s', x)] = cluster_results$cluster
+		return (cluster_results)
 	})
 
 	return (kmeans_results)
+}
+
+#######################################################################################################################################
+# takes kmeans_results (list returned by `kmeans_cluster_analysis` fucntion) and merges clusters with `original_data_frame`
+# merge_column is the column that represents the unique row identifier
+#######################################################################################################################################
+kmeans_merge_cluster_data <- function(kmeans_results, original_data_frame, merge_column)
+{
+	cluster_data = get_numeric_logical_data(original_data_frame, merge_column)
+	dataset_na_omited = na.omit(cluster_data)
+	
+	cluster_data_frame = as.data.frame(sapply(kmeans_results, FUN=function(x) {return (x$cluster)}))
+	cluster_column_names = sapply(clusters_to_analyze, FUN=function(x) {return (sprintf('cluster_%s', x))})
+	colnames(cluster_data_frame) = cluster_column_names
+	dataset_na_omited = cbind(dataset_na_omited, cluster_data_frame)
+	final = merge(original_data_frame, dataset_na_omited[c(merge_column, cluster_column_names)], by=c(merge_column), all.x=TRUE)
+
+	return (final)
 }

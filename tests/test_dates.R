@@ -48,7 +48,6 @@ test_that("general: dates", {
 	expect_that(df$day_of_year[df$date_string == '2016-01-04 XX:XX:XX'], equals(4))
 	expect_that(df$day_of_month[df$date_string == '2016-01-04 XX:XX:XX'], equals(4))
 	
-	
 	date_string = c('2015-12-31', '2016-01-01', '2016-01-03', '2016-01-04')
 	df = data.frame(date_string, stringsAsFactors = FALSE)
 	df$date = convert_to_date(df$date_string, include_time=FALSE)
@@ -91,7 +90,6 @@ test_that("general: dates", {
 	expect_that(df$day_of_year[df$date_string == '2016-01-04'], equals(4))
 	expect_that(df$day_of_month[df$date_string == '2016-01-04'], equals(4))
 })
-
 
 test_that("general: string_to_date", {
 	date_string = '2016-04-23'

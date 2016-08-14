@@ -1,6 +1,5 @@
 source('./clustering/clustering_methods.R', chdir=TRUE)
 source('./clustering/cluster_visualization.R', chdir=TRUE)
-source('./general/analysis.R', chdir=TRUE)
 source('./general/basic_stats.R', chdir=TRUE)
 source('./general/correlations.R', chdir=TRUE)
 source('./general/dates.R', chdir=TRUE)

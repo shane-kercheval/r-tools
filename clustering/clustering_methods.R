@@ -55,7 +55,6 @@ run_cluster_analysis <- function(dataset, num_clusters, merge_column)
 	print(describe(final))
 }
 
-
 #######################################################################################################################################
 # takes a dataframe and runs hierarchical cluster analysis using all numeric and logical (TRUE/FALSE) columns
 # runs a hierarchical analysis for cluster numbers [num_clusters - plus_minus, num_clusters + plus_minus] default: (5-3,5+3) == (2,8) 

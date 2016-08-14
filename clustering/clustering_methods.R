@@ -1,3 +1,5 @@
+library(fpc)
+
 # requires a numeric dataset with a column that has a unique identifier for rows (e.g. tenant id)
 run_cluster_analysis <- function(dataset, num_clusters, merge_column)
 {
@@ -55,18 +57,34 @@ run_cluster_analysis <- function(dataset, num_clusters, merge_column)
 	print(describe(final))
 }
 
+get_numeric_logical_data <- function(data_frame, merge_column)
+{
+	numeric_columns = sapply(data_frame, is.numeric)
+	logical_columns = sapply(data_frame, is.logical)
+	cluster_columns = numeric_columns | logical_columns
+	cluster_data = data_frame[cluster_columns]
+	cluster_data[merge_column] = data_frame[merge_column]
+
+	return (cluster_data)
+}
+
+get_scaled_data <- function(data_frame, merge_column)
+{
+	dataset_na_omited = na.omit(data_frame)
+	dataset_scaled = as.data.frame(lapply(dataset_na_omited[, -grep(merge_column, colnames(dataset_na_omited))], scale))
+	#summary(dataset_scaled)
+
+	return (dataset_scaled)
+}
 #######################################################################################################################################
 # takes a dataframe and runs hierarchical cluster analysis using all numeric and logical (TRUE/FALSE) columns
 # runs a hierarchical analysis for cluster numbers [num_clusters - plus_minus, num_clusters + plus_minus] default: (5-3,5+3) == (2,8) 
 #######################################################################################################################################
 hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123)
 {
-	numeric_logical_columns = sapply(data_frame, is.numeric | is.logical)
-	data_numeric_logical = data_frame[ c(merge_column, numeric_logical_columns) ]
-
-	dataset_na_omited = na.omit(data_numeric_logical)
+	cluster_data = get_numeric_logical_data(data_frame, merge_column)
+	dataset_na_omited = na.omit(cluster_data)
 	dataset_scaled = as.data.frame(lapply(dataset_na_omited[, -grep(merge_column, colnames(dataset_na_omited))], scale))
-	#summary(dataset_scaled)
 
 	set.seed(seed_num)
 
@@ -90,19 +108,21 @@ hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters
 #######################################################################################################################################
 kmeans_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123)
 {
-	numeric_logical_columns = sapply(data_frame, is.numeric | is.logical)
-	data_numeric_logical = data_frame[ c(merge_column, numeric_logical_columns) ]
-
-	dataset_na_omited = na.omit(data_numeric_logical)
+	cluster_data = get_numeric_logical_data(data_frame, merge_column)
+	dataset_na_omited = na.omit(cluster_data)
 	dataset_scaled = as.data.frame(lapply(dataset_na_omited[, -grep(merge_column, colnames(dataset_na_omited))], scale))
-	#summary(dataset_scaled)
 
 	set.seed(seed_num)
 
 	clusters_to_analyze = seq(from=num_clusters-plus_minus, to=num_clusters+plus_minus, by=1)
 
 	kmeans_results = lapply(clusters_to_analyze, FUN=function(x) {
-		return (kmeans(data_numeric_logical, x))
+		cluster_results = kmeans(cluster_data, x)
+		data_clusters = dataset_na_omited
+		data_clusters$cluster = cluster_results$cluster
+
+		return (list(cluster_results, data_clusters))
 	})
+
 	return (kmeans_results)
 }

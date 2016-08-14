@@ -115,7 +115,7 @@ kmeans_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, pl
 	clusters_to_analyze = seq(from=num_clusters-plus_minus, to=num_clusters+plus_minus, by=1)
 	
 	kmeans_results = lapply(clusters_to_analyze, FUN=function(x) {
-		set.seed(123)
+		set.seed(seed_num)
 		cluster_results = kmeans(dataset_scaled, x)
 		dataset_na_omited[sprintf('cluster_%s', x)] = cluster_results$cluster
 		return (cluster_results)
@@ -128,7 +128,7 @@ kmeans_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, pl
 # takes kmeans_results (list returned by `kmeans_cluster_analysis` fucntion) and merges clusters with `original_data_frame`
 # merge_column is the column that represents the unique row identifier
 #######################################################################################################################################
-kmeans_merge_cluster_data <- function(kmeans_results, original_data_frame, merge_column)
+kmeans_merge_cluster_data <- function(kmeans_results, original_data_frame, merge_column, num_clusters=5, plus_minus=3)
 {
 	cluster_data = get_numeric_logical_data(original_data_frame, merge_column)
 	dataset_na_omited = na.omit(cluster_data)

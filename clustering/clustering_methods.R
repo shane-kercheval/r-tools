@@ -107,10 +107,11 @@ hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters
 #######################################################################################################################################
 hierarchical_merge_cluster_data <- function(hierarchical_results, original_data_frame, merge_column, num_clusters=5, plus_minus=3)
 {
-	cluster_data = get_numeric_logical_data(original_data_frame, merge_column)
+	cluster_data = get_numeric_logical_data(data_frame, merge_column)
 	dataset_na_omited = na.omit(cluster_data)
-	clusters_to_analyze = seq(from=num_clusters-plus_minus, to=num_clusters+plus_minus, by=1)
+	dataset_scaled = as.data.frame(lapply(dataset_na_omited[, -grep(merge_column, colnames(dataset_na_omited))], scale))
 	
+	clusters_to_analyze = seq(from=num_clusters-plus_minus, to=num_clusters+plus_minus, by=1)
 
 	hierarchical_results = lapply(clusters_to_analyze, FUN=function(x) {
 	
@@ -122,8 +123,6 @@ hierarchical_merge_cluster_data <- function(hierarchical_results, original_data_
 	
 		return (clusterGroups)
 	})
-
-
 
 	cluster_data_frame = as.data.frame(sapply(hierarchical_results, FUN=function(x) {return (x)}))
 	cluster_column_names = sapply(clusters_to_analyze, FUN=function(x) {return (sprintf('cluster_%s', x))})

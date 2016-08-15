@@ -26,13 +26,13 @@ save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='')
 {
 	if(subscript != '')
 	{
-		subscript = sprintf('%s_', subscript)
+		subscript = sprintf('_%s', subscript)
 	}
 
 	temp = lapply(kmeans_results, FUN=function(kmeans_result){
 		results_df = as.data.frame(kmeans_result$centers)
 		heatmap_plot = cluster_heatmap(results_df = results_df)
-		ggsave(filename=sprintf("./%s/kmeans_%s_clusters_%s%s.png", folder, length(kmeans_result$size), subscript, Sys.Date()), plot=heatmap_plot)
+		ggsave(filename=sprintf("./%s/kmeans_%s_clusters_%s%s.png", folder, subscript, length(kmeans_result$size), Sys.Date()), plot=heatmap_plot)
 	})
 }
 
@@ -43,7 +43,7 @@ save_hierarchical_heatmaps <- function(hierarchical_results, folder, subscript='
 {
 	if(subscript != '')
 	{
-		subscript = sprintf('%s_', subscript)
+		subscript = sprintf('_%s', subscript)
 	}
 
 	temp = lapply(hierarchical_results, FUN=function(hierarchical_result){
@@ -51,6 +51,6 @@ save_hierarchical_heatmaps <- function(hierarchical_results, folder, subscript='
 		results_df = as.data.frame(t(results_df)) # t (transpose) results in a matrix, convert back to df
 		results_df$cluster_name = 1:nrow(results_df)
 		heatmap_plot = cluster_heatmap(results_df = results_df)
-		ggsave(filename=sprintf("./%s/hierarchical_%s_clusters_%s%s.png", folder, length(hierarchical_result), subscript, Sys.Date()), plot=heatmap_plot)
+		ggsave(filename=sprintf("./%s/hierarchical%s_%s_clusters_%s.png", folder, subscript, length(hierarchical_result), Sys.Date()), plot=heatmap_plot)
 	})
 }

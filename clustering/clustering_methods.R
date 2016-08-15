@@ -105,9 +105,9 @@ hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters
 # takes hierarchical_results (list returned by `hierarchical_cluster_analysis` fucntion) and merges clusters with `original_data_frame`
 # merge_column is the column that represents the unique row identifier
 #######################################################################################################################################
-hierarchical_merge_cluster_data <- function(hierarchical_results, original_data_frame, merge_column, num_clusters=5, plus_minus=3)
+hierarchical_merge_cluster_data <- function(original_data_frame, merge_column, num_clusters=5, plus_minus=3)
 {
-	cluster_data = get_numeric_logical_data(data_frame, merge_column)
+	cluster_data = get_numeric_logical_data(original_data_frame, merge_column)
 	dataset_na_omited = na.omit(cluster_data)
 	dataset_scaled = as.data.frame(lapply(dataset_na_omited[, -grep(merge_column, colnames(dataset_na_omited))], scale))
 	

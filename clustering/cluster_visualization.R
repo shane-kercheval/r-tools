@@ -32,7 +32,7 @@ save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='')
 	temp = lapply(kmeans_results, FUN=function(kmeans_result){
 		results_df = as.data.frame(kmeans_result$centers)
 		heatmap_plot = cluster_heatmap(results_df = results_df)
-		ggsave(filename=sprintf("./%s/kmeans_%s_clusters_%s%s.png", folder, subscript, length(kmeans_result$size), Sys.Date()), plot=heatmap_plot)
+		ggsave(filename=sprintf("./%s/kmeans%s_%s_clusters_%s.png", folder, subscript, length(kmeans_result$size), Sys.Date()), plot=heatmap_plot)
 	})
 }
 

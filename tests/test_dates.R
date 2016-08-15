@@ -1,5 +1,5 @@
 library('testthat')
-source('../general/dates.R', chdir=TRUE)
+source('../tools.R', chdir=TRUE)
 
 #to run from command line, use:
 #library('testthat')

@@ -1,6 +1,5 @@
 library('testthat')
-library(reshape2) # melt
-source('../general/basic_stats.R', chdir=TRUE)
+source('../tools.R', chdir=TRUE)
 
 #to run from command line, use:
 #library('testthat')

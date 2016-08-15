@@ -1,5 +1,5 @@
 library('testthat')
-source('../general/outliers.R', chdir=TRUE)
+source('../tools.R', chdir=TRUE)
 
 #to run from command line, use:
 #library('testthat')

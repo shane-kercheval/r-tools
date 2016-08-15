@@ -1,6 +1,5 @@
 library('testthat')
-source('../clustering/clustering_methods.R', chdir=TRUE)
-source('../clustering/cluster_visualization.R', chdir=TRUE)
+source('../tools.R', chdir=TRUE)
 
 #to run from command line, use:
 #library('testthat')

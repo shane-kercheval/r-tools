@@ -1,3 +1,6 @@
+library('RColorBrewer')
+library('ggplot2')
+
 #######################################################################################################################################
 # takes a dataframe with each cluster as row and all cluster variables as columns, cells representing cluster/variable means (or medians,etc.)
 # start_stop is absolute number of min/max scale value
@@ -53,4 +56,18 @@ save_hierarchical_heatmaps <- function(hierarchical_results, folder, subscript='
 		heatmap_plot = cluster_heatmap(results_df = results_df)
 		ggsave(filename=sprintf("./%s/hierarchical%s_%s_clusters_%s.png", folder, subscript, length(hierarchical_result), Sys.Date()), plot=heatmap_plot)
 	})
+}
+
+save_hierarchical_dendogram <-function(data_frame, named_column, num_clusters, path='./dendogram.png')
+{
+	cluster_data = get_numeric_logical_data(data_frame, named_column)
+	dataset_na_omited = na.omit(cluster_data)
+	dataset_scaled = get_scaled_dataset(data_frame=dataset_na_omited, named_column=named_column)
+	
+	distances = dist(dataset_scaled, method = "euclidean")
+	clusters = hclust(distances, method = "ward.D") 
+	plot(clusters, cex=0.5, cex.lab=1, cex.axis=1, cex.main=1, cex.sub=1) # display dendogram
+	rect.hclust(clusters, k=5, border="red")
+	dev.copy(png,filename=path, width=500, height=500);
+	dev.off();
 }

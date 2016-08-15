@@ -85,21 +85,53 @@ hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters
 	cluster_data = get_numeric_logical_data(data_frame, merge_column)
 	dataset_na_omited = na.omit(cluster_data)
 	dataset_scaled = as.data.frame(lapply(dataset_na_omited[, -grep(merge_column, colnames(dataset_na_omited))], scale))
-
-	set.seed(seed_num)
-
+	
 	clusters_to_analyze = seq(from=num_clusters-plus_minus, to=num_clusters+plus_minus, by=1)
 
 	hierarchical_results = lapply(clusters_to_analyze, FUN=function(x) {
+	
 		distances = dist(dataset_scaled, method = "euclidean")
 		clusters = hclust(distances, method = "ward.D") 
 	
-		clusterGroups = cutree(clusters, k = num_clusters)
+		clusterGroups = cutree(clusters, k = x)
 		cluster_splits = split(dataset_scaled, clusterGroups)
 	
 		return (cluster_splits)
 	})
 	return (hierarchical_results)
+}
+
+#######################################################################################################################################
+# takes hierarchical_results (list returned by `hierarchical_cluster_analysis` fucntion) and merges clusters with `original_data_frame`
+# merge_column is the column that represents the unique row identifier
+#######################################################################################################################################
+hierarchical_merge_cluster_data <- function(hierarchical_results, original_data_frame, merge_column, num_clusters=5, plus_minus=3)
+{
+	cluster_data = get_numeric_logical_data(original_data_frame, merge_column)
+	dataset_na_omited = na.omit(cluster_data)
+	clusters_to_analyze = seq(from=num_clusters-plus_minus, to=num_clusters+plus_minus, by=1)
+	
+
+	hierarchical_results = lapply(clusters_to_analyze, FUN=function(x) {
+	
+		distances = dist(dataset_scaled, method = "euclidean")
+		clusters = hclust(distances, method = "ward.D") 
+	
+		clusterGroups = cutree(clusters, k = x)
+		#cluster_splits = split(dataset_scaled, clusterGroups)
+	
+		return (clusterGroups)
+	})
+
+
+
+	cluster_data_frame = as.data.frame(sapply(hierarchical_results, FUN=function(x) {return (x)}))
+	cluster_column_names = sapply(clusters_to_analyze, FUN=function(x) {return (sprintf('cluster_%s', x))})
+	colnames(cluster_data_frame) = cluster_column_names
+	dataset_na_omited = cbind(dataset_na_omited, cluster_data_frame)
+	final = merge(original_data_frame, dataset_na_omited[c(merge_column, cluster_column_names)], by=c(merge_column), all.x=TRUE)
+
+	return (final)
 }
 
 #######################################################################################################################################

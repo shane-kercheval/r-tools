@@ -29,7 +29,6 @@ test_that("general: clustering", {
 	kmeans_vector = c(2,3,4,5,6,7,8)
 	temp = sapply(kmeans_vector, FUN=function(x){
 		filename = sprintf('kmeans_%s_clusters_%s.png', x, Sys.Date())
-		print(filename)
 		expect_true(file.exists(filename))
 		file.remove(filename)
 	})

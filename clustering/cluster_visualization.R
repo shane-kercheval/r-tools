@@ -1,5 +1,6 @@
 library('RColorBrewer')
 library('ggplot2')
+library('scales')
 
 #######################################################################################################################################
 # takes a dataframe with each cluster as row and all cluster variables as columns, cells representing cluster/variable means (or medians,etc.)
@@ -15,9 +16,9 @@ cluster_heatmap <- function(results_df, start_stop=1)
 	results_df_melted$means = cut(results_df_melted$value, breaks = heatmap_breaks)
 	
 	heatmap = ggplot(data=results_df_melted, aes(x = variable, y = cluster_name)) + 
-	  geom_tile(aes(fill = means), colour = "white") +
-	  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + 
-	  scale_fill_manual(values = heatmap_colors, drop = FALSE) # drop=FALSE so that scale shows every value, even if not in dataset
+		geom_tile(aes(fill = means), colour = "white") +
+		theme(axis.text.x = element_text(angle = 60, hjust = 1)) + 
+		scale_fill_manual(values = heatmap_colors, drop = FALSE) # drop=FALSE so that scale shows every value, even if not in dataset
 
 	return (heatmap)
 }

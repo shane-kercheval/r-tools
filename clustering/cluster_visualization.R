@@ -1,6 +1,7 @@
 library('RColorBrewer')
 library('ggplot2')
 library('scales')
+library(reshape2) # melt
 
 #######################################################################################################################################
 # takes a dataframe with each cluster as row and all cluster variables as columns, cells representing cluster/variable means (or medians,etc.)

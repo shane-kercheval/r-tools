@@ -1,3 +1,4 @@
+source('../general/modification.R', chdir=TRUE)
 library(fpc)
 library(NbClust)
 
@@ -122,27 +123,12 @@ get_ideal_number_of_clusters <- function(data_frame, named_column)
 	return (clusters$nc)
 }
 
-get_ideal_number_of_clusters_nb <- function(scaled_data)
-{
-	NbClust(data = scaled_data, distance = "euclidean", min.nc = 2, max.nc = 20, method = "average", index = "all", alphaBeale = 0.1)
-}
-
 #######################################################################################################################################
-# scales data
+# calculates the idea number of clusters
 #######################################################################################################################################
-get_scaled_dataset <- function(data_frame, named_column)
+get_ideal_number_of_clusters_nb <- function(data_frame, named_column)
 {
-	return (as.data.frame(lapply(data_frame[, -grep(named_column, colnames(data_frame))], scale)))
-}
-
-# returns the numeric and logical columns, as well as the column `named_column` (most likely a row unique identifier)
-get_numeric_logical_data <- function(data_frame, named_column)
-{
-	numeric_columns = sapply(data_frame, is.numeric)
-	logical_columns = sapply(data_frame, is.logical)
-	cluster_columns = numeric_columns | logical_columns
-	cluster_data = data_frame[cluster_columns]
-	cluster_data[named_column] = data_frame[named_column]
-
-	return (cluster_data)
+	data_frame = na.omit(data_frame)
+	scaled_data = get_scaled_dataset(data_frame=data_frame, named_column=named_column)
+	return (NbClust(data = scaled_data, distance = "euclidean", min.nc = 2, max.nc = 20, method = "average", index = "all", alphaBeale = 0.1))
 }

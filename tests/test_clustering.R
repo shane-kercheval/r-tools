@@ -5,7 +5,7 @@ source('../tools.R', chdir=TRUE)
 #library('testthat')
 #test_file("test_clustering.R")
 
-test_that("general: clustering", {
+test_that("clustering: methods", {
 	
 	worlddata = read.csv("./data/worlddata.csv")
 

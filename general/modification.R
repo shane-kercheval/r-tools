@@ -7,15 +7,42 @@ get_scaled_dataset <- function(data_frame, named_column)
 }
 
 #######################################################################################################################################
-# returns the numeric and logical columns, as well as the column `named_column` (most likely a row unique identifier)
+# returns the numeric columns, as well as the (optional) column `named_column` (most likely a row unique identifier)
 #######################################################################################################################################
-get_numeric_logical_data <- function(data_frame, named_column)
+get_numeric_dataset <- function(data_frame, named_column=NULL)
 {
 	numeric_columns = sapply(data_frame, is.numeric)
-	logical_columns = sapply(data_frame, is.logical)
-	cluster_columns = numeric_columns | logical_columns
-	cluster_data = data_frame[cluster_columns]
-	cluster_data[named_column] = data_frame[named_column]
+	new_dataset = data_frame[numeric_columns]
+	if(!is.null(named_column))
+	{
+		new_dataset = cbind(data_frame[named_column], new_dataset)
+	}
 
-	return (cluster_data)
+	return (new_dataset)
+}
+
+#######################################################################################################################################
+# returns the logical columns, as well as the (optional) column `named_column` (most likely a row unique identifier)
+#######################################################################################################################################
+get_logical_dataset <- function(data_frame, named_column=NULL)
+{
+	logical_columns = sapply(data_frame, is.logical)
+	new_dataset = data_frame[logical_columns]
+	if(!is.null(named_column))
+	{
+		new_dataset = cbind(data_frame[named_column], new_dataset)
+	}
+
+	return (new_dataset)
+}
+
+#######################################################################################################################################
+# returns the numeric and logical columns, as well as the column `named_column` (most likely a row unique identifier)
+#######################################################################################################################################
+get_numeric_logical_dataset <- function(data_frame, named_column=NULL)
+{
+	logical_columns = sapply(data_frame, is.logical)
+	new_dataset = get_numeric_dataset(data_frame=data_frame, named_column=named_column)
+	new_dataset = cbind(new_dataset, data_frame[logical_columns])
+	return (new_dataset)
 }

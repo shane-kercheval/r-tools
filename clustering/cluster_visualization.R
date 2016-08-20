@@ -62,7 +62,7 @@ save_hierarchical_heatmaps <- function(hierarchical_results, folder, subscript='
 
 save_hierarchical_dendogram <-function(data_frame, named_column, num_clusters, path='./dendogram.png')
 {
-	cluster_data = get_numeric_logical_data(data_frame, named_column)
+	cluster_data = get_numeric_logical_dataset(data_frame, named_column)
 	dataset_na_omited = na.omit(cluster_data)
 	dataset_scaled = get_scaled_dataset(data_frame=dataset_na_omited, named_column=named_column)
 	

@@ -1,8 +1,10 @@
 source('outliers.R', chdir=TRUE)
 
+#######################################################################################################################################
 # note that if some data has subsets (e.g. comparing all users to a subset of users) for the subset data, you only want to pass in the 
 # subset (as opposed to relying on NA data). The reason is that, for example, the '% data above/below outlier threshold' needs to know 
 # the total lenght of only the subset, in order to accurately calculate
+#######################################################################################################################################
 create_percentile_matrix <- function(list_of_datasets, row_names, percentiles=c(0, 0.025, 0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95, 0.975, 1), round_by=1)	
 {
 	percentile_list = lapply(list_of_datasets, function(x){c(quantile(x, probs=percentiles, na.rm=TRUE), 
@@ -19,4 +21,17 @@ create_percentile_matrix <- function(list_of_datasets, row_names, percentiles=c(
 	percentile_matrix[,(num_columns-1):num_columns] = round(percentile_matrix[,(num_columns-1):num_columns], 3)
 
 	return (percentile_matrix)
+}
+
+#######################################################################################################################################
+# takes a dataframe that contains logical columns and returns a dataframe that contains percent information for each 
+#######################################################################################################################################
+tabulate_logical <- function(logical_data_frame)
+{
+	tabulation = mtabulate(logical_data_frame)/nrow(logical_data_frame)
+	colnames(tabulation) = c('false', 'true')
+	tabulation$false = percent(tabulation$false)
+	tabulation$true = percent(tabulation$true)
+
+	return (tabulation)
 }

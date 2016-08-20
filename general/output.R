@@ -7,7 +7,7 @@ note_if <- function(x, description=NULL, should_note=FALSE)
 			cat(paste("####### ", description, " ###########"))
 		}
 
-		cat(x)
+		cat(sprintf('%s\n', x))
 	}
 }
 

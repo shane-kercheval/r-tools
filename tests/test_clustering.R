@@ -2,7 +2,6 @@ library('testthat')
 source('../tools.R', chdir=TRUE)
 
 #to run from command line, use:
-#library('testthat')
 #test_file("test_clustering.R")
 
 test_that("clustering: methods", {

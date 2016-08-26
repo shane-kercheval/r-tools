@@ -6,7 +6,7 @@ source('../tools.R', chdir=TRUE)
 #library('testthat')
 # test_file("test_logger.R")
 
-test_that("general: logging", {
+test_that("output: logging", {
 	# Test OUTPUT FILE
 	expect_that(logger.output_file, equals('./output.txt'))
 	logger.set_output('./tests/output.txt')

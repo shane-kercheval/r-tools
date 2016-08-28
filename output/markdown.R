@@ -47,3 +47,28 @@ bqoute <- function(text, postfix='\n')
 {
 	return (sprintf('>%s%s', text, postfix))
 }
+
+table_matrix <- function(table_matrix, title=NULL, row_header='Row', title_format=h1)
+{
+	table_markup = ''
+	if(!is.null(title))
+	{
+		table_markup = title_format(title)
+	}
+	
+	col_names = colnames(percentile_matrix)
+	row_names = rownames(percentile_matrix)
+	
+	headers = c(row_header, col_names)
+	header_markup = paste(headers, collapse = '|')
+	header_separater = paste(rep('-',length(col_names)+1), collapse = '|')
+	table_markup = sprintf('%s%s\n%s\n', table_markup, header_markup, header_separater)
+	
+	vals = apply(format(percentile_matrix, trim=TRUE), 1, paste, collapse="|")
+	
+	for (i in 1:length(row_names))
+	{
+		table_markup = sprintf('%s%s%s%s\n', table_markup, row_names[i], '|', vals[i])
+	}
+	return (table_markup)
+}

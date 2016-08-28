@@ -48,7 +48,7 @@ bqoute <- function(text, postfix='\n')
 	return (sprintf('>%s%s', text, postfix))
 }
 
-table_matrix <- function(table_matrix, title=NULL, row_header='Row', title_format=h1)
+table_matrix <- function(a_matrix, title=NULL, row_header='Row', title_format=h1)
 {
 	table_markup = ''
 	if(!is.null(title))
@@ -56,15 +56,15 @@ table_matrix <- function(table_matrix, title=NULL, row_header='Row', title_forma
 		table_markup = title_format(title)
 	}
 	
-	col_names = colnames(percentile_matrix)
-	row_names = rownames(percentile_matrix)
+	col_names = colnames(a_matrix)
+	row_names = rownames(a_matrix)
 	
 	headers = c(row_header, col_names)
 	header_markup = paste(headers, collapse = '|')
 	header_separater = paste(rep('-',length(col_names)+1), collapse = '|')
 	table_markup = sprintf('%s%s\n%s\n', table_markup, header_markup, header_separater)
 	
-	vals = apply(format(percentile_matrix, trim=TRUE), 1, paste, collapse="|")
+	vals = apply(format(a_matrix, trim=TRUE), 1, paste, collapse="|")
 	
 	for (i in 1:length(row_names))
 	{

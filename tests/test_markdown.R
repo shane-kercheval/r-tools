@@ -26,7 +26,7 @@ test_that("output: markdown", {
 	vector2 = seq(from=100, to=0, by=-1)
 	percentile_matrix = create_percentile_matrix(list_of_datasets=list(vector1, vector2), c('test1', 'test2'))
 	cat('\n\n')
-	cat(table_matrix(table_matrix=percentile_matrix, title='my title', title_format=h3))
+	cat(table_matrix(a_matrix=percentile_matrix, title='my title', title_format=h3))
 
 	sink() # remove sink
 

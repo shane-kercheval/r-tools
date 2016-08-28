@@ -72,8 +72,11 @@ test_that("output: logging", {
 	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test7\n')+1,nchar(test_file_text)), equals('test7\n'))
 	expect_that(nchar(test_file_text), equals(181))
 	
-	
-	
 	logger.reset_log_file()
 	expect_false(file.exists(output_file))
+})
+
+test_that("output: logging-markdown", {
+	logger.set_use_markdown(TRUE)
+	expect_true(logger.use_markdown)
 })

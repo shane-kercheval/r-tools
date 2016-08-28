@@ -1,3 +1,5 @@
+source('markdown.R', chdir=TRUE)
+
 logger.output_file = './output.txt'
 
 logger.DEBUG = 100
@@ -17,6 +19,11 @@ logger.set_output <- function(output_file)
 logger.set_threshold <- function(threshold = logger.DEBUG)
 {
 	assign('logger.threshold', threshold, envir = .GlobalEnv) 
+}
+
+logger.set_use_markdown <- function(use_bool)
+{
+	assign('logger.use_markdown', use_bool, envir = .GlobalEnv) 
 }
 
 logger.reset_log_file <- function()
@@ -52,7 +59,7 @@ log.NOTE <- function(message, prefix='', postfix='\n', should_log=TRUE)
 	log_helper(log_level=logger.NOTE, log_name='NOTE', message=message, prefix=prefix, postfix=postfix, should_log=should_log)
 }
 
-log_helper <- function(log_level, log_name, message, prefix, postfix, markdown_function=NULL, should_log=TRUE)
+log_helper <- function(log_level, log_name, message, prefix, postfix, should_log=TRUE)
 {
 	if(log_level >= logger.threshold && should_log)
 	{
@@ -64,18 +71,18 @@ log_helper <- function(log_level, log_name, message, prefix, postfix, markdown_f
 		log_message = sprintf('%s%s%s', prefix, message, postfix)
 		if(log_level != logger.NOTE) # NOTE is unformatted, everything else is formatted
 		{
-			log_message = sprintf('%s\t[%s]: %s%s%s', log_name, Sys.time(), prefix, message, postfix)
+			if(logger.use_markdown)
+			{
+				log_message = sprintf('`%s\t[%s]`: %s%s%s', log_name, Sys.time(), prefix, message, postfix)				
+			}
+			else
+			{
+				log_message = sprintf('%s\t[%s]: %s%s%s', log_name, Sys.time(), prefix, message, postfix)
+			}
 		}
 
-		if(logger.use_markdown && !is.null(markdown_function))
-		{
-			cat(markdown_function(log_message))
-		}
-		else
-		{
-			cat(log_message)
-		}
-		
+		cat(log_message)	
+
 		if(!is.null(logger.output_file))
 		{
 			sink() # removes the sink		

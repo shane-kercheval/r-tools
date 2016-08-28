@@ -28,7 +28,6 @@ test_that("output: markdown", {
 	cat('\n\n')
 	cat(table_matrix(table_matrix=percentile_matrix, title='my title', title_format=h3))
 
-
 	sink() # remove sink
 
 	test_file_text = read_file(markdown_file)

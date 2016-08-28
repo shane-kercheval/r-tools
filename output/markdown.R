@@ -1,19 +1,19 @@
-h1 <- function(text, postfix='\n')
+h1 <- function(text, postfix='')
 {
 	return (sprintf('# %s%s', text, postfix))
 }
 
-h2 <- function(text, postfix='\n')
+h2 <- function(text, postfix='')
 {
 	return (sprintf('## %s%s', text, postfix))
 }
 
-h3 <- function(text, postfix='\n')
+h3 <- function(text, postfix='')
 {
 	return (sprintf('### %s%s', text, postfix))
 }
 
-h4 <- function(text, postfix='\n')
+h4 <- function(text, postfix='')
 {
 	return (sprintf('#### %s%s', text, postfix))
 }
@@ -38,12 +38,12 @@ code <- function(text, postfix='')
 	return (sprintf('`%s`%s', text, postfix))
 }
 
-codeb <- function(text, postfix='\n\n', syntax='')
+codeb <- function(text, postfix='', syntax='')
 {
 	return (sprintf('```%s\n%s\n```%s', syntax, text, postfix))
 }
 
-bqoute <- function(text, postfix='\n\n')
+blockq <- function(text, postfix='')
 {
 	return (sprintf('>%s%s', text, postfix))
 }

@@ -39,38 +39,38 @@ test_that("output: logging", {
 	expect_true(file.exists(output_file))
 	
 	test_file_text = read_file(output_file)
-	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test\n')+1,nchar(test_file_text)), equals('test\n'))
-	expect_that(nchar(test_file_text), equals(34))
+	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test\n\n')+1,nchar(test_file_text)), equals('test\n\n'))
+	expect_that(nchar(test_file_text), equals(35))
 
 	log.DEBUG('test2') # test DEBUG 
 	log.DEBUG('LOGGING ERROR', should_log=FALSE)
 	test_file_text = read_file(output_file)
-	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test2\n')+1,nchar(test_file_text)), equals('test2\n'))
-	expect_that(nchar(test_file_text), equals(69))
+	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test2\n\n')+1,nchar(test_file_text)), equals('test2\n\n'))
+	expect_that(nchar(test_file_text), equals(71))
 
 	log.INFO('test4') # test INFO 
 	log.INFO('LOGGING ERROR', should_log=FALSE)
 	test_file_text = read_file(output_file)
-	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test4\n')+1,nchar(test_file_text)), equals('test4\n'))
-	expect_that(nchar(test_file_text), equals(103))
+	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test4\n\n')+1,nchar(test_file_text)), equals('test4\n\n'))
+	expect_that(nchar(test_file_text), equals(106))
 
 	log.WARNING('test5') # test WARNING 
 	log.WARNING('LOGGING ERROR', should_log=FALSE)
 	test_file_text = read_file(output_file)
-	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test5\n')+1,nchar(test_file_text)), equals('test5\n'))
-	expect_that(nchar(test_file_text), equals(140))
+	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test5\n\n')+1,nchar(test_file_text)), equals('test5\n\n'))
+	expect_that(nchar(test_file_text), equals(144))
 
 	log.ERROR('test6') # test ERROR 
 	log.ERROR('LOGGING ERROR', should_log=FALSE)
 	test_file_text = read_file(output_file)
-	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test6\n')+1,nchar(test_file_text)), equals('test6\n'))
-	expect_that(nchar(test_file_text), equals(175))
+	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test6\n\n')+1,nchar(test_file_text)), equals('test6\n\n'))
+	expect_that(nchar(test_file_text), equals(180))
 
 	log.NOTE('test7') # test NOTE 
 	log.NOTE('LOGGING ERROR', should_log=FALSE)
 	test_file_text = read_file(output_file)
-	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test7\n')+1,nchar(test_file_text)), equals('test7\n'))
-	expect_that(nchar(test_file_text), equals(181))
+	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test7\n\n')+1,nchar(test_file_text)), equals('test7\n\n'))
+	expect_that(nchar(test_file_text), equals(187))
 	
 	logger.reset_log_file()
 	expect_false(file.exists(output_file))

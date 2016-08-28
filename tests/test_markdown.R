@@ -25,13 +25,12 @@ test_that("output: markdown", {
 	vector1 = seq(from=0, to=100, by=1)
 	vector2 = seq(from=100, to=0, by=-1)
 	percentile_matrix = create_percentile_matrix(list_of_datasets=list(vector1, vector2), c('test1', 'test2'))
-	cat('\n\n')
 	cat(table_matrix(a_matrix=percentile_matrix, title='my title', title_format=h3))
-
+	cat('text') # add this to test formatting (something after matrix)
 	sink() # remove sink
 
 	test_file_text = read_file(markdown_file)
-	expect_that(nchar(test_file_text), equals(661))
+	expect_that(nchar(test_file_text), equals(667))
 	
 	file.remove(markdown_file)
 })

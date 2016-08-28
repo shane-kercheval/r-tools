@@ -38,17 +38,17 @@ code <- function(text, postfix='')
 	return (sprintf('`%s`%s', text, postfix))
 }
 
-codeb <- function(text, postfix='\n', syntax='')
+codeb <- function(text, postfix='\n\n', syntax='')
 {
 	return (sprintf('```%s\n%s\n```%s', syntax, text, postfix))
 }
 
-bqoute <- function(text, postfix='\n')
+bqoute <- function(text, postfix='\n\n')
 {
 	return (sprintf('>%s%s', text, postfix))
 }
 
-table_matrix <- function(a_matrix, title=NULL, row_header='Row', title_format=h1)
+table_matrix <- function(a_matrix, title=NULL, row_header='Row', title_format=h1, postfix='\n')
 {
 	table_markup = ''
 	if(!is.null(title))
@@ -70,5 +70,6 @@ table_matrix <- function(a_matrix, title=NULL, row_header='Row', title_format=h1
 	{
 		table_markup = sprintf('%s%s%s%s\n', table_markup, row_names[i], '|', vals[i])
 	}
+	table_markup = sprintf('%s%s', table_markup, postfix)
 	return (table_markup)
 }

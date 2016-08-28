@@ -34,27 +34,27 @@ logger.reset_log_file <- function()
 	}
 }
 
-log.DEBUG <- function(message, prefix='', postfix='\n', should_log=TRUE)
+log.DEBUG <- function(message, prefix='', postfix='\n\n', should_log=TRUE)
 {
 	log_helper(log_level=logger.DEBUG, log_name='DEBUG', message=message, prefix=prefix, postfix=postfix, should_log=should_log)
 }
 
-log.INFO <- function(message, prefix='', postfix='\n', should_log=TRUE)
+log.INFO <- function(message, prefix='', postfix='\n\n', should_log=TRUE)
 {
 	log_helper(log_level=logger.INFO, log_name='INFO', message=message, prefix=prefix, postfix=postfix, should_log=should_log)
 }
 
-log.WARNING <- function(message, prefix='', postfix='\n', should_log=TRUE)
+log.WARNING <- function(message, prefix='', postfix='\n\n', should_log=TRUE)
 {
 	log_helper(log_level=logger.WARNING, log_name='WARNING', message=message, prefix=prefix, postfix=postfix, should_log=should_log)
 }
 
-log.ERROR <- function(message, prefix='', postfix='\n', should_log=TRUE)
+log.ERROR <- function(message, prefix='', postfix='\n\n', should_log=TRUE)
 {
 	log_helper(log_level=logger.ERROR, log_name='ERROR', message=message, prefix=prefix, postfix=postfix, should_log=should_log)
 }
 
-log.NOTE <- function(message, prefix='', postfix='\n', should_log=TRUE)
+log.NOTE <- function(message, prefix='', postfix='\n\n', should_log=TRUE)
 {
 	log_helper(log_level=logger.NOTE, log_name='NOTE', message=message, prefix=prefix, postfix=postfix, should_log=should_log)
 }

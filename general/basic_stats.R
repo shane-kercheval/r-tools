@@ -14,7 +14,7 @@ create_percentile_matrix <- function(list_of_datasets, row_names, percentiles=c(
 	percentile_matrix = do.call(rbind, percentile_list)
 	num_columns = ncol(percentile_matrix)
 	colnames(percentile_matrix) = c(colnames(percentile_matrix)[-seq(from=num_columns, to=num_columns-3, by=-1)], 
-									'outlier treshold lower', 'outlier threshold upper', '% data below threshold', '% data above threshold')
+									'outlier threshold lower', 'outlier threshold upper', '% data below threshold', '% data above threshold')
 	rownames(percentile_matrix) = row_names
 
 	percentile_matrix[,1:(num_columns-2)] = round(percentile_matrix[,1:(num_columns-2)], round_by)

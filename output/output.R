@@ -21,7 +21,13 @@ capture <- function(something)
 	return (capture.output(something)) # http://stackoverflow.com/questions/16358435/in-r-is-it-possible-to-redirect-console-output-to-a-variable
 }
 
-print_c <- function(something)
+print_c <- function(something, collapse=TRUE)
 {
-	return (capture.output(print(something))) # http://stackoverflow.com/questions/16358435/in-r-is-it-possible-to-redirect-console-output-to-a-variable	
+	output_something = capture.output(print(something))
+	if(collapse)
+	{
+		output_something = paste(output_something, collapse = '\n')
+	}
+
+	return (output_something) # http://stackoverflow.com/questions/16358435/in-r-is-it-possible-to-redirect-console-output-to-a-variable	
 }

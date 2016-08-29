@@ -29,10 +29,10 @@ test_that("output: markdown", {
 	cat('and blow is a code block using `codebc` which calls `print_c` in [output.R](./output.R) to preserve `print()`-like formatting:\n') # add this to test formatting (something after matrix)
 	cat(codebc(summary(percentile_matrix), postfix = '\n\n'))
 	cat('and here is an image:\n\n')
-	cat(image(text='the image', url='./data/kmeans_non-try_5_clusters_2016-08-29.png', postfix='\n\n'))
+	cat(image(text='the image', url='../tests/data/kmeans_non-try_5_clusters_2016-08-29.png', postfix='\n\n'))
 	cat('the end :)\n') # add this to test formatting (something after matrix)
 	sink() # remove sink
 
 	test_file_text = read_file(markdown_file)
-	expect_that(nchar(test_file_text), equals(2614))
+	expect_that(nchar(test_file_text), equals(2621))
 })

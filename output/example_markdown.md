@@ -41,4 +41,8 @@ and blow is a code block using `codebc` which calls `print_c` in [output.R](./ou
  Max.   :150             Max.   :0              Max.   :0
 ```
 
+and here is an image:
+
+![the image](./data/kmeans_non-try_5_clusters_2016-08-29.png)
+
 the end :)

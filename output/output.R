@@ -18,11 +18,11 @@ note <- function(text)
 	cat(sprintf('\n###: %s\n', text))
 }
 
-capture <- function(something)
-{
-	return (capture.output(something)) # http://stackoverflow.com/questions/16358435/in-r-is-it-possible-to-redirect-console-output-to-a-variable
-}
-
+#######################################################################################################################################
+# captures the output of `print(something)` and it returns it as a variable rather than outputting (can then be used with markdown, logging, etc.)
+# `collapse` variable is used with character vectors to correct format the output of `print(something)`
+# `trim` removes leading and trailing whitespace
+#######################################################################################################################################
 print_c <- function(something, collapse=TRUE, trim=TRUE)
 {
 	output_something = capture.output(print(something))

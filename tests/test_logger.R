@@ -9,12 +9,17 @@ source('../tools.R', chdir=TRUE)
 test_that("output: logging", {
 	# Test OUTPUT FILE
 	expect_that(logger.output_file, equals('./output.txt'))
-	logger.set_output('./tests/output.txt')
-	expect_that(logger.output_file, equals('./tests/output.txt'))
 	
 	logger.set_output(NULL)
 	expect_that(logger.output_file, equals(NULL))
 	logger.reset_log_file() # make sure this doesn't crash with NULL output file name
+	
+	output_file = '../output/example_logger.txt'
+	expect_true(file.exists(output_file))
+	logger.set_output(output_file = output_file)
+	logger.reset_log_file() # should delete file if it exists (which it should because we keep it for an example in git repo)
+	expect_that(logger.output_file, equals(output_file))
+	expect_false(file.exists(output_file))
 	
 	# Test THRESHOLD
 	expect_that(logger.threshold, equals(logger.WARNING))
@@ -23,7 +28,6 @@ test_that("output: logging", {
 	logger.set_threshold(logger.ERROR)
 	expect_that(logger.threshold, equals(logger.ERROR))
 
-	output_file = './output.txt'
 	logger.set_output(output_file)
 	expect_that(logger.output_file, equals(output_file))
 	expect_false(file.exists(output_file))
@@ -48,32 +52,29 @@ test_that("output: logging", {
 	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test2\n\n')+1,nchar(test_file_text)), equals('test2\n\n'))
 	expect_that(nchar(test_file_text), equals(71))
 
-	log.INFO('test4') # test INFO 
+	log.INFO('test3') # test INFO 
 	log.INFO('LOGGING ERROR', should_log=FALSE)
 	test_file_text = read_file(output_file)
-	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test4\n\n')+1,nchar(test_file_text)), equals('test4\n\n'))
+	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test3\n\n')+1,nchar(test_file_text)), equals('test3\n\n'))
 	expect_that(nchar(test_file_text), equals(106))
 
-	log.WARNING('test5') # test WARNING 
+	log.WARNING('test4') # test WARNING 
 	log.WARNING('LOGGING ERROR', should_log=FALSE)
 	test_file_text = read_file(output_file)
-	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test5\n\n')+1,nchar(test_file_text)), equals('test5\n\n'))
+	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test4\n\n')+1,nchar(test_file_text)), equals('test4\n\n'))
 	expect_that(nchar(test_file_text), equals(144))
 
-	log.ERROR('test6') # test ERROR 
+	log.ERROR('test5') # test ERROR 
 	log.ERROR('LOGGING ERROR', should_log=FALSE)
 	test_file_text = read_file(output_file)
-	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test6\n\n')+1,nchar(test_file_text)), equals('test6\n\n'))
+	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test5\n\n')+1,nchar(test_file_text)), equals('test5\n\n'))
 	expect_that(nchar(test_file_text), equals(180))
 
-	log.NOTE('test7') # test NOTE 
+	log.NOTE('test note') # test NOTE 
 	log.NOTE('LOGGING ERROR', should_log=FALSE)
 	test_file_text = read_file(output_file)
-	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test7\n\n')+1,nchar(test_file_text)), equals('test7\n\n'))
-	expect_that(nchar(test_file_text), equals(187))
-	
-	logger.reset_log_file()
-	expect_false(file.exists(output_file))
+	expect_that(substr(test_file_text, nchar(test_file_text)-nchar('test note\n\n')+1,nchar(test_file_text)), equals('test note\n\n'))
+	expect_that(nchar(test_file_text), equals(191))
 })
 
 test_that("output: logging-markdown", {

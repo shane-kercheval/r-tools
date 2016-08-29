@@ -17,13 +17,13 @@ document.getElementById('demo').style.fontSize='35px'
 
 > this is a blockquote
 
-### my title
+### example table from matrix
 Row|0%|2.5%|5%|10%|25%|50%|75%|90%|95%|97.5%|100%|outlier threshold lower|outlier threshold upper|% data below threshold|% data above threshold
--|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-
+---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---
 test1|0.0|2.5|5.0|10.0|25.0|50.0|75.0|90.0|95.0|97.5|100.0|-50.0|150.0|0.0|0.0
 test2|0.0|2.5|5.0|10.0|25.0|50.0|75.0|90.0|95.0|97.5|100.0|-50.0|150.0|0.0|0.0
 
-text
+and blow is a code block using `codebc` which calls `print_c` in [output.R](./output.R) to preserve `print()`-like formatting:
 ```
 0%         2.5%           5%         10%          25%          50%          75%          90%          95%         97.5%           100%     outlier threshold lower
  Min.   :0   Min.   :2.5   Min.   :5   Min.   :10   Min.   :25   Min.   :50   Min.   :75   Min.   :90   Min.   :95   Min.   :97.5   Min.   :100   Min.   :-50            
@@ -41,4 +41,4 @@ text
  Max.   :150             Max.   :0              Max.   :0
 ```
 
-text
+the end :)

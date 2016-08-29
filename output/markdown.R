@@ -105,7 +105,7 @@ table_matrix <- function(a_matrix, title=NULL, row_header='Row', title_format=h1
 	
 	headers = c(row_header, col_names)
 	header_markup = paste(headers, collapse = '|')
-	header_separater = paste(rep('-',length(col_names)+1), collapse = '|')
+	header_separater = paste(rep('---',length(col_names)+1), collapse = '|')
 	table_markup = sprintf('%s%s\n%s\n', table_markup, header_markup, header_separater)
 	
 	vals = apply(format(a_matrix, trim=TRUE), 1, paste, collapse="|")

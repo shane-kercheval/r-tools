@@ -1,3 +1,6 @@
+library(arules)
+library(arulesSequences)
+
 #######################################################################################################################################
 # conducts an apriori sequence analysis
 # returns `sequencerules (attr(,"package") "arulesSequences")` object
@@ -7,7 +10,6 @@ apriori_sequence_analysis <- function(apriori_dataset)
 {
 	# need to write out to a csv so we can use `read_baskets` function
 	write.table(apriori_dataset, file='input_file.csv', sep=",", quote=FALSE, col.names=FALSE, row.names=FALSE)
-	library(arulesSequences)
 	fuck <- read_baskets(con = 'input_file.csv', sep = ',', info = c('sequenceID','eventID','SIZE'))
 	c_rules<- cspade(fuck, parameter = list(support = 0.55), control = list(verbose = TRUE))
 	
@@ -25,7 +27,7 @@ apriori_sequence_analysis <- function(apriori_dataset)
 #######################################################################################################################################
 single_event_sequence_dataset <- function(dataset, id_column_name, order_by=NULL)
 {
-	dataset = order_helper(dataset=dataset, id_column_name=id_column_name, order_by=order_by)
+	dataset = helper_order(dataset=dataset, id_column_name=id_column_name, order_by=order_by)
 	apriori_dataset = helper_add_sequenced_data(dataset=dataset, id_column_name=id_column_name, order_by=order_by)
 	apriori_dataset = as.data.frame(sapply(apriori_dataset[c('sequenceID', 'eventID', 'SIZE', 'items')],as.factor))
 
@@ -42,7 +44,7 @@ helper_add_sequenced_data <- function(dataset, id_column_name, order_by)
 	apriori_dataset$eventID = ave(apriori_dataset$sequenceID, apriori_dataset$sequenceID, FUN = seq_along)
 	apriori_dataset$SIZE = 1
 	names(apriori_dataset)[names(apriori_dataset) == 'event'] <- 'items'
-	#	apriori_dataset = order_helper(dataset=apriori_dataset, id_column_name=id_column_name, order_by=order_by)
+	#	apriori_dataset = helper_order(dataset=apriori_dataset, id_column_name=id_column_name, order_by=order_by)
 
 	return (apriori_dataset)
 }

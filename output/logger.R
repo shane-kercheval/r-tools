@@ -65,7 +65,7 @@ log_helper <- function(log_level, log_name, message, prefix, postfix, should_log
 	{
 		if(!is.null(logger.output_file))
 		{
-			sink(file=logger.output_file, append=TRUE)		
+			sink(file=logger.output_file, append=TRUE)
 		}
 
 		log_message = sprintf('%s%s%s', prefix, message, postfix)
@@ -73,7 +73,7 @@ log_helper <- function(log_level, log_name, message, prefix, postfix, should_log
 		{
 			if(logger.use_markdown)
 			{
-				log_message = sprintf('`%s\t[%s]`: %s%s%s', log_name, Sys.time(), prefix, message, postfix)				
+				log_message = sprintf('`%s\t[%s]`: %s%s%s', log_name, Sys.time(), prefix, message, postfix)
 			}
 			else
 			{
@@ -81,11 +81,11 @@ log_helper <- function(log_level, log_name, message, prefix, postfix, should_log
 			}
 		}
 
-		cat(log_message)	
+		cat(log_message)
 
 		if(!is.null(logger.output_file))
 		{
-			sink() # removes the sink		
+			sink() # removes the sink
 		}
 	}
 }

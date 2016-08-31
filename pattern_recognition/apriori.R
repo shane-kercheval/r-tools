@@ -10,8 +10,8 @@ apriori_sequence_analysis <- function(apriori_dataset)
 {
 	# need to write out to a csv so we can use `read_baskets` function
 	write.table(apriori_dataset, file='input_file.csv', sep=",", quote=FALSE, col.names=FALSE, row.names=FALSE)
-	fuck <- read_baskets(con = 'input_file.csv', sep = ',', info = c('sequenceID','eventID','SIZE'))
-	c_rules<- cspade(fuck, parameter = list(support = 0.55), control = list(verbose = TRUE))
+	basket_dataset <- read_baskets(con = 'input_file.csv', sep = ',', info = c('sequenceID','eventID','SIZE'))
+	c_rules<- cspade(basket_dataset, parameter = list(support = 0.55), control = list(verbose = TRUE))
 	
 	rules <- ruleInduction(c_rules, confidence = .5)#, control = list(verbose = TRUE))
 

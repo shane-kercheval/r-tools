@@ -6,14 +6,14 @@ library('stringr')
 # returns `sequencerules (attr(,"package") "arulesSequences")` object
 # can do: as(rules)
 #######################################################################################################################################
-apriori_sequence_analysis <- function(apriori_dataset)
+apriori_sequence_analysis <- function(apriori_dataset, support=0.5, confidence=0.5)
 {
 	# need to write out to a csv so we can use `read_baskets` function
 	write.table(apriori_dataset, file='input_file.csv', sep=",", quote=FALSE, col.names=FALSE, row.names=FALSE)
 	basket_dataset <- read_baskets(con = 'input_file.csv', sep = ',', info = c('sequenceID','eventID','SIZE'))
-	c_rules<- cspade(basket_dataset, parameter = list(support = 0.55), control = list(verbose = TRUE))
+	c_rules<- cspade(basket_dataset, parameter = list(support = support), control = list(verbose = TRUE))
 	
-	rules_sequential <- ruleInduction(c_rules, confidence = .5)#, control = list(verbose = TRUE))
+	rules_sequential <- ruleInduction(c_rules, confidence = confidence)#, control = list(verbose = TRUE))
 
 	return (rules_sequential)
 }

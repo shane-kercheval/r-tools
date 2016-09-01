@@ -10,11 +10,11 @@ verbose  :  TRUE
 summary  : FALSE
 tidLists : FALSE
 
-preprocessing ... 1 partition(s), 0 MB [0.012s]
-mining transactions ... 0 MB [0.008s]
-reading sequences ... [0.011s]
+preprocessing ... 1 partition(s), 0 MB [0.01s]
+mining transactions ... 0 MB [0.007s]
+reading sequences ... [0.009s]
 
-total elapsed time: 0.031s
+total elapsed time: 0.026s
    lhs      rhs   support confidence lift 
  1 <{a}> => <{c}>    1.00       1.00 1.00 
  2 <{b}> => <{c}>    1.00       1.00 1.00 

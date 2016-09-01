@@ -2,7 +2,7 @@ library('testthat')
 source('../tools.R', chdir=TRUE)
 
 #to run from command line, use:
-#test_file("test_modification.R")
+# test_file("test_modification.R")
 
 test_that("modification: get_x_dataset", {
 	# test that there is no need to convert boolean to 
@@ -56,4 +56,43 @@ test_that("modification: get_scaled_dataset", {
 	scaled_numeric = get_scaled_dataset(data_frame=data_frame_numeric, named_column='named_column')
 
 	expect_true(all(scaled_logical == scaled_numeric))
+})
+
+test_that("modification: match_regex", {
+
+	websites = read.csv(file='./data/test_website_strings.csv')
+	
+	pattern_to_find = '\\b\\/\\w{20,}\\b'
+	pattern_to_extract = 'manage.auth0.com\\/.*'
+	substitue_find_with = ''
+	results = vector_match_regex(the_vector=websites$name, pattern_to_find=pattern_to_find, pattern_to_extract=pattern_to_extract, substitue_find_with=substitue_find_with)
+	#websites$expects_1 = rep(NA, nrow(websites))
+	#websites$expects_1[results[[1]]] = results[[2]]
+	#write.csv(websites,'./data/test_website_strings.csv', row.names = FALSE)
+	expect_that(results[[1]], equals(which(!is.na(websites$expects_1))))	
+	expect_true(all(results[[2]] == websites$expects_1[results[[1]]]))	
+
+	pattern_to_find = 'manage.auth0.com\\/#\\/\\w+\\/.*'
+	results = vector_match_regex(the_vector=websites$name, pattern_to_find=pattern_to_find)
+	#websites$expects_2 = rep(NA, nrow(websites))
+	#websites$expects_2[results[[1]]] = results[[2]]
+	#write.csv(websites,'./data/test_website_strings.csv', row.names = FALSE)
+	expect_that(results[[1]], equals(which(!is.na(websites$expects_2))))	
+	expect_true(all(results[[2]] == websites$expects_2[results[[1]]]))	
+
+	pattern_to_find = 'manage.auth0.com\\/#\\/\\w*'
+	results = vector_match_regex(the_vector=websites$name, pattern_to_find=pattern_to_find)
+	#websites$expects_3 = rep(NA, nrow(websites))
+	#websites$expects_3[results[[1]]] = results[[2]]
+	#write.csv(websites,'./data/test_website_strings.csv', row.names = FALSE)
+	expect_that(results[[1]], equals(which(!is.na(websites$expects_3))))	
+	expect_true(all(results[[2]] == websites$expects_3[results[[1]]]))	
+
+	pattern_to_find = 'manage.auth0.com\\/\\w+\\/*'
+	results = vector_match_regex(the_vector=websites$name, pattern_to_find=pattern_to_find)
+	#websites$expects_4 = rep(NA, nrow(websites))
+	#websites$expects_4[results[[1]]] = results[[2]]
+	#write.csv(websites,'./data/test_website_strings.csv', row.names = FALSE)
+	expect_that(results[[1]], equals(which(!is.na(websites$expects_4))))	
+	expect_true(all(results[[2]] == websites$expects_4[results[[1]]]))	
 })

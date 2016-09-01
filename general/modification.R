@@ -47,6 +47,12 @@ get_numeric_logical_dataset <- function(data_frame, named_column=NULL)
 	return (new_dataset)
 }
 
+#######################################################################################################################################
+# returns a list of matched items by regex as well as the corresponding indexes that match 
+# can pass in a substitute string if the matched items from `pattern_to_find` should be substituted with a string
+# sometimes the `pattern_to_extract` will be different from the `pattern_to_find`, so set variables accordingly; if `pattern_to_extract` is not set, it will default to `pattern_to_find` 
+# returns a list of two items 1) `indexes_of_match` and `matches`
+#######################################################################################################################################
 vector_match_regex <- function(the_vector, pattern_to_find, pattern_to_extract=NULL, substitue_find_with=NULL)
 {
 	if(is.null(pattern_to_extract))
@@ -63,15 +69,3 @@ vector_match_regex <- function(the_vector, pattern_to_find, pattern_to_extract=N
 
 	return (list(indexes_of_match, matches))
 }
-
-#######################################################################################################################################
-# returns a list of matched items by regex as well as the corresponding indexes that match 
-# can pass in a substitute string if the matched items should be substituted with a string 
-# returns a list of two items 1) `indexes_of
-#######################################################################################################################################
-
-
-#######################################################################################################################################
-# returns a lsit of  
-# returns a list of two items 1) `indexes_of
-#######################################################################################################################################

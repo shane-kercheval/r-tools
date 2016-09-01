@@ -69,7 +69,7 @@ test_that("pattern_recognition: apriori_sequence_analysis", {
 	inspect(tail(rules, n=2))
 
 	# converting the rule set to a data frame
-	rules_df = as(rules, 'data.frame')
+	rules_df = as_dataframe(rules) # custom method
 	str(rules_df)
 	expect_that(nrow(rules_df), equals(4))
 	
@@ -82,10 +82,33 @@ test_that("pattern_recognition: apriori_sequence_analysis", {
 	file.remove('./data/rules.csv')
 	
 	comparison_data = read.csv('./data/rules_original.csv')
+	expect_that(colnames(rules_df), equals(c('rule', 'lhs', 'rhs', 'support', 'confidence', 'lift')))
 	expect_true(all(rules_df$rule == comparison_data$rule))
+	expect_true(all(rules_df$lhs == comparison_data$lhs))
+	expect_true(all(rules_df$rhs == comparison_data$rhs))
 	expect_true(all(rules_df$support == comparison_data$support))
 	expect_true(all(rules_df$confidence == comparison_data$confidence))
 	expect_true(all(rules_df$lift == comparison_data$lift))
 
 	sink()
 })
+
+test_that("pattern_recognition: apriori_sequence_analysis-extract_rules", {
+	original_data = read.csv('./data/rules_original.csv')
+	
+	lhs_regex='a'
+	rhs_regex='c'
+	rules_subset = subset_sequence(rules_sequential_df=original_data, lhs_regex=lhs_regex)
+	#write.csv(rules_subset, './data/test_data_rules_subset_a.csv' ,row.names = FALSE)
+	subset_a = read.csv('./data/test_data_rules_subset_a.csv', stringsAsFactors = FALSE)
+	expect_true(all(subset_a == rules_subset))
+	
+	rules_subset = subset_sequence(rules_sequential_df=original_data, rhs_regex=rhs_regex)
+	#write.csv(rules_subset, './data/test_data_rules_subset_c.csv' ,row.names = FALSE)
+	subset_c = read.csv('./data/test_data_rules_subset_c.csv', stringsAsFactors = FALSE)
+	expect_true(all(subset_c == rules_subset))
+	
+	rules_subset = subset_sequence(rules_sequential_df=original_data, lhs_regex=lhs_regex, rhs_regex=rhs_regex)
+	expect_true(all(original_data == rules_subset)) # this should return all rows, in order, so should equal original_data
+})
+

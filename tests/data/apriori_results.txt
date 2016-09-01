@@ -10,11 +10,11 @@ verbose  :  TRUE
 summary  : FALSE
 tidLists : FALSE
 
-preprocessing ... 1 partition(s), 0 MB [0.014s]
-mining transactions ... 0 MB [0.007s]
-reading sequences ... [0.023s]
+preprocessing ... 1 partition(s), 0 MB [0.012s]
+mining transactions ... 0 MB [0.008s]
+reading sequences ... [0.011s]
 
-total elapsed time: 0.044s
+total elapsed time: 0.031s
    lhs      rhs   support confidence lift 
  1 <{a}> => <{c}>    1.00       1.00 1.00 
  2 <{b}> => <{c}>    1.00       1.00 1.00 
@@ -42,8 +42,10 @@ total elapsed time: 0.044s
     {b}> => <{c}>    0.75       1.00 1.00 
  2 <{a}> => <{b}>    0.75       0.75 0.75 
  
-'data.frame':	4 obs. of  4 variables:
+'data.frame':	4 obs. of  6 variables:
  $ rule      : Factor w/ 4 levels "<{a},{b}> => <{c}>",..: 3 4 1 2
+ $ lhs       : Factor w/ 3 levels "<{a},{b}>","<{a}>",..: 2 3 1 2
+ $ rhs       : Factor w/ 2 levels "<{b}>","<{c}>": 2 2 2 1
  $ support   : num  1 1 0.75 0.75
  $ confidence: num  1 1 1 0.75
  $ lift      : num  1 1 1 0.75

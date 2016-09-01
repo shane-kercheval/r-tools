@@ -1,0 +1,10 @@
+"rule";"support";"confidence";"lift"
+"<{/#/applications/quickstart},{non_try_event},{/#/applications}> => <{/#/applications/settings}>";0.568153501121356;0.939624974242736;1.04887761380698
+"<{signup_event},{/#/},{non_try_event},{/#/applications}> => <{/#/applications/settings}>";0.562297533017692;0.939621070164481;1.04887325579139
+"<{/#/},{/#/applications/quickstart},{non_try_event},{/#/applications}> => <{/#/applications/settings}>";0.567281335659108;0.939537763103591;1.04878026240187
+"<{/#/},{non_try_event},{/#/applications}> => <{/#/applications/settings}>";0.579740842262646;0.939241017359709;1.04844901325856
+"<{non_try_event},{/#/applications}> => <{/#/applications/settings}>";0.610017443309245;0.937751388622869;1.04678618151421
+"<{signup_event},{non_try_event},{/#/applications}> => <{/#/applications/settings}>";0.610017443309245;0.937751388622869;1.04678618151421
+"<{signup_event}> => <{non_try_event}>";1;1;1
+"<{manage.website.com/welcome/},{signup_event}> => <{non_try_event}>";0.85771243458759;1;1
+"<{/},{signup_event}> => <{non_try_event}>";0.705083478694244;1;1

@@ -65,7 +65,8 @@ test_that("modification: match_regex", {
 	pattern_to_find = '\\b\\/\\w{20,}\\b'
 	pattern_to_extract = 'manage.auth0.com\\/.*'
 	substitue_find_with = ''
-	results = vector_match_regex(the_vector=websites$name, pattern_to_find=pattern_to_find, pattern_to_extract=pattern_to_extract, substitue_find_with=substitue_find_with)
+	results = vector_match_regex(the_vector=websites$name, pattern_to_find=pattern_to_find, pattern_to_extract=pattern_to_extract, 
+									substitue_find_with=substitue_find_with)
 	#websites$expects_1 = rep(NA, nrow(websites))
 	#websites$expects_1[results[[1]]] = results[[2]]
 	#write.csv(websites,'./data/test_website_strings.csv', row.names = FALSE)
@@ -95,4 +96,15 @@ test_that("modification: match_regex", {
 	#write.csv(websites,'./data/test_website_strings.csv', row.names = FALSE)
 	expect_that(results[[1]], equals(which(!is.na(websites$expects_4))))	
 	expect_true(all(results[[2]] == websites$expects_4[results[[1]]]))	
+
+	pattern_to_find = 'manage.auth0.com\\/#'
+	pattern_to_extract = 'manage.auth0.com\\/#.*'
+	substitue_find_with = '/#'
+	results = vector_match_regex(the_vector=websites$name, pattern_to_find=pattern_to_find, pattern_to_extract=pattern_to_extract, 
+									substitue_find_with=substitue_find_with)
+	#websites$expects_5 = rep(NA, nrow(websites))
+	#websites$expects_5[results[[1]]] = results[[2]]
+	#write.csv(websites,'./data/test_website_strings.csv', row.names = FALSE)
+	expect_that(results[[1]], equals(which(!is.na(websites$expects_5))))	
+	expect_true(all(results[[2]] == websites$expects_5[results[[1]]]))	
 })

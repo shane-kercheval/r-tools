@@ -35,5 +35,5 @@ test_that("output: markdown", {
 	sink() # remove sink
 
 	test_file_text = read_file(markdown_file)
-	expect_that(nchar(test_file_text), equals(2621))
+	expect_that(nchar(test_file_text), equals(2675))
 })

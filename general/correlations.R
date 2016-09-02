@@ -1,6 +1,3 @@
-#######################################################################################################################################
-# takes a data-frame, subsets the numeric columns, and returns a matrix of correlations with NAs above/below
-#######################################################################################################################################
 get_correlations <- function(data_frame, threshold)
 {
 	numeric_columns = sapply(data_frame, is.numeric)

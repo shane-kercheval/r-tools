@@ -3,10 +3,6 @@ library('ggplot2')
 library('scales')
 library(reshape2) # melt
 
-#######################################################################################################################################
-# takes a dataframe with each cluster as row and all cluster variables as columns, cells representing cluster/variable means (or medians,etc.)
-# start_stop is absolute number of min/max scale value
-#######################################################################################################################################
 cluster_heatmap <- function(results_df, start_stop=1)
 {
 	heatmap_breaks = c(-Inf, seq(from=(-1 * start_stop), to=start_stop, by=(start_stop/5)), Inf)
@@ -24,9 +20,6 @@ cluster_heatmap <- function(results_df, start_stop=1)
 	return (heatmap)
 }
 
-#######################################################################################################################################
-# takes kmeans_results (list returned by `kmeans_cluster_analysis` fucntion) and, for each kmeans, creates and saves a heatmap to `folder`
-#######################################################################################################################################
 save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='')
 {
 	if(subscript != '')
@@ -41,9 +34,6 @@ save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='')
 	})
 }
 
-#######################################################################################################################################
-# takes hierarchical_results (list returned by `hierarchical_cluster_analysis` fucntion) and, for each hierarchical, creates and saves a heatmap to `folder`
-#######################################################################################################################################
 save_hierarchical_heatmaps <- function(hierarchical_results, folder, subscript='')
 {
 	if(subscript != '')
@@ -60,16 +50,22 @@ save_hierarchical_heatmaps <- function(hierarchical_results, folder, subscript='
 	})
 }
 
-save_hierarchical_dendogram <-function(data_frame, named_column, num_clusters, path='./dendogram.png')
+save_hierarchical_dendogram <-function(data_frame, named_column, ideal_cluster_size=NULL, path='./dendogram.png')
 {
 	cluster_data = get_numeric_logical_dataset(data_frame, named_column)
 	dataset_na_omited = na.omit(cluster_data)
 	dataset_scaled = get_scaled_dataset(data_frame=dataset_na_omited, named_column=named_column)
 	
+	if(is.null(ideal_cluster_size))
+	{
+		clusters = pamk(dataset_scaled)
+		ideal_cluster_size = clusters$nc
+	}
+
 	distances = dist(dataset_scaled, method = "euclidean")
 	clusters = hclust(distances, method = "ward.D") 
 	plot(clusters, cex=0.5, cex.lab=1, cex.axis=1, cex.main=1, cex.sub=1) # display dendogram
-	rect.hclust(clusters, k=5, border="red")
+	rect.hclust(clusters, k=ideal_cluster_size, border="red")
 	dev.copy(png,filename=path, width=500, height=500);
 	dev.off();
 }

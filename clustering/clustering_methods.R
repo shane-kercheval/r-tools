@@ -2,10 +2,6 @@ source('../general/modification.R', chdir=TRUE)
 library(fpc)
 library(NbClust)
 
-#######################################################################################################################################
-# takes a dataframe and runs hierarchical cluster analysis using all numeric and logical (TRUE/FALSE) columns
-# runs a hierarchical analysis for cluster numbers [num_clusters - plus_minus, num_clusters + plus_minus] default: (5-3,5+3) == (2,8) 
-#######################################################################################################################################
 hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123)
 {
 	cluster_data = get_numeric_logical_dataset(data_frame, merge_column)
@@ -27,11 +23,6 @@ hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters
 	return (hierarchical_results)
 }
 
-#######################################################################################################################################
-# takes hierarchical_results (list returned by `hierarchical_cluster_analysis` fucntion) and merges clusters with `original_data_frame`
-# merge_column is the column that represents the unique row identifier
-# NOTE: NA values are omitted, so be conscious about cleaning your data; for example, pre-clustering your data such (e.g. could split up data between paid v. non-paying customers if you have a lot of data with NAs for non-paying customers), or converting columns with NAs (such as a time column `time_to_paid`) to a TRUE/FASLE column (e.g. `is_paying`)
-#######################################################################################################################################
 hierarchical_merge_cluster_data <- function(original_data_frame, merge_column, num_clusters=5, plus_minus=3)
 {
 	cluster_data = get_numeric_logical_dataset(data_frame=original_data_frame, named_column=merge_column)
@@ -60,11 +51,6 @@ hierarchical_merge_cluster_data <- function(original_data_frame, merge_column, n
 	return (final)
 }
 
-#######################################################################################################################################
-# takes a dataframe and runs kmeans cluster analysis using all numeric and logical (TRUE/FALSE) columns
-# runs a k-means analysis for cluster numbers [num_clusters - plus_minus, num_clusters + plus_minus] default: (5-3,5+3) == (2,8) 
-# NOTE: NA values are omitted, so be conscious about cleaning your data; for example, pre-clustering your data such (e.g. could split up data between paid v. non-paying customers if you have a lot of data with NAs for non-paying customers), or converting columns with NAs (such as a time column `time_to_paid`) to a TRUE/FASLE column (e.g. `is_paying`)
-#######################################################################################################################################
 kmeans_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123)
 {
 	cluster_data = get_numeric_logical_dataset(data_frame, merge_column)
@@ -83,10 +69,6 @@ kmeans_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, pl
 	return (kmeans_results)
 }
 
-#######################################################################################################################################
-# takes kmeans_results (list returned by `kmeans_cluster_analysis` fucntion) and merges clusters with `original_data_frame`
-# merge_column is the column that represents the unique row identifier
-#######################################################################################################################################
 kmeans_merge_cluster_data <- function(kmeans_results, original_data_frame, merge_column, num_clusters=5, plus_minus=3)
 {
 	cluster_data = get_numeric_logical_dataset(original_data_frame, merge_column)
@@ -102,10 +84,6 @@ kmeans_merge_cluster_data <- function(kmeans_results, original_data_frame, merge
 	return (final)
 }
 
-#######################################################################################################################################
-# returns a vector with the BSS/TSS ratio for each item in kmeans_results
-# Ideally you want a clustering that has the properties of internal cohesion and external separation, i.e. the BSS/TSS ratio should approach 1. (http://stats.stackexchange.com/questions/82776/what-does-total-ss-and-between-ss-mean-in-k-means-clustering)
-#######################################################################################################################################
 kmeans_BSS_TSS <- function(kmeans_results)
 {
 	bss_tss_ratios = sapply(kmeans_results, FUN=function(x) {
@@ -114,9 +92,6 @@ kmeans_BSS_TSS <- function(kmeans_results)
 	return (bss_tss_ratios)
 }
 
-#######################################################################################################################################
-# calculates the idea number of clusters
-#######################################################################################################################################
 get_ideal_number_of_clusters <- function(data_frame, named_column)
 {
 	data_frame = na.omit(data_frame)
@@ -125,9 +100,6 @@ get_ideal_number_of_clusters <- function(data_frame, named_column)
 	return (clusters$nc)
 }
 
-#######################################################################################################################################
-# calculates the idea number of clusters
-#######################################################################################################################################
 get_ideal_number_of_clusters_nb <- function(data_frame, named_column)
 {
 	data_frame = na.omit(data_frame)

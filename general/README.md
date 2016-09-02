@@ -1,17 +1,159 @@
 # General Helper Functions
 
 ## basic_stats.R
-- general methods
+- general stats helper functions
+
+```R
+create_percentile_matrix <- function(list_of_datasets, row_names, percentiles=c(0, 0.025, 0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95, 0.975, 1), round_by=1)
+```
+- note that if some data has subsets (e.g. comparing all users to a subset of users) for the subset data, you only want to pass in the
+- subset (as opposed to relying on NA data). The reason is that, for example, the '% data above/below outlier threshold' needs to know
+- the total lenght of only the subset, in order to accurately calculate
+
+```R
+tabulate_logical <- function(logical_data_frame)
+```
+- takes a dataframe that contains logical columns and returns a dataframe that contains percent information for each
 
 ## correlations.R
-- methods to help with correlations
+
+```R
+get_correlations <- function(data_frame, threshold)
+```
+- takes a data-frame, subsets the numeric columns, and returns a matrix of correlations with `NA`s where absolute value of correlation value is <= `threshold`
+	- so if `threshold` is 0.9, the resulting matrix will only show correlations >=0.9 and <= -0.9. All other values will show `NA`
 
 ## dates.R
-- date helper methods
 
-## model_measurements.R`
+```R
+convert_to_date <- function(vector_string_date, date_string_format='%Y-%m-%d', include_time=TRUE)
+```
+- converts a vector that contains a date string in the format of 'YYYY-MM-DD XX:XX:XX' and returns a date vector
+- the string format of the dates can be overwritten with `date_string_format`
+- by default, the function will return the time. If only the date is wanted, you can set `include_time` to `FALSE`
+
+```R
+add_date_columns <- function(data_frame, date_column)
+```
+- takes a dataframe with date column and adds a column for `year`, `month`, `week number`, `weekday`, `day of year`, and `day of month`
+- `date_column` is string name of date column
+
+```R
+string_to_date <-function(date_string)
+```
+- convert's string to date (e.g. '2016-01-20')
+
+## model_measurements.R
 - provides a list of functions that help assess the quality of various models
 	- e.g. https://en.wikipedia.org/wiki/Sensitivity_and_specificity
 
+```R
+sensitivity <- function(true_positives, total_actual_positives)
+```
+
+```R
+specificity <- function(true_negatives, total_actual_negatives)
+```
+
+```R
+false_negative_rate <- function(false_negatives, total_actual_positives)
+```
+
+```R
+false_positive_rate <- function(false_positives, total_actual_negatives)
+```
+
+```R
+accuracy <- function(true_negatives, true_positives, total_observations)
+```
+
+```R
+error_rate <- function(false_positives, false_negatives, total_observations)
+```
+
+```R
+positive_predictive_value <- function(true_positives, false_positives)
+```
+
+```R
+negative_predictive_value <- function(true_negatives, false_negatives)
+```
+
+```R
+quality_of_model_from_confusion <- function(confusion_matrix)
+```
+- takes a confusion matrix with predictions as columns and actuals as rows (negatives first, positives second) and returns a `quality_of_model` dataframe
+
+```R
+quality_of_model <- function(true_positives, true_negatives, false_positives, false_negatives)
+```
+- returns a dataframe that contains the following columns
+	- `accuracy`
+	- `error_rate`
+	- `positive_predictive_value`
+	- `negative_predictive_value`
+	- `false_positive_rate`
+	- `false_negative_rate`
+	- `sensitivity`
+	- `specificity`
+	- `total_observations`
+
+```R
+logistics_regression_coefficients <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)
+```
+
+```R
+logistic_response_function <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)
+```
+
+```R
+odds <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)
+```
+
+```R
+logit <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)
+```
+
+## modification.R
+
+```R
+get_scaled_dataset <- function(data_frame, named_column)
+```
+- scales data to `z-scores` so they can be compared against each other (e.g. in clustering)
+- `named_column` is name of column that is row_identifier that tells the function to ignore that column for scaling
+
+```R
+get_numeric_dataset <- function(data_frame, named_column=NULL)
+```
+- returns the numeric columns, as well as the (optional) column `named_column` (most likely a row unique identifier)
+
+```R
+get_logical_dataset <- function(data_frame, named_column=NULL)
+```
+- returns the logical columns, as well as the (optional) column `named_column` (most likely a row unique identifier)
+
+```R
+get_numeric_logical_dataset <- function(data_frame, named_column=NULL)
+```
+- returns the numeric and logical columns, as well as the column `named_column` (most likely a row unique identifier)
+
+```R
+vector_match_regex <- function(the_vector, pattern_to_find, pattern_to_extract=NULL, substitue_find_with=NULL)
+```
+- returns a list of matched items by regex as well as the corresponding indexes that match
+- can pass in a substitute string if the matched items from `pattern_to_find` should be substituted with a string
+- sometimes the `pattern_to_extract` will be different from the `pattern_to_find`, so set variables accordingly; if `pattern_to_extract` is not set, it will default to `pattern_to_find`
+- returns a list of two items 1) `indexes_of_match` and `matches`
+
 ## outliers.R
-- outlier helper methods
+
+```R
+calculate_outlier_thresholds <- function(vect)
+```
+- calculates outlier thresholds based on Quantil 1,3 +- 1.5 IQR
+- returns a named vector with `lower` `upper` labels
+
+```R
+remove_outliers <- function(vect)
+```
+- changes any outliers in vector to NA

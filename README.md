@@ -1,5 +1,12 @@
 # r-tools
-Collection of helper methods in R.
+Collection of helper functions/libraries in R.
+
+# Documentation
+Each subdirectory has a README.md file which contains information about functions contained within that package
+- [clustering/README.md](./clustering/README.md)
+- [general/README.md](./general/README.md)
+- [output/README.md](./output/README.md)
+- [puttern_recognition/README.md](./puttern_recognition/README.md)
 
 # Using
 

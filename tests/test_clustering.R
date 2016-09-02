@@ -40,7 +40,11 @@ test_that("clustering: methods", {
 		file.remove(filename)
 	})
 
-	save_hierarchical_dendogram(data_frame=worlddata, named_column='country', num_clusters=5)
+	save_hierarchical_dendogram(data_frame=worlddata, named_column='country')
+	expect_true(file.exists('./dendogram.png'))
+	file.remove('./dendogram.png')
+	
+	save_hierarchical_dendogram(data_frame=worlddata, named_column='country', ideal_cluster_size = 10)
 	expect_true(file.exists('./dendogram.png'))
 	file.remove('./dendogram.png')
 })

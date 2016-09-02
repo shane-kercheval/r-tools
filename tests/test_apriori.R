@@ -47,7 +47,7 @@ test_that("pattern_recognition: apriori_sequence_analysis", {
 	# apriori functions
 	apriori_dataset = single_event_sequence_dataset(dataset=unordered_data, id_column_name='customer_id', order_by='event_sequence')
 	rules = apriori_sequence_analysis(apriori_dataset=apriori_dataset, support=0.55)
-
+	expect_false(file.exists('input_file.csv')) # this is the temp file created by the `apriori_sequence_analysis` function
 	# summary of sequential rules
 	summary(rules)
 

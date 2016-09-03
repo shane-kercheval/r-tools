@@ -31,10 +31,10 @@ test_that("output: markdown", {
 	cat(codebc(summary(percentile_matrix), postfix = '\n\n'))
 	cat(sprintf('%s%s%s\n\n', 'and here is a ', urlm('url', '../README.md'), ' to the readme file'))
 	cat('and here is an image:\n\n')
-	cat(image(text='the image', url='../tests/data/kmeans_non-try_5_clusters_2016-08-29.png', postfix='\n\n'))
+	cat(image(text='the image', url='../readme/kmeans_5_clusters.png', postfix='\n\n'))
 	cat('the end :)\n') # add this to test formatting (something after matrix)
 	sink() # remove sink
 
 	test_file_text = read_file(markdown_file)
-	expect_that(nchar(test_file_text), equals(2734))
+	expect_that(nchar(test_file_text), equals(2711))
 })

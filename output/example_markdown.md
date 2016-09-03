@@ -47,6 +47,6 @@ and here is a [url](../README.md) to the readme file
 
 and here is an image:
 
-![the image](../tests/data/kmeans_non-try_5_clusters_2016-08-29.png)
+![the image](../readme/kmeans_5_clusters.png)
 
 the end :)

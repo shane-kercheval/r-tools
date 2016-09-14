@@ -127,5 +127,5 @@ log_helper <- function(log_level, log_name, message, prefix, postfix, should_log
 print_c <- function(something, collapse=TRUE, trim=TRUE)
 ```
 - captures the output of `print(something)` and it returns it as a variable rather than outputting (can then be used with markdown, logging, etc.)
-- `collapse` variable is used with character vectors to correct format the output of `print(something)`
+- `collapse` variable is an optional character string to separate the results; or when used with character vectors to correct format the output of `print(something)`
 - `trim` removes leading and trailing whitespace

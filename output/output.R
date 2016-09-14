@@ -18,12 +18,12 @@ note <- function(text)
 	cat(sprintf('\n###: %s\n', text))
 }
 
-print_c <- function(something, collapse=TRUE, trim=TRUE)
+print_c <- function(something, collapse='\n', trim=FALSE, print_row_names=FALSE)
 {
-	output_something = capture.output(print(something))
-	if(collapse)
+	output_something = capture.output(print(something, row.names = print_row_names))
+	if(!is.null(collapse))
 	{
-		output_something = paste(output_something, collapse = '\n')
+		output_something = paste(output_something, collapse=collapse)
 	}
 
 	if(trim)

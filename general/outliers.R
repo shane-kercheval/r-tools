@@ -1,6 +1,3 @@
-#######################################################################################################################################
-# calculates outlier thresholds based on Quantil 1,3 +- 1.5 IQR
-#######################################################################################################################################
 calculate_outlier_thresholds <- function(vect)
 {
 	quantile_1 = quantile(vect, na.rm = TRUE)[2]# gets the '1st' quartile, i.e. 25th percentile
@@ -14,9 +11,6 @@ calculate_outlier_thresholds <- function(vect)
 	return (thresholds)
 }
 
-#######################################################################################################################################
-# changes any outliers in vector to NA
-#######################################################################################################################################
 remove_outliers <- function(vect) 
 {
 	outlier_thresholds = calculate_outlier_thresholds(vect)

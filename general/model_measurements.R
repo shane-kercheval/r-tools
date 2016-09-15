@@ -1,7 +1,3 @@
-#######################################################################################################################################
-# provides a list of functions that help assess the quality of various models
-# e.g. https://en.wikipedia.org/wiki/Sensitivity_and_specificity
-#######################################################################################################################################
 sensitivity <- function(true_positives, total_actual_positives)
 {
 	return(true_positives / total_actual_positives)

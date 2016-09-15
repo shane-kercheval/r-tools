@@ -11,6 +11,20 @@ Each subdirectory has a README.md file which contains information about function
 # Using
 
 - download repo to `~` directory
+- install the following packages with these commands
+```
+R
+install.packages('fpc')
+install.packages('RColorBrewer')
+install.packages('ggplot2')
+install.packages('scales')
+install.packages('reshape2')
+install.packages('NbClust')
+install.packages('stringr')
+install.packages('arules')
+install.packages('arulesSequences')
+install.packages('testthat')
+```
 - Include `tools.R` in your R files: `source('~/r-tools/tools.R', chdir=TRUE)`
 
 # Testing

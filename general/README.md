@@ -26,11 +26,16 @@ get_correlations <- function(data_frame, threshold)
 ## dates.R
 
 ```R
-convert_to_date <- function(vector_string_date, date_string_format='%Y-%m-%d', include_time=TRUE)
+convert_to_date <- function(vector_string_date, date_string_format='%Y-%m-%d', has_time=TRUE)
 ```
 - converts a vector that contains a date string in the format of 'YYYY-MM-DD XX:XX:XX' and returns a date vector
 - the string format of the dates can be overwritten with `date_string_format`
-- by default, the function will return the time. If only the date is wanted, you can set `include_time` to `FALSE`
+- by default, the function will return the time. If only the date is wanted, you can set `has_time` to `FALSE`
+
+```R
+convert_to_date_time <- function(date_time_string_vector, date_time_string_format="%Y-%m-%d %H:%M:%S", time_zone='GMT')
+```
+- - converts a vector that contains a date string in the format of `date_time_string_format` and returns a date/time vector ([POSIXlt](https://stat.ethz.ch/R-manual/R-devel/library/base/html/DateTimeClasses.html) object) in the time zone indicated by `time_zone` parameter
 
 ```R
 add_date_columns <- function(data_frame, date_column)

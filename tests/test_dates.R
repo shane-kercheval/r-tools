@@ -50,7 +50,7 @@ test_that("general: dates", {
 	
 	date_string = c('2015-12-31', '2016-01-01', '2016-01-03', '2016-01-04')
 	df = data.frame(date_string, stringsAsFactors = FALSE)
-	df$date = convert_to_date(df$date_string, include_time=FALSE)
+	df$date = convert_to_date(df$date_string, has_time=FALSE)
 	df = add_date_columns(df, 'date')
 	expect_that(length(colnames(df)), equals(8))
 	expect_true(any(colnames(df) == 'date_string'))
@@ -102,4 +102,11 @@ test_that("general: string_to_date", {
 	expect_that(year, equals(2016))
 	expect_that(month, equals(4))
 	expect_that(day, equals(23))
+})
+
+test_that("general: convert_to_date_time", {
+	date_time_string_vector = c('2016-08-20 06:06:29', '2016-05-22 13:54:35')
+	date_time_vector = convert_to_date_time(date_time_string_vector)
+	
+	expect_that(print_c(date_time_vector), equals("[1] \"2016-08-20 06:06:29 GMT\" \"2016-05-22 13:54:35 GMT\""))
 })

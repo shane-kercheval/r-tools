@@ -1,6 +1,6 @@
+source('../tools.R', chdir=TRUE)
 library('testthat')
 library(reshape2) # melt
-source('../tools.R', chdir=TRUE)
 
 #to run from command line, use:
 #library('testthat')

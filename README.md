@@ -30,6 +30,7 @@ install.packages('testthat')
 # Testing
 - Run unit tests with working directory set to root folder `~/r-tools/` and command:
 ```
+R
 library('testthat')
 test_dir('tests')
 ```

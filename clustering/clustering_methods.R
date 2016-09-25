@@ -1,6 +1,7 @@
 source('../general/modification.R', chdir=TRUE)
 library(fpc)
 library(NbClust)
+library('purrr')
 
 hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123)
 {
@@ -13,7 +14,7 @@ hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters
 	hierarchical_results = lapply(clusters_to_analyze, FUN=function(x) {
 	
 		distances = dist(dataset_scaled, method = "euclidean")
-		clusters = hclust(distances, method = "ward.D") 
+		clusters = hclust(distances, method = "ward.D")
 	
 		clusterGroups = cutree(clusters, k = x)
 		cluster_splits = split(dataset_scaled, clusterGroups)

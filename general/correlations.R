@@ -1,6 +1,6 @@
 get_correlations <- function(data_frame, threshold)
 {
-	numeric_columns = sapply(data_frame, is.numeric)
+	numeric_columns = map_lgl(data_frame, is.numeric)
 	data_numeric = data_frame[numeric_columns]
 	
 	correlations = cor(data_numeric, use='complete') # Tell the correlation to ignore the NAs with use="complete"

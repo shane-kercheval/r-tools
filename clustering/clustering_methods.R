@@ -5,7 +5,16 @@ library('purrr')
 
 hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123)
 {
-	cluster_data = get_numeric_logical_dataset(data_frame, merge_column)
+	# make sure there are no duplicate rows for analysis
+	if(any(duplicated(data_frame)))
+	{
+		stop('duplicated values found in dataframe')
+	}
+	if(any(is.na(data_frame)))
+	{
+		stop('na values found in dataframe, which will lead lead to bugs in cluster anlaysis')
+	}
+	cluster_data = get_numeric_logical_dataset(data_frame=data_frame, named_column=merge_column)
 	dataset_na_omited = na.omit(cluster_data)
 	dataset_scaled = get_scaled_dataset(data_frame=dataset_na_omited, named_column=merge_column)
 	
@@ -26,6 +35,15 @@ hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters
 
 hierarchical_merge_cluster_data <- function(original_data_frame, merge_column, num_clusters=5, plus_minus=3)
 {
+		# make sure there are no duplicate rows for analysis
+	if(any(duplicated(original_data_frame)))
+	{
+		stop('duplicated values found in dataframe')
+	}
+	if(any(is.na(original_data_frame)))
+	{
+		stop('na values found in dataframe, which will lead lead to bugs in cluster anlaysis')
+	}
 	cluster_data = get_numeric_logical_dataset(data_frame=original_data_frame, named_column=merge_column)
 	dataset_na_omited = na.omit(cluster_data)
 	dataset_scaled = get_scaled_dataset(data_frame=dataset_na_omited, named_column=merge_column)
@@ -54,6 +72,15 @@ hierarchical_merge_cluster_data <- function(original_data_frame, merge_column, n
 
 kmeans_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123)
 {
+	# make sure there are no duplicate rows for analysis
+	if(any(duplicated(data_frame)))
+	{
+		stop('duplicated values found in dataframe')
+	}
+	if(any(is.na(data_frame)))
+	{
+		stop('na values found in dataframe, which will lead lead to bugs in cluster anlaysis')
+	}
 	cluster_data = get_numeric_logical_dataset(data_frame, merge_column)
 	dataset_na_omited = na.omit(cluster_data)
 	dataset_scaled = as.data.frame(lapply(dataset_na_omited[, -grep(merge_column, colnames(dataset_na_omited))], scale))

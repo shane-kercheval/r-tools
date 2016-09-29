@@ -83,4 +83,11 @@ test_that("clustering: methods", {
 	expect_that(mstd, equals(c(1.0261817, 0.7128722, 0.6452611, 0.5238504, 0.5511163, 0.5354918, 0.5113339), tolerance=0.001))
 	best_cluster_index = which(mstd == min(mstd))
 	expect_that(best_cluster_index, equals(7))
+
+	cluster_means = hierarchical_get_clusters_means(hierarchical_results=hierarchical_results)
+	expect_that(length(cluster_means), equals(7))
+	#save(cluster_means_original, file='./data/test_data_hierarchical_get_clusters_means.Rda')
+	load('./data/test_data_hierarchical_get_clusters_means.Rda')
+	expect_that(nrow(cluster_means), equals(nrow(cluster_means_original)))
+	invisible(map2(cluster_means, cluster_means_original, ~ expect_that(.x, equals(.y))))
 })

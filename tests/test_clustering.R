@@ -77,4 +77,10 @@ test_that("clustering: methods", {
 	save_hierarchical_dendogram(data_frame=worlddata_no_na, named_column='country', ideal_cluster_size = 10)
 	expect_true(file.exists('./dendogram.png'))
 	file.remove('./dendogram.png')
+
+	mstd = hierarchical_get_clusters_mean_st_dev(hierarchical_results=hierarchical_results)
+	expect_that(length(mstd), equals(7))
+	expect_that(mstd, equals(c(1.0261817, 0.7128722, 0.6452611, 0.5238504, 0.5511163, 0.5354918, 0.5113339), tolerance=0.001))
+	best_cluster_index = which(mstd == min(mstd))
+	expect_that(best_cluster_index, equals(7))
 })

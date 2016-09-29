@@ -90,4 +90,10 @@ test_that("clustering: methods", {
 	load('./data/test_data_hierarchical_get_clusters_means.Rda')
 	expect_that(nrow(cluster_means), equals(nrow(cluster_means_original)))
 	invisible(map2(cluster_means, cluster_means_original, ~ expect_that(.x, equals(.y))))
+
+	total_expected_rows = nrow(final_hierarchical)
+	expected_totals_rows = map(list(2, 3, 4, 5, 6, 7, 8), .f=function(y){ map_dbl(as.list(1:y), function(z){sum(final_hierarchical[,paste0('cluster_', y)]==z)})}) #~final_hierarchical[,paste0('cluster_', .)]))paste0('cluster_', y)
+	cluster_rows = hierarchical_nrow(hierarchical_results=hierarchical_results)
+	invisible(map2(expected_totals_rows, cluster_rows, function(x,y){expect_that(x, equals(y))}))
+	invisible(map(cluster_rows, ~ expect_that(sum(.), equals(total_expected_rows))))
 })

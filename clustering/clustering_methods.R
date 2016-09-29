@@ -151,6 +151,13 @@ hierarchical_get_clusters_means <- function(hierarchical_results)
 	return (cluster_means)
 }
 
+hierarchical_nrow <- function(hierarchical_results)
+{
+	rows = hierarchical_results %>% map(~ map(., ~ map_dbl(., length))) %>%
+		map(~ unname(unlist(map_dbl(.,  ~.[[1]]))))
+	return (rows)
+}
+
 get_ideal_number_of_clusters_nb <- function(data_frame, named_column)
 {
 	data_frame = na.omit(data_frame)

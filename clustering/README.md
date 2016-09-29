@@ -62,13 +62,18 @@ hierarchical_merge_cluster_data <- function(original_data_frame, merge_column, n
 ```R
 hierarchical_get_clusters_mean_st_dev <- function(hierarchical_results)
 ```
-- takes a hierarchical_results list and returns a vector containing the mean standard deviation within each cluster analysis.
+- takes a `hierarchical_results` list and returns a vector containing the mean standard deviation within each cluster analysis.
 - then you would use `which(cluster_mean_standard_deviations == min(cluster_mean_standard_deviations))` to get the cluster analysis with the least variability within each cluster
 
 ```R
 hierarchical_get_clusters_means <- function(hierarchical_results)
 ```
-- for each cluster analysis, for each cluster within each analysis, gets the mean (in z-score) of each column
+- for each cluster analysis in `hierarchical_results` list, for each cluster within each analysis, gets the mean (in z-score) of each column
+
+```R
+hierarchical_nrow <- function(hierarchical_results)
+```
+- for each cluster analysis in `hierarchical_results` list, returns the number of data items in each cluster (cluster corresponds to index number)
 
 ### kmeans
 

@@ -10,7 +10,7 @@ convert_to_date <- function(vector_string_date, date_string_format='%Y-%m-%d', h
 
 convert_to_date_time <- function(date_time_string_vector, date_time_string_format="%Y-%m-%d %H:%M:%S", time_zone='GMT')
 {
-	return (strptime(date_time_string_vector, format=date_time_string_format, tz=time_zone))
+	return (as.POSIXct(strptime(date_time_string_vector, format=date_time_string_format, tz=time_zone), tz=time_zone))
 }
 
 add_date_columns <- function(data_frame, date_column)

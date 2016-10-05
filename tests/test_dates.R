@@ -8,7 +8,7 @@ source('../tools.R', chdir=TRUE)
 test_that("general: dates", {
 	date_string = c('2015-12-31 XX:XX:XX', '2016-01-01 XX:XX:XX', '2016-01-03 XX:XX:XX', '2016-01-04 XX:XX:XX')
 	df = data.frame(date_string, stringsAsFactors = FALSE)
-	df$date = convert_to_date(df$date_string)
+	df$date = convert_to_date(vector_string_date = df$date_string)
 	df = add_date_columns(df, 'date')
 	expect_that(length(colnames(df)), equals(8))
 	expect_true(any(colnames(df) == 'date_string'))
@@ -105,8 +105,8 @@ test_that("general: string_to_date", {
 })
 
 test_that("general: convert_to_date_time", {
-	date_time_string_vector = c('2016-08-20 06:06:29', '2016-05-22 13:54:35')
+	date_time_string_vector = c('2016-01-01 00:00:00', '2016-08-20 06:06:29', '2016-05-22 13:54:35')
 	date_time_vector = convert_to_date_time(date_time_string_vector)
 	
-	expect_that(print_c(date_time_vector), equals("[1] \"2016-08-20 06:06:29 GMT\" \"2016-05-22 13:54:35 GMT\""))
+	expect_that(print_c(date_time_vector), equals("[1] \"2016-01-01 00:00:00 GMT\" \"2016-08-20 06:06:29 GMT\" \"2016-05-22 13:54:35 GMT\""))
 })

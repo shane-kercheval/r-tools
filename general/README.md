@@ -162,3 +162,16 @@ calculate_outlier_thresholds <- function(vect)
 remove_outliers <- function(vect)
 ```
 - changes any outliers in vector to NA
+
+## utlities
+
+```R
+stopif <- function(condition, message, call=FALSE)
+```
+- calls base `stop` function if `condition` is true with `message`
+- `call` is passed into `call.` variable of base `stop` function
+
+```R
+is.nullNaEmpty <- function(...)
+```
+- tests each element in `...` (which can be vector, list, single element, or combination) for NULL, NA, or Empty (i.e. ==\'\')

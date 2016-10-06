@@ -65,6 +65,8 @@ image <- function(text, url, postfix='')
 
 table_matrix <- function(a_matrix, title=NULL, row_header='Row', title_format=h1, title_postfix='\n', postfix='\n')
 {
+	stopif(is.nullNaEmpty(row_header), message='cannot pass in empty/NULL row_header')
+	
 	table_markup = ''
 	if(!is.null(title))
 	{

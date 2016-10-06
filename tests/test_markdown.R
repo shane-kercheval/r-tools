@@ -36,5 +36,26 @@ test_that("output: markdown", {
 	sink() # remove sink
 
 	test_file_text = read_file(markdown_file)
-	expect_that(nchar(test_file_text), equals(2745))
+	expect_that(nchar(test_file_text), equals(2724))
+})
+
+test_that("output: table_matrix", {
+	# table_matrix function should require a row_header, otherwise the format will be messed up when rendering in markdown file (i.e. Github is messed up, although Atom editor is not.)
+
+	# first test normal (default variables) workflow works.
+	vector1 = seq(from=0, to=100, by=1)
+	vector2 = seq(from=100, to=0, by=-1)
+	percentile_matrix = create_percentile_matrix(list_of_datasets=list(vector1, vector2), c('test1', 'test2'))
+	possibleError_expect_no_error = tryCatch(table_matrix(a_matrix=percentile_matrix), error=function(e) e)
+	expect_false(inherits(possibleError_expect_no_error, 'error'))
+
+	# test error when passing in blank header
+	possibleError_expect_error_empty = tryCatch(table_matrix(a_matrix=percentile_matrix, row_header=''), error=function(e) e)
+	expect_true(inherits(possibleError_expect_error_empty, 'error'))
+	expect_that(possibleError_expect_error_empty$message, equals('cannot pass in empty/NULL row_header'))
+
+	# test error when passing in NULL header
+	possibleError_expect_error_null = tryCatch(table_matrix(a_matrix=percentile_matrix, row_header=NULL), error=function(e) e)
+	expect_true(inherits(possibleError_expect_error_null, 'error'))
+	expect_that(possibleError_expect_error_null$message, equals('cannot pass in empty/NULL row_header'))
 })

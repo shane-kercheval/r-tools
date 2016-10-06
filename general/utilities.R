@@ -18,6 +18,6 @@ is.nullNaEmpty <- function(...)
 				return (any(map_lgl(., ~is.nullNaEmpty(.))))
 			}
 			# else
-			return (is.null(.) || is.na(.) || . == '')
+			return (is.null(.) || is.na(.) || as.character(str_trim(.)) == '')
         })))
 }

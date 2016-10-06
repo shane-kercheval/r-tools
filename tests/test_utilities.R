@@ -18,14 +18,19 @@ test_that("utilities: is.nullNaEmpty", {
 	# individual items as parameters (i.e. non-vector)
 	expect_true(is.nullNaEmpty(NULL,'asdf','', NA))
 	expect_true(is.nullNaEmpty('asdf','', NA))
-	expect_true(is.nullNaEmpty('asdf',''))
+	expect_true(is.nullNaEmpty('asdf','',2))
 	expect_true(is.nullNaEmpty(''))
+	expect_true(is.nullNaEmpty(' ', 2))
+	expect_true(is.nullNaEmpty('   '))
 	expect_true(is.nullNaEmpty(NA))
 	expect_true(is.nullNaEmpty(NULL))
 
 	expect_false(is.nullNaEmpty('asdf'))
 	expect_false(is.nullNaEmpty('asdf', 'a'))
 	expect_false(is.nullNaEmpty('NULL', 'NA'))
+	expect_false(is.nullNaEmpty('   1'))
+	expect_false(is.nullNaEmpty('1', 1))
+	expect_false(is.nullNaEmpty(1))
 
 	# vectors
 	expect_true(is.nullNaEmpty(c(NULL,'asdf','', NA)))
@@ -42,4 +47,5 @@ test_that("utilities: is.nullNaEmpty", {
 	
 	expect_false(is.nullNaEmpty(c('asdf', 'asdf'), c('asfd', 'asdf'), 'adsf'))
 	expect_false(is.nullNaEmpty(c('asdf'), c('asfd'), 'adsf'))
+	expect_false(is.nullNaEmpty(c('asdf'), c('asfd',2), 'adsf',2))
 })

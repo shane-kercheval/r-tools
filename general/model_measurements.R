@@ -43,7 +43,7 @@ quality_of_model_from_confusion <- function(confusion_matrix)
 
 quality_of_model <- function(true_positives, true_negatives, false_positives, false_negatives)
 {
-	return(data.frame(
+	return(list(
 		"accuracy" = accuracy(true_negatives=true_negatives, true_positives=true_positives, total_observations=true_positives+true_negatives+false_positives+false_negatives),
 		"error_rate" = error_rate(false_positives=false_positives, false_negatives=false_negatives, total_observations=true_positives+true_negatives+false_positives+false_negatives),
 		"positive_predictive_value" = positive_predictive_value(true_positives=true_positives, false_positives=false_positives),

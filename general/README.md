@@ -87,7 +87,7 @@ negative_predictive_value <- function(true_negatives, false_negatives)
 ```R
 quality_of_model_from_confusion <- function(confusion_matrix)
 ```
-- takes a confusion matrix with predictions as columns and actuals as rows (negatives first, positives second) and returns a `quality_of_model` dataframe
+- takes a confusion matrix with predictions as columns and actuals as rows (negatives first, positives second) and returns a `quality_of_model` list
 
 ```R
 quality_of_model <- function(true_positives, true_negatives, false_positives, false_negatives)

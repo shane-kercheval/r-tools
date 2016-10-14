@@ -28,3 +28,12 @@ tabulate_logical <- function(logical_data_frame)
 
 	return (tabulation)
 }
+
+explore_numeric <- function(numeric_vector)
+{
+	print(summary(numeric_vector))
+	cat('\n')
+	print(create_percentile_matrix(list_of_datasets=list(numeric_vector), row_names=c('data')))
+	boxplot(numeric_vector)
+	hist(numeric_vector)
+}

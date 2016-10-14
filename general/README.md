@@ -15,6 +15,11 @@ tabulate_logical <- function(logical_data_frame)
 ```
 - takes a dataframe that contains logical columns and returns a dataframe that contains percent information for each
 
+```R
+explore_numeric <- function(numeric_vector)
+```
+- takes a numeric vector and prints out basic/exploratory stats
+
 ## correlations.R
 
 ```R

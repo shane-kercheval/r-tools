@@ -19,11 +19,11 @@ add_date_columns <- function(data_frame, date_column)
 {# adds year, month, and week date_columns to data frame for grouping purposes, assumes ymd field.
 	data_frame$year = as.numeric(format(data_frame[, date_column], '%Y'))
 	data_frame$month = as.numeric(format(data_frame[, date_column], '%m'))
+	data_frame$day_of_month = as.numeric(format(data_frame[, date_column], '%d'))
+	data_frame$weekday =  factor(weekdays(data_frame[, date_column]),levels=c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'),ordered=TRUE)
 	weeks = data.frame(Dates=data_frame[, date_column], Week = as.numeric(format(data_frame[, date_column], format = '%W')))
 	data_frame$week = weeks$Week
-	data_frame$weekday =  factor(weekdays(data_frame[, date_column]),levels=c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'),ordered=TRUE)
 	data_frame$day_of_year =  as.numeric(strftime(data_frame[, date_column], format = '%j'))
-	data_frame$day_of_month = as.numeric(format(data_frame[, date_column], '%d'))
 	return (data_frame)
 }
 

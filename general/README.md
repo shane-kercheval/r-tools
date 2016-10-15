@@ -23,7 +23,7 @@ explore_numeric <- function(numeric_vector)
 ## correlations.R
 
 ```R
-get_correlations <- function(data_frame, corr_threshold)
+get_correlations <- function(data_frame, corr_threshold=0.7, p_value_threshold=0.1, type='pearson')
 ```
 - takes a data-frame, subsets the numeric columns, and returns a matrix of correlations with `NA`s where 
 	- absolute value of correlation value is <= `corr_threshold`

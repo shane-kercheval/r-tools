@@ -129,3 +129,21 @@ print_c <- function(something, collapse=TRUE, trim=TRUE)
 - captures the output of `print(something)` and it returns it as a variable rather than outputting (can then be used with markdown, logging, etc.)
 - `collapse` variable is an optional character string to separate the results; or when used with character vectors to correct format the output of `print(something)`
 - `trim` removes leading and trailing whitespace
+
+## plots.R
+
+```R
+plot_wide_data <- function(df_wide, title='line plot', x_label='x', y_label='count')
+```
+- takes a wide dataset with column x (representing an index row which will be in x-axis) and all additional columns as summation/count rows; plots as line graph x as x-axis, values in remaining columns as y-axis, and each additional column (from x) as a single line
+- for example, given the following dataframe
+
+```
+set.seed(1)
+normal_distribution = rnorm(n=20)
+df_wide = data.frame(x=1:20, rnorm=normal_distribution, flipped=normal_distribution * -1, zero=rep(0,20))
+```
+
+- this plot is generated
+
+![plot_wide_data](example_plot_wide_data.png)

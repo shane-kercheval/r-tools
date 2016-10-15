@@ -167,7 +167,7 @@ heat_map_wide_data <- function(df_wide, title='heat map', x_label='x', y_label='
 ```
 - graphs a heatmap of df that has wide data (e.g. hours as rows, days as columns, and count of website visitors as values)
 - `y_factor_order` is variable that describes the order of y level data (e.g. days of week), if such an order exists.
-- see [test_plots.R](../tests/test_plots.R)) for example, which produces the following heatmap 
+- see [test_plots.R](../tests/test_plots.R) for example, which produces the following heatmap 
 
 ![heat_map_wide_data](example_heat_map_wide_data.png)
 
@@ -175,4 +175,4 @@ heat_map_wide_data <- function(df_wide, title='heat map', x_label='x', y_label='
 heat_map_long_data <- function(df_long, title='heat map', x_label='x', y_label='count', scale_label='scale', save_file=NULL)
 ```
 - same as `heat_map_wide_data`, but takes data in long format (e.g. rows that make up hour/day combinations).
-- see [test_plots.R](../tests/test_plots.R)) for example, simply call `gather_data` on df_wide to see dataset.
+- see [test_plots.R](../tests/test_plots.R) for example, simply call `gather_data` on df_wide to see dataset.

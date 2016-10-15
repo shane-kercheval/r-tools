@@ -25,9 +25,9 @@ test_that("general: basic_stats", {
 	results = pmap(test_cases, function(x,y,expected) expect_true(all(percentile_matrix[x,y] == expected))) # ensures that the matrix[x,y] equals the `expected` values where `y` can be a range and `expected` can be a vector of values matching the length of `y`
 })
 
-test_that("general: basic_stats, explore_numeric", {
-	set.seed(1)
-	random_sample = sample(1:1000, size = 20)
-	
-	explore_numeric(random_sample)
-})
+# test_that("general: basic_stats, explore_numeric", {
+# 	set.seed(1)
+# 	random_sample = sample(1:1000, size = 20)
+# 	
+# 	explore_numeric(random_sample)
+# })

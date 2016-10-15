@@ -36,7 +36,7 @@ test_that("output: markdown", {
 	sink() # remove sink
 
 	test_file_text = read_file(markdown_file)
-	expect_that(nchar(test_file_text), equals(2724))
+	expect_that(nchar(test_file_text), equals(2731))
 })
 
 test_that("output: table_matrix", {

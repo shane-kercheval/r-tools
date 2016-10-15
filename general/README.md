@@ -23,10 +23,16 @@ explore_numeric <- function(numeric_vector)
 ## correlations.R
 
 ```R
-get_correlations <- function(data_frame, threshold)
+get_correlations <- function(data_frame, corr_threshold)
 ```
-- takes a data-frame, subsets the numeric columns, and returns a matrix of correlations with `NA`s where absolute value of correlation value is <= `threshold`
-	- so if `threshold` is 0.9, the resulting matrix will only show correlations >=0.9 and <= -0.9. All other values will show `NA`
+- takes a data-frame, subsets the numeric columns, and returns a matrix of correlations with `NA`s where 
+	- absolute value of correlation value is <= `corr_threshold`
+	- corresponding p_value is <= `p_value_threshold`
+- can pass in correalation `type`
+	- specifies the type of correlations to compute. `Spearman` correlations are the `Pearson` (default) linear correlations computed on the ranks of non-missing elements, using midranks for ties.
+	- If you want to explore your data it is best to compute both, since the relation between the `Spearman (S)` and `Pearson (P)` correlations will give some information. Briefly, `S` is computed on ranks and so depicts monotonic relationships while `P` is on true values and depicts linear relationships. [stats.stackexchange.com](http://stats.stackexchange.com/questions/8071/how-to-choose-between-pearson-and-spearman-correlation)
+- so if `threshold` is 0.9, the resulting matrix will only show correlations >=0.9 and <= -0.9. All other values will show `NA`
+
 
 ## dates.R
 

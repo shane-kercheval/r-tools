@@ -1,5 +1,6 @@
 library('testthat')
 source('../tools.R', chdir=TRUE)
+library(lubridate)
 
 #to run from command line, use:
 #library('testthat')

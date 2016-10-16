@@ -1,5 +1,6 @@
 library('testthat')
 source('../tools.R', chdir=TRUE)
+library(dplyr)
 
 #to run from command line, use:
 #library('testthat')
@@ -26,6 +27,16 @@ test_that('output: plot: line_plot_wide_data', {
 	line_plot = line_plot_wide_data(df_wide, y_factor_order=colnames(df_wide)[2:4], stack=TRUE, save_file=file_name)
 	expect_false(is.null(line_plot))
 	expect_true(file.exists(file_name))
+
+	# BUG: was getting geom_path: Each group consists of only one observation. Do you need to adjust the group aesthetic?
+	# this appears to be caused when x is a character, fix was to add group=y in plots.R
+	df_wide_x = mutate(df_wide,x=as.character(x))
+	line_plot = line_plot_wide_data(df_wide_x, y_factor_order=colnames(df_wide)[2:4], stack=TRUE)
+	expect_false(is.null(line_plot))
+	# we could order x using x_factor_order as follows
+	x_factor_order = df_wide_x[order(as.numeric(df_wide_x$x)), ]$x # could just pass in df_wide_x$x, since it is ordered, but documenting how to order if not already ordered
+	line_plot = line_plot_wide_data(df_wide_x, x_factor_order=x_factor_order, y_factor_order=colnames(df_wide)[2:4], stack=TRUE)
+	expect_false(is.null(line_plot))
 })
 
 test_that('output: plot: heat_map', {

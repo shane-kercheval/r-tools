@@ -12,7 +12,7 @@ line_plot_long_data <- function(df_long, title='line plot', x_label='x', y_label
 	line_plot = NULL
 	if(stack)
 	{
-		line_plot = ggplot(df_long, aes(x = x, y = count)) + 
+		line_plot = ggplot(df_long, aes(x = x, y = count, group=y)) + 
 					geom_line(aes(color = y)) + 
 					facet_grid(y ~ ., scales = "free_y") + 
 					theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))

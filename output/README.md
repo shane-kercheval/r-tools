@@ -136,6 +136,8 @@ print_c <- function(something, collapse=TRUE, trim=TRUE)
 line_plot_wide_data <- function(df_wide, title='line plot', x_label='x', y_label='count')
 ```
 - takes a wide dataset with column x (representing an index row which will be in x-axis) and all additional columns as summation/count rows; plots as line graph x as x-axis, values in remaining columns as y-axis, and each additional column (from x) as a single line
+- `x_factor_order` and `y_factor_order` take vectors that represent the order in which the x/y axis should be labeled, converts the underlying categorical data to factor.
+- `stack` allows the lines to be plotted with different y-axis's, rather than overlapping. Especially useful when data has very different y-axis scales.
 - `save_file` is the path/name of the file/plot to save. If value is set to `NULL` (default), then plot will not be saved to a file.
 - for example, given the following dataframe
 
@@ -145,14 +147,21 @@ normal_distribution = rnorm(n=20)
 df_wide = data.frame(x=1:20, rnorm=normal_distribution, flipped=normal_distribution * -1, zero=rep(0,20))
 ```
 
-- this plot is generated
+- this plot is generated (`stack=FALSE` (default)):
 
-![line_plot_wide_data](example_line_plot_wide_data.png)
+![line_plot_wide_data_no_stack](example_line_plot_wide_data.png)
+
+- with `stack=TRUE`, this plot is generated:
+
+![line_plot_wide_data_stack](example_line_plot_wide_data_stack.png)
+
 
 ```R
 line_plot_long_data <- function(df_long, title='line plot', x_label='x', y_label='count')
 ```
 - takes long data and plots a line graph
+- `x_factor_order` and `y_factor_order` take vectors that represent the order in which the x/y axis should be labeled, converts the underlying categorical data to factor.
+- `stack` allows the lines to be plotted with different y-axis's, rather than overlapping. Especially useful when data has very different y-axis scales.
 - `save_file` is the path/name of the file/plot to save. If value is set to `NULL` (default), then plot will not be saved to a file.
 - the dataset is in the format of a dataframe like the one below
 
@@ -166,7 +175,7 @@ df_wide = data.frame(x=1:20, rnorm=normal_distribution, flipped=normal_distribut
 heat_map_wide_data <- function(df_wide, title='heat map', x_label='x', y_label='count', scale_label='scale', y_factor_order=NULL, save_file=NULL)
 ```
 - graphs a heatmap of df that has wide data (e.g. hours as rows, days as columns, and count of website visitors as values)
-- `y_factor_order` is variable that describes the order of y level data (e.g. days of week), if such an order exists.
+- `x_factor_order` and `y_factor_order` take vectors that represent the order in which the x/y axis should be labeled, converts the underlying categorical data to factor.
 - see [test_plots.R](../tests/test_plots.R) for example, which produces the following heatmap 
 
 ![heat_map_wide_data](example_heat_map_wide_data.png)
@@ -175,4 +184,5 @@ heat_map_wide_data <- function(df_wide, title='heat map', x_label='x', y_label='
 heat_map_long_data <- function(df_long, title='heat map', x_label='x', y_label='count', scale_label='scale', save_file=NULL)
 ```
 - same as `heat_map_wide_data`, but takes data in long format (e.g. rows that make up hour/day combinations).
+- `x_factor_order` and `y_factor_order` take vectors that represent the order in which the x/y axis should be labeled, converts the underlying categorical data to factor.
 - see [test_plots.R](../tests/test_plots.R) for example, simply call `gather_data` on df_wide to see dataset.

@@ -20,6 +20,12 @@ test_that('output: plot: line_plot_wide_data', {
 	line_plot = line_plot_wide_data(df_wide, save_file=file_name)
 	expect_false(is.null(line_plot))
 	expect_true(file.exists(file_name))
+	
+	file_name = '../output/example_line_plot_wide_data_stack.png'
+	file.remove(file_name) # remove file to ensure no file is created for first test
+	line_plot = line_plot_wide_data(df_wide, y_factor_order=colnames(df_wide)[2:4], stack=TRUE, save_file=file_name)
+	expect_false(is.null(line_plot))
+	expect_true(file.exists(file_name))
 })
 
 test_that('output: plot: heat_map', {

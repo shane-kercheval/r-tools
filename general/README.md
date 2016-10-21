@@ -1,5 +1,27 @@
 # General Helper Functions
 
+## ab_tests.R
+
+```R
+ab_test.prop <- function(s, o=NULL, ns=NULL)
+```
+- uses R's `test.prop` i.e. CHI-SQUARE test to determine success of a/b tests
+- `s` is `successes`
+- `o` is total number of `observations` (i.e. count of trials)
+- `ns` is number of `non-successes` (i.e. 'failure') (e.g. if s is clicks, ns, is non-clicks, or if s is female, ns is male)
+
+```R
+ab_test.propp <- function(s, o=NULL, ns=NULL)
+```
+- same inputs as `ab_test.prop`
+- uses `prop.test` function, but uses first element of `s` and `o` (or `ns`) as the target proportion. (e.g. first experiment is original and subsequent are variants.)
+
+```R
+ab_test.fisher <- function(s, o=NULL, ns=NULL)
+```
+- same inputs as `ab_test.prop`
+- uses R's `fisher.test`
+
 ## basic_stats.R
 - general stats helper functions
 
@@ -25,14 +47,13 @@ explore_numeric <- function(numeric_vector)
 ```R
 get_correlations <- function(data_frame, corr_threshold=0.7, p_value_threshold=0.1, type='pearson')
 ```
-- takes a data-frame, subsets the numeric columns, and returns a matrix of correlations with `NA`s where 
+- takes a data-frame, subsets the numeric columns, and returns a matrix of correlations with `NA`s where
 	- absolute value of correlation value is <= `corr_threshold`
 	- corresponding p_value is <= `p_value_threshold`
 - can pass in correalation `type`
 	- specifies the type of correlations to compute. `Spearman` correlations are the `Pearson` (default) linear correlations computed on the ranks of non-missing elements, using midranks for ties.
 	- If you want to explore your data it is best to compute both, since the relation between the `Spearman (S)` and `Pearson (P)` correlations will give some information. Briefly, `S` is computed on ranks and so depicts monotonic relationships while `P` is on true values and depicts linear relationships. [stats.stackexchange.com](http://stats.stackexchange.com/questions/8071/how-to-choose-between-pearson-and-spearman-correlation)
 - so if `threshold` is 0.9, the resulting matrix will only show correlations >=0.9 and <= -0.9. All other values will show `NA`
-
 
 ## dates.R
 

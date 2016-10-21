@@ -5,16 +5,28 @@
 ```R
 ab_test.prop <- function(s, o=NULL, ns=NULL)
 ```
-- uses R's `test.prop` i.e. CHI-SQUARE test to determine success of a/b tests
+- uses R's `test.prop` i.e. chi-square test of `independence` to determine success of a/b tests
+	- according to [stats.stackexchange](http://stats.stackexchange.com/questions/96835/chisq-test-in-r-doesnt-produce-same-answer-as-by-hand)
 - `s` is `successes`
 - `o` is total number of `observations` (i.e. count of trials)
 - `ns` is number of `non-successes` (i.e. 'failure') (e.g. if s is clicks, ns, is non-clicks, or if s is female, ns is male)
+- `correct`: a logical indicating whether Yates' continuity correction should be applied where possible. (default is `TRUE`)
+	- when `correct` is `FALSE`, then it is same as calculating 'by hand' ([source](http://stats.stackexchange.com/questions/96835/chisq-test-in-r-doesnt-produce-same-answer-as-by-hand))
 
 ```R
 ab_test.propp <- function(s, o=NULL, ns=NULL)
 ```
 - same inputs as `ab_test.prop`
+- uses R's `test.prop` i.e. chi-square test of `goodness of fit` to determine success of a/b tests
+	- according to [stats.stackexchange](http://stats.stackexchange.com/questions/96835/chisq-test-in-r-doesnt-produce-same-answer-as-by-hand)
 - uses `prop.test` function, but uses first element of `s` and `o` (or `ns`) as the target proportion. (e.g. first experiment is original and subsequent are variants.)
+- `correct`: a logical indicating whether Yates' continuity correction should be applied where possible. (default is `TRUE`)
+	- when `correct` is `FALSE`, then it is same as calculating 'by hand' ([source](http://stats.stackexchange.com/questions/96835/chisq-test-in-r-doesnt-produce-same-answer-as-by-hand))
+
+```R
+ab_test.binomial <- function(original_successes, original_total, variation_successes, variation_total)
+```
+- uses R's `binom.test` ([docs](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/binom.test.html))
 
 ```R
 ab_test.fisher <- function(s, o=NULL, ns=NULL)

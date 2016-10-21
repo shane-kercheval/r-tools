@@ -3,7 +3,7 @@
 ## ab_tests.R
 
 ```R
-ab_test.prop <- function(s, o=NULL, ns=NULL)
+ab_test.prop <- function(s, o=NULL, ns=NULL, correct=TRUE)
 ```
 - uses R's `test.prop` i.e. chi-square test of `independence` to determine success of a/b tests
 	- according to [stats.stackexchange](http://stats.stackexchange.com/questions/96835/chisq-test-in-r-doesnt-produce-same-answer-as-by-hand)
@@ -14,7 +14,7 @@ ab_test.prop <- function(s, o=NULL, ns=NULL)
 	- when `correct` is `FALSE`, then it is same as calculating 'by hand' ([source](http://stats.stackexchange.com/questions/96835/chisq-test-in-r-doesnt-produce-same-answer-as-by-hand))
 
 ```R
-ab_test.propp <- function(s, o=NULL, ns=NULL)
+ab_test.propp <- function(s, o=NULL, ns=NULL, correct=TRUE)
 ```
 - same inputs as `ab_test.prop`
 - uses R's `test.prop` i.e. chi-square test of `goodness of fit` to determine success of a/b tests
@@ -33,6 +33,7 @@ ab_test.fisher <- function(s, o=NULL, ns=NULL)
 ```
 - same inputs as `ab_test.prop`
 - uses R's `fisher.test`
+	- `fisher.test` will perform a test analogous to the chi-square test of independence but not the chi-square goodness of fit test. ([source](http://stats.stackexchange.com/questions/96835/chisq-test-in-r-doesnt-produce-same-answer-as-by-hand))
 
 ## basic_stats.R
 - general stats helper functions

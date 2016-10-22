@@ -22,7 +22,7 @@ test_that("general: correlations", {
 	expect_true(any(colnames(correlations) == 'c'))
 	expect_true(any(colnames(correlations) == 'd'))
 	expect_true(!any(colnames(correlations) == 'e'))
-	
+
 	melted_correlations = melt(correlations)
 	correct_correlations = c(1.00, -1.00, 0.98, 0.43, -1.00, 1.00, -0.98, -0.43, 0.98, -0.98, 1.00, 0.51, 0.43,  -0.43, 0.51, 1.00)
 	expect_that(melted_correlations$value, equals(correct_correlations, tolerance=0.001))
@@ -31,8 +31,8 @@ test_that("general: correlations", {
 	melted_correlations = melt(correlations)
 	correct_correlations = c(1.00, -1.00, 0.98, NA, -1.00, 1.00, -0.98, NA, 0.98, -0.98, 1.00, NA, NA,  NA, NA, 1.00)
 	expect_that(melted_correlations$value, equals(correct_correlations, tolerance=0.001))
-	
-	
+
+
 	# test with tolerance above minimum number to make sure it works
 	correlations_same = get_correlations(df, corr_threshold=0.5, p_value_threshold=0.1)
 	# this should be the same as before because even though we have a higher tolerance, the low-pvalue still filters out the 0.51 numbers
@@ -49,7 +49,7 @@ test_that("general: correlations", {
 		return (x == y)
 	}))
 	expect_true(all_equal)
-	
+
 	correlations = get_correlations(df, corr_threshold=0.5, p_value_threshold=0.15)
 	expect_that(length(colnames(correlations)), equals(4))
 	expect_true(any(colnames(correlations) == 'a'))
@@ -57,8 +57,15 @@ test_that("general: correlations", {
 	expect_true(any(colnames(correlations) == 'c'))
 	expect_true(any(colnames(correlations) == 'd'))
 	expect_true(!any(colnames(correlations) == 'e'))
-	
+
 	melted_correlations = melt(correlations)
 	correct_correlations = c(1.00, -1.00, 0.98, NA, -1.00, 1.00, -0.98, NA, 0.98, -0.98, 1.00, 0.51, NA,  NA, 0.51, 1.00)
 	expect_that(melted_correlations$value, equals(correct_correlations, tolerance=0.001))
+
+	file = '../general/example_plot_correlations.png'
+	file.remove(file)
+	png(filename=file)
+	plot_correlations(data_frame=df)
+	dev.off()
+	
 })

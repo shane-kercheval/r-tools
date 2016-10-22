@@ -68,6 +68,14 @@ get_correlations <- function(data_frame, corr_threshold=0.7, p_value_threshold=0
 	- If you want to explore your data it is best to compute both, since the relation between the `Spearman (S)` and `Pearson (P)` correlations will give some information. Briefly, `S` is computed on ranks and so depicts monotonic relationships while `P` is on true values and depicts linear relationships. [stats.stackexchange.com](http://stats.stackexchange.com/questions/8071/how-to-choose-between-pearson-and-spearman-correlation)
 - so if `threshold` is 0.9, the resulting matrix will only show correlations >=0.9 and <= -0.9. All other values will show `NA`
 
+```R
+plot_correlations <- function(data_frame)
+```
+- plots correlations on x/y axis using colors/sizes to visualize
+- example:
+
+![example_plot_correlations](example_plot_correlations.png)
+
 ## dates.R
 
 ```R

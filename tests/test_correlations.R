@@ -24,12 +24,12 @@ test_that("general: correlations", {
 	expect_true(!any(colnames(correlations) == 'e'))
 
 	melted_correlations = melt(correlations)
-	correct_correlations = c(1.00, -1.00, 0.98, 0.43, -1.00, 1.00, -0.98, -0.43, 0.98, -0.98, 1.00, 0.51, 0.43,  -0.43, 0.51, 1.00)
+	correct_correlations = c(NA, -1.00, 0.98, 0.43, -1.00, NA, -0.98, -0.43, 0.98, -0.98, NA, 0.51, 0.43,  -0.43, 0.51, NA)
 	expect_that(melted_correlations$value, equals(correct_correlations, tolerance=0.001))
 
 	correlations = get_correlations(df, corr_threshold=0.4, p_value_threshold=0.1)
 	melted_correlations = melt(correlations)
-	correct_correlations = c(1.00, -1.00, 0.98, NA, -1.00, 1.00, -0.98, NA, 0.98, -0.98, 1.00, NA, NA,  NA, NA, 1.00)
+	correct_correlations = c(NA, -1.00, 0.98, NA, -1.00, NA, -0.98, NA, 0.98, -0.98, NA, NA, NA,  NA, NA, NA)
 	expect_that(melted_correlations$value, equals(correct_correlations, tolerance=0.001))
 
 
@@ -59,13 +59,14 @@ test_that("general: correlations", {
 	expect_true(!any(colnames(correlations) == 'e'))
 
 	melted_correlations = melt(correlations)
-	correct_correlations = c(1.00, -1.00, 0.98, NA, -1.00, 1.00, -0.98, NA, 0.98, -0.98, 1.00, 0.51, NA,  NA, 0.51, 1.00)
+	correct_correlations = c(NA, -1.00, 0.98, NA, -1.00, NA, -0.98, NA, 0.98, -0.98, NA, 0.51, NA,  NA, 0.51, NA)
 	expect_that(melted_correlations$value, equals(correct_correlations, tolerance=0.001))
 
-	file = '../general/example_plot_correlations.png'
-	file.remove(file)
-	png(filename=file)
+	file_name = '../general/example_plot_correlations.png'
+	file.remove(file_name)
+	png(filename=file_name)
 	plot_correlations(data_frame=df)
 	dev.off()
-	
+	expect_true(file.exists(file_name))
+
 })

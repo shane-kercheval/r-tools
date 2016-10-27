@@ -14,6 +14,12 @@ get_correlations <- function(data_frame, corr_threshold=0.7, p_value_threshold=0
 	correlations[which(correlations <= corr_threshold & correlations >= -corr_threshold, arr.ind=TRUE)] = NA # set correlations that are 'lower' than corr_threshold to NA
 	correlations[which(p_values > p_value_threshold, arr.ind=TRUE)] = NA # set correlations that have p_value > `p_value_threshold` to NA (i.e. we only want values who have low p_value (i.e. statistically significant), lower than pvalue threshold)
 
+	indexes = 1:nrow(correlations)
+	for(index in indexes)
+	{
+		correlations[index, index] = NA
+	}
+
 	return (as.matrix(round(correlations, 2)))
 }
 

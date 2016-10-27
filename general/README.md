@@ -124,6 +124,15 @@ negative_predictive_value <- function(true_negatives, false_negatives)
 quality_of_model_from_confusion <- function(confusion_matrix)
 ```
 - takes a confusion matrix with predictions as columns and actuals as rows (negatives first, positives second) and returns a `quality_of_model` list
+- confusion matrix in following format
+
+|                  | Predicted Negative | Predicted Positive |
+| ---------------- | ------------------ | ------------------ |
+| Actual Negative  | True Negative      | False Positive     |
+| Actual Positive  | False Negative     | True Positive      |
+
+- a `positive` can be thought of as a `detection`, while a `negative` is a `non-detection`
+	- e.g. logistic regression predicting (detecting) fraud. A positive would be a predicted or actual fraud occurance. So a `false positive` would be a case when we *predict* a positive (i.e. fraud), but the *actual* case was not fraud.
 
 ```R
 quality_of_model <- function(true_positives, true_negatives, false_positives, false_negatives)

@@ -31,9 +31,12 @@ negative_predictive_value <- function(true_negatives, false_negatives)
 	return(true_negatives / (true_negatives + false_negatives))
 }
 
-# confusion matrix with predictions as columns and actuals as rows (negatives first, positives second)
 quality_of_model_from_confusion <- function(confusion_matrix)
 {
+	# |                  | Predicted Negative | Predicted Positive |
+	# | ---------------- | ------------------ | ------------------ |
+	# | Actual Negative  | True Negative      | False Positive     |
+	# | Actual Positive  | False Negative     | True Positive      |
 	true_positives = confusion_matrix[2, 2] # actual, predicted
 	true_negatives = confusion_matrix[1, 1]
 	false_positives = confusion_matrix[1, 2] # column first; predicted true, but actually was false

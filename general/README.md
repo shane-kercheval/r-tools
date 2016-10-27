@@ -220,3 +220,16 @@ stopif <- function(condition, message, call=FALSE)
 is.nullNaEmpty <- function(...)
 ```
 - tests each element in `...` (which can be vector, list, single element, or combination) for NULL, NA, or Empty (i.e. ==\'\')
+
+```R
+lazy_load <- function(path, object, create_data, dataset_function)
+```
+- this method is used for creating/caching large datasets via manipulation methods (e.g. dplyr), that take a substantial amount of time to run
+- the method either creates the dataset from scratch (via `dataset_function` function), loads the stored dataset from an .Rda file, or returns the existing dataset if it is already populated.
+- `path` is path to Rda file
+- `object` is the object you want to populate
+- `create_data` is a flag to specify whether or not to create the dataset specified by `dataset_function`
+- `dataset_function` should return a dataset
+- if `create_data` is `TRUE`, then the `dataset_function` will be executed
+- otherwise, if the `object` exists and is not null, it will simply be returned.
+- if neither condition is true, then the dataset will be loaded from the Rda file specified from `path`

@@ -74,7 +74,7 @@ plot_correlations <- function(data_frame)
 - plots correlations on x/y axis using colors/sizes to visualize
 - example:
 
-![example_plot_correlations](example_plot_correlations.png)
+![example_plot_correlations](../readme/example_plot_correlations.png)
 
 ## dates.R
 

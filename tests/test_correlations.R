@@ -62,11 +62,11 @@ test_that("general: correlations", {
 	correct_correlations = c(NA, -1.00, 0.98, NA, -1.00, NA, -0.98, NA, 0.98, -0.98, NA, 0.51, NA,  NA, 0.51, NA)
 	expect_that(melted_correlations$value, equals(correct_correlations, tolerance=0.001))
 
-	file_name = '../general/example_plot_correlations.png'
-	file.remove(file_name)
-	png(filename=file_name)
-	plot_correlations(data_frame=df)
-	dev.off()
-	expect_true(file.exists(file_name))
+	# file_name = '../readme/example_plot_correlations.png'
+	# file.remove(file_name)
+	# png(filename=file_name)
+	# plot_correlations(data_frame=df)
+	# dev.off()
+	# expect_true(file.exists(file_name))
 
 })

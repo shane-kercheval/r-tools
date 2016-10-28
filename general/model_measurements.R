@@ -53,16 +53,22 @@ quality_of_model_from_confusion <- function(confusion_matrix)
 
 quality_of_model <- function(true_pos, true_neg, false_pos, false_neg)
 {
+	total_observations = true_pos+true_neg+false_pos+false_neg
+	total_actual_pos = true_pos + false_neg
+	total_actual_neg = true_neg + false_pos
+
 	return (list(
-		"accuracy" = accuracy(true_neg=true_neg, true_pos=true_pos, total_observations=true_pos+true_neg+false_pos+false_neg),
-		"error_rate" = error_rate(false_pos=false_pos, false_neg=false_neg, total_observations=true_pos+true_neg+false_pos+false_neg),
+		"accuracy" = accuracy(true_neg=true_neg, true_pos=true_pos, total_observations=total_observations),
+		"error_rate" = error_rate(false_pos=false_pos, false_neg=false_neg, total_observations=total_observations),
 		"positive_predictive_value" = positive_predictive_value(true_pos=true_pos, false_pos=false_pos),
 		"negative_predictive_value" = negative_predictive_value(true_neg=true_neg, false_neg=false_neg),
-		"false_positive_rate" = false_positive_rate(false_pos=false_pos, total_actual_neg=true_neg + false_pos),
-		"false_negative_rate" = false_negative_rate(false_neg=false_neg, total_actual_pos=true_pos + false_neg),
-		"sensitivity" = sensitivity(true_pos=true_pos, total_actual_pos=true_pos + false_neg),
-		"specificity" = specificity(true_neg=true_neg, total_actual_neg=true_neg + false_pos),
-		"total_observations" = true_pos + true_neg + false_pos + false_neg
+		"false_positive_rate" = false_positive_rate(false_pos=false_pos, total_actual_neg=total_actual_neg),
+		"false_negative_rate" = false_negative_rate(false_neg=false_neg, total_actual_pos=total_actual_pos),
+		"sensitivity" = sensitivity(true_pos=true_pos, total_actual_pos=total_actual_pos),
+		"specificity" = specificity(true_neg=true_neg, total_actual_neg=total_actual_neg),
+		'actual_pos_prob' = total_actual_pos / total_observations,
+		'actual_neg_prob' = total_actual_neg / total_observations,
+		"total_observations" = total_observations
 		))
 }
 

@@ -91,34 +91,45 @@ add_date_columns <- function(data_frame, date_column)
 ```R
 sensitivity <- function(true_positives, total_actual_positives)
 ```
+- a.k.a `true positive rate`
+- number of positives predicted correctly (true positives) out of total number of positives
 
 ```R
 specificity <- function(true_negatives, total_actual_negatives)
 ```
+- a.k.a `true negative rate`
+- number of negatives predicted correctly (true negatives) out of total number of negatives
 
 ```R
 false_negative_rate <- function(false_negatives, total_actual_positives)
 ```
+- number of negatives predicted that were actually positive, out of total number of positives
 
 ```R
 false_positive_rate <- function(false_positives, total_actual_negatives)
 ```
+- number of positives predicted that were actually negative out of total number of negatives
 
 ```R
 accuracy <- function(true_negatives, true_positives, total_observations)
 ```
+- number of correct predictions out of total number of observations
 
 ```R
 error_rate <- function(false_positives, false_negatives, total_observations)
 ```
+- number of incorrect predictions out of total number of observations
+- however, because not all errors are treated the same (e.g. false negative for cancer detection is worse than false positive), this number shouldn't be looked at alone.
 
 ```R
 positive_predictive_value <- function(true_positives, false_positives)
 ```
+- number of positives predicted correctly out of total number positive predictions
 
 ```R
 negative_predictive_value <- function(true_negatives, false_negatives)
 ```
+- number of negatives predicted correctly out of total number of negative predictions
 
 ```R
 quality_of_model_from_confusion <- function(confusion_matrix)
@@ -146,6 +157,8 @@ quality_of_model <- function(true_positives, true_negatives, false_positives, fa
 	- `false_negative_rate`
 	- `sensitivity`
 	- `specificity`
+	- `actual_pos_prob` (total actual positives / total observations)
+	- `actual_neg_prob` (total actual negatives / total observations)
 	- `total_observations`
 
 ```R

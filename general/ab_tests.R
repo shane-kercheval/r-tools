@@ -1,4 +1,4 @@
-ab_test.prop <- function(s, o=NULL, ns=NULL, correct=TRUE)
+ab_test.indep <- function(s, o=NULL, ns=NULL, correct=TRUE)
 {
 	o = get_observations(s=s, ns=ns, o=o)
 	return (prop.test(x=s, n=o, correct=correct))
@@ -6,7 +6,7 @@ ab_test.prop <- function(s, o=NULL, ns=NULL, correct=TRUE)
 	# return (chisq.test(trial_matrix, simulate.p.value = simulate.p.value))
 }
 
-ab_test.propp <- function(s, o=NULL, ns=NULL, correct=TRUE)
+ab_test.gof <- function(s, o=NULL, ns=NULL, correct=TRUE)
 {	# with this test, we want to get the proportion of the first trial, use that as p, and pass in the rest of successes/observations
 	o = get_observations(s=s, ns=ns, o=o)
 	first_success = s[1]

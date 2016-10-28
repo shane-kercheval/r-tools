@@ -7,6 +7,7 @@ Each subdirectory has a README.md file which contains information about function
 - [general/README.md](./general/README.md)
 - [output/README.md](./output/README.md)
 - [puttern_recognition/README.md](./puttern_recognition/README.md)
+- [probability/README.md](./probability/README.md)
 
 # Using
 

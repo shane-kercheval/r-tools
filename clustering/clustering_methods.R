@@ -1,6 +1,6 @@
 source('../general/modification.R', chdir=TRUE)
-library(fpc)
-library(NbClust)
+library('fpc')
+library('NbClust')
 library('purrr')
 
 hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123)
@@ -17,17 +17,17 @@ hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters
 	cluster_data = get_numeric_logical_dataset(data_frame=data_frame, named_column=merge_column)
 	dataset_na_omited = na.omit(cluster_data)
 	dataset_scaled = get_scaled_dataset(data_frame=dataset_na_omited, named_column=merge_column)
-	
+
 	clusters_to_analyze = seq(from=num_clusters-plus_minus, to=num_clusters+plus_minus, by=1)
 
 	hierarchical_results = lapply(clusters_to_analyze, FUN=function(x) {
-	
+
 		distances = dist(dataset_scaled, method = "euclidean")
 		clusters = hclust(distances, method = "ward.D")
-	
+
 		clusterGroups = cutree(clusters, k = x)
 		cluster_splits = split(dataset_scaled, clusterGroups)
-	
+
 		return (cluster_splits)
 	})
 	return (hierarchical_results)
@@ -47,17 +47,17 @@ hierarchical_merge_cluster_data <- function(original_data_frame, merge_column, n
 	cluster_data = get_numeric_logical_dataset(data_frame=original_data_frame, named_column=merge_column)
 	dataset_na_omited = na.omit(cluster_data)
 	dataset_scaled = get_scaled_dataset(data_frame=dataset_na_omited, named_column=merge_column)
-	
+
 	clusters_to_analyze = seq(from=num_clusters-plus_minus, to=num_clusters+plus_minus, by=1)
 
 	hierarchical_results = lapply(clusters_to_analyze, FUN=function(x) {
-	
+
 		distances = dist(dataset_scaled, method = "euclidean")
-		clusters = hclust(distances, method = "ward.D") 
-	
+		clusters = hclust(distances, method = "ward.D")
+
 		clusterGroups = cutree(clusters, k = x)
 		#cluster_splits = split(dataset_scaled, clusterGroups)
-	
+
 		return (clusterGroups)
 	})
 
@@ -84,9 +84,9 @@ kmeans_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, pl
 	cluster_data = get_numeric_logical_dataset(data_frame, merge_column)
 	dataset_na_omited = na.omit(cluster_data)
 	dataset_scaled = as.data.frame(lapply(dataset_na_omited[, -grep(merge_column, colnames(dataset_na_omited))], scale))
-	
+
 	clusters_to_analyze = seq(from=num_clusters-plus_minus, to=num_clusters+plus_minus, by=1)
-	
+
 	kmeans_results = lapply(clusters_to_analyze, FUN=function(x) {
 		set.seed(seed_num)
 		cluster_results = kmeans(dataset_scaled, x)
@@ -102,7 +102,7 @@ kmeans_merge_cluster_data <- function(kmeans_results, original_data_frame, merge
 	cluster_data = get_numeric_logical_dataset(original_data_frame, merge_column)
 	dataset_na_omited = na.omit(cluster_data)
 	clusters_to_analyze = seq(from=num_clusters-plus_minus, to=num_clusters+plus_minus, by=1)
-	
+
 	cluster_data_frame = as.data.frame(sapply(kmeans_results, FUN=function(x) {return (x$cluster)}))
 	cluster_column_names = sapply(clusters_to_analyze, FUN=function(x) {return (sprintf('cluster_%s', x))})
 	colnames(cluster_data_frame) = cluster_column_names

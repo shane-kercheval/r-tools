@@ -1,4 +1,4 @@
-library(arulesSequences)
+library('arulesSequences')
 library('stringr')
 
 #######################################################################################################################################
@@ -22,8 +22,8 @@ apriori_sequence_analysis <- function(apriori_dataset, support=0.5, confidence=0
 # transforms a dataframe that contains one event per row into a apriori (sequence) dataset
 # takes a dataframe that has A) an id column (e.g. customer id) B) an event column (e.g. page url/path, signup event, paid event)
 # and C) if data needs to be ordered, an order column
-# order_by should be a string of the column name that needs to be (secondarily) ordered (e.g. datetime of event). 
-# 	if order_by is not null, the data will be ordered by 1) `id_column_name` then 2) `order_by` 
+# order_by should be a string of the column name that needs to be (secondarily) ordered (e.g. datetime of event).
+# 	if order_by is not null, the data will be ordered by 1) `id_column_name` then 2) `order_by`
 # *IF `order_by` IS NOT SET, THE DATASET SHOULD ALREADY BE ORDERED BY ID COLUMN AND ORDER OF EVENT SEQUENCE (E.G. datetime)
 #######################################################################################################################################
 single_event_sequence_dataset <- function(dataset, id_column_name, order_by=NULL)
@@ -36,7 +36,7 @@ single_event_sequence_dataset <- function(dataset, id_column_name, order_by=NULL
 }
 
 #######################################################################################################################################
-# converts `rules_sequential` object to dataframe, adding `left hand side` (`lhs`) and `right hand side` (`rhs`) columns 
+# converts `rules_sequential` object to dataframe, adding `left hand side` (`lhs`) and `right hand side` (`rhs`) columns
 #######################################################################################################################################
 as_dataframe <- function(rules_sequential, sort=TRUE, sort_by='lift')
 {
@@ -51,7 +51,7 @@ as_dataframe <- function(rules_sequential, sort=TRUE, sort_by='lift')
 
 	rules_sequential_df$lhs = rule_groups$V2
 	rules_sequential_df$rhs = rule_groups$V3
-	
+
 
 	return (rules_sequential_df[c('rule', 'lhs', 'rhs', 'support', 'confidence', 'lift')]) # return custom order of dataframe
 }

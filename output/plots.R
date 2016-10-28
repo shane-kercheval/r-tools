@@ -1,4 +1,4 @@
-library(tidyr)
+library('tidyr')
 
 line_plot_wide_data <- function(df_wide, title='line plot', x_label='x', y_label='count', x_factor_order=NULL, y_factor_order=NULL, stack=FALSE, save_file=NULL)
 {
@@ -12,15 +12,15 @@ line_plot_long_data <- function(df_long, title='line plot', x_label='x', y_label
 	line_plot = NULL
 	if(stack)
 	{
-		line_plot = ggplot(df_long, aes(x = x, y = count, group=y)) + 
-					geom_line(aes(color = y)) + 
-					facet_grid(y ~ ., scales = "free_y") + 
+		line_plot = ggplot(df_long, aes(x = x, y = count, group=y)) +
+					geom_line(aes(color = y)) +
+					facet_grid(y ~ ., scales = "free_y") +
 					theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))
 	}
 	else
 	{
-		line_plot = ggplot(df_long, aes(x=x, y=count, group=y, colour=y) ) + 
-					geom_line(size=1, alpha=.75) + 
+		line_plot = ggplot(df_long, aes(x=x, y=count, group=y, colour=y) ) +
+					geom_line(size=1, alpha=.75) +
 					theme(axis.text.x = element_text(angle = 45, hjust = 1))
 	}
 
@@ -43,8 +43,8 @@ heat_map_wide_data <- function(df_wide, title='heat map', x_label='x', y_label='
 heat_map_long_data <- function(df_long, title='heat map', x_label='x', y_label='count', scale_label='scale', x_factor_order=NULL, y_factor_order=NULL, save_file=NULL)
 {
 	df_long = convert_to_factors(df_long=df_long, x_factor_order=x_factor_order, y_factor_order=y_factor_order)
-	heat_map = 	ggplot(df_long, aes(x = x, y = y)) + 
-				ggtitle(title) + 
+	heat_map = 	ggplot(df_long, aes(x = x, y = y)) +
+				ggtitle(title) +
 				geom_tile(aes(fill = count)) +
 				scale_fill_gradient(name=scale_label, low="white", high="red") +
 				labs(x=x_label,y=y_label)

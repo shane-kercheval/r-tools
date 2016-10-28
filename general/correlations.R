@@ -1,5 +1,5 @@
-library(Hmisc)
-library(corrr)
+library('Hmisc')
+library('corrr')
 
 get_correlations <- function(data_frame, corr_threshold=0.7, p_value_threshold=0.1, type='pearson')
 {

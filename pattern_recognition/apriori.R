@@ -1,4 +1,4 @@
-library(arules)
+library('arules')
 
 #######################################################################################################################################
 # helper method to order data based on id column (e.g. customer id) and sequence column (e.g. datetime)

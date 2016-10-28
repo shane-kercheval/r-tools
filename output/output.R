@@ -1,4 +1,4 @@
-library(stringr)
+library('stringr')
 
 note_if <- function(x, description=NULL, should_note=FALSE)
 {
@@ -31,5 +31,5 @@ print_c <- function(something, collapse='\n', trim=FALSE, print_row_names=FALSE)
 		output_something = str_trim(output_something)
 	}
 
-	return (output_something) # http://stackoverflow.com/questions/16358435/in-r-is-it-possible-to-redirect-console-output-to-a-variable	
+	return (output_something) # http://stackoverflow.com/questions/16358435/in-r-is-it-possible-to-redirect-console-output-to-a-variable
 }

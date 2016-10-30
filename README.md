@@ -38,6 +38,7 @@ install.packages('Hmisc')
 install.packages('corrr')
 install.packages('arules')
 install.packages('arulesSequences')
+install.packages('FinCal')
 ```
 - Include `tools.R` in your R files: `source('~/r-tools/tools.R', chdir=TRUE)`
 

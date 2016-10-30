@@ -116,7 +116,7 @@ acquisition_conversion_rates_per_stage
 				- $return_on_investment_pv: 1.169865
 				- $annualized_return_pv: 0.213691
 		- _NOTE: you might use a proxy if you have a long sales cycle, in order to have a quicker feedback cycle. So while technically you wouldn't have to include the proxy into this equation, theoretically it could help you identify the CR assumptions between signup->acquisition, to check, for example, that the conversion rate between signup->proxy remains the same. If it doesn't, (e.g. if there are lower 'scores' or less proxy classifications (e.g. you classify high scores as X)) then that might be a sign that you have lower quality. Or if the CR is lower between the proxy and the acquisition, that might be a sign that your scoring model isn't as accurate for this particular channel. Or, the opposite could be true. Either way breaking those down a) makes you think through the process and b) gives you more data points to make decisions._
-- *NOTE: CLV & CAC calculations and ratios don't take into consideration, for example, the probability that the customer would have signed up anyway (e.g. they would have found the company via Google search, and signed up, in which case you are paying for a signup that you didn't have to)*
+- **NOTE: CLV & CAC calculations and ratios don't take into consideration, for example, the probability that the customer would have signed up anyway (e.g. they would have found the company via Google search, and signed up, in which case you are paying for a signup that you didn't have to)**
 
 ###references:
 http://andrewchen.co/when-does-paid-acquisition-work-for-saas-startups/

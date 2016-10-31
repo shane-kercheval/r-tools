@@ -18,13 +18,26 @@ expected_value <- function(probs=NULL, n_occur=NULL, benefits)
 - `n_occur`: vector of same length as `benefits` and represents the respective number of expected occurrences of each benefit
 
 ```R
-bayes <- function(p_b, p_a_given_b, p_a_given_nb)
+bayes_simple <- function(p_e, p_h, p_e_given_h)
+bayes_explicit <- function(p_h, p_e_given_h, p_e_given_nh)
 ```
-- Bayes' theorem: `P(B|A) = (P(B) * P(A|B)) / (P(B) * P(A|B)) + P(B') * P(A|B')))`, where:
-	- `P(B|A)` (probability of B given A has occurred) is what the function returns
-	- `P(A|B)` is the probability of A given B has occurred.
-	- `P(B')` is the probability of the complement of Event B
-	- `P(A|B')` is the probability of Event A, given that the complement to Event B has occurred.
+- equation reference: http://homepages.wmich.edu/~mcgrew/Bayes8.pdf
+- `H` is your hypothesis and `E` is your evidence
+	- `H` is also known as the posterior
+- `P(H|E)` (probability of B given A has occurred) is what the function returns
+- `p_e` is `P(E)` and is the probability of the evidence in general. Also known as the `prior`
+	- a.k.a base rate, the prevalence of E in the population as a whole.
+- `p_h` is `P(H)` is the probability of Event H (overall)
+- `p_nh` is `P(H')` is the probability of the complement of Event H
+- `p_e_given_h` is `P(E|H)` is the probability of A given B has occurred.
+	- this is also known as the `likelihood` of seeing the evidence when H is present.
+	- in prediction, this is the `sensitivity` of the test (a.k.a `true positive rate`)
+- `p_e_given_nh` is `P(E|H')` is the probability of Event E, given that the complement to Event H has occurred.
+	- in prediction, this would be the `false positive rate` (number of false_positives / total actual negatives)
+		e.g. the probability that you test positive even though you don't have the disease.
+- additional resources
+	- http://sphweb.bumc.bu.edu/otlt/MPH-Modules/BS/BS704_Probability/BS704_Probability6.html
+	- http://www.statsdirect.com/help/clinical_epidemiology/screening_test.htm
 
 
 

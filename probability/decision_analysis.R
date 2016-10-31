@@ -28,11 +28,21 @@ expected_value_conditional <- function(o_tp, o_tn, o_fp, o_fn, b_tp, b_tn, b_fp,
 
 }
 
-bayes <- function(p_b, p_a_given_b, p_a_given_nb)
+bayes_explicit <- function(p_h, p_e_given_h, p_e_given_nh)
 {
-	p_b_given_a = (p_b * p_a_given_b) / ((p_b * p_a_given_b) + ((1 - p_b) * p_a_given_nb))
-	return (p_b_given_a)
+	p_h_given_e = (p_h * p_e_given_h) / ((p_h * p_e_given_h) + ((1 - p_h) * p_e_given_nh))
+	return (p_h_given_e)
 }
+
+# estimate the probability of hypothesis (h) given evidence (e) p_h_given_e
+# P(E)=P(E|H)*P(H)  +  P(E|not H)*P(not H)|
+bayes_simple <- function(p_e, p_h, p_e_given_h)
+{
+	p_h_given_e = p_e_given_h * p_h / p_e
+	return (p_h_given_e)
+}
+
+
 
 library('FinCal')
 customer_lifetime_value <- function(retention_rate_monthly=NULL, retention_rate_annual=NULL,

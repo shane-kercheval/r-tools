@@ -69,26 +69,31 @@ test_that("probability: bayes", {
 
 	# Suppose you are living with a partner and come home from a business trip to discover a strange pair of underwear in your dresser drawer.
 	# You will probably ask yourself: what is the probability that your partner is cheating on you?
-	# probability of being cheated on (p_b a.k.a P(B)) given there exists strange panties (p_a P(A))
-	# P(A) (probability of panties) is clearly 1 (i.e. you see them) and irrelevant
+	# hypothesis (h) is that you are being cheated on
+	# evidence (e) are strange panties
+	# probability of being cheated on (p_h a.k.a P(H)) given there exists strange panties (p_a P(E))
+	# P(E) (probability of panties) is clearly 1 (i.e. you see them) and irrelevant
 
-	p_b_given_a = NULL # need to figure this out!!
+	p_h_given_e = NULL # need to figure this out!!
 
-	# P(A) is the probability that A is happening, even if you didn't know about B. (The general probability you're being cheated on)
+	# P(E) is the probability that A is happening, even if you didn't know about B. (The general probability you're being cheated on)
 	# This is like a 'base rate'... Studies have found, for instance, that around 4 percent of married partners cheat on their spouses in any given year, so we'll set that as our prior.
-	p_b = 0.04 # prob of being cheated on (base rate)
+	p_h = 0.04 # prob of being cheated on (base rate)
 
-	# P(A|B) is the probability that the underwear appeared because you are in fact being cheated on.
+	# P(E|H) is the probability that the underwear appeared because you are in fact being cheated on.
 	# If he's cheating on you, it's certainly easy enough to imagine how the panties got there. Then again, even (and perhaps especially) if he is cheating on you, might expect him to be more careful.
-	p_a_given_b = 0.5 # Let's say the probability of the panties appearing, conditional on him cheating on you, is 50 percent
+	p_e_given_h = 0.5 # Let's say the probability of the panties appearing, conditional on him cheating on you, is 50 percent
 
-	# P(A|B`) is the probability that you found the panties and he's not cheating on you.
+	# P(E|H`) is the probability that you found the panties and he's not cheating on you.
 	# Next, you want to estimate the probability that the underwear appears but he's not cheating on you - maybe they're a gift, or a platonic female friend stayed over and left them, or there was a luggage mix up.
 	# Silver says that you could put the probability at 5%
-	p_a_given_nb = 0.05 # probability that the underwear appears but he's not cheating on you
+	p_e_given_nh = 0.05 # probability that the underwear appears but he's not cheating on you
 
-	p_b_given_a = bayes(p_b, p_a_given_b, p_a_given_nb)
-	expect_equal(p_b_given_a, 0.2941176, tolerance=0.0000001) #29% chance of being cheated on.
+	p_h_given_e = bayes_explicit(p_h, p_e_given_h, p_e_given_nh)
+	expect_equal(p_h_given_e, 0.2941176, tolerance=0.0000001) #29% chance of being cheated on.
+
+	# https://www.math.hmc.edu/funfacts/ffiles/30002.6.shtml
+
 })
 
 test_that("probability: expected_value_paid_advertising:", {

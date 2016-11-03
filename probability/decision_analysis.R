@@ -43,6 +43,36 @@ bayes_simple <- function(p_e, p_h, p_e_given_h)
 }
 
 
+monthly_churn_to_annual <- function(monthly_churn_rate)
+{
+	return (1- (1 - monthly_churn_rate)^12)
+}
+
+annual_churn_to_monthly <- function(annual_churn_rate)
+{
+	return (1- (1 - annual_churn_rate)^(1/12))
+}
+
+monthly_retention_to_annual <- function(monthly_retention_rate)
+{
+	return (monthly_retention_rate^12)
+}
+
+annual_retention_to_monthly <- function(annual_retention_rate)
+{
+	return (annual_retention_rate^(1/12))
+}
+
+# time-frame is same as passed in (monthy churn gives lifespan in months, yearly, churn gives lifespan in years)
+churn_to_lifespan <- function(churn_rate)
+{
+	return (1 / churn_rate)
+}
+
+retention_to_lifespan <- function(retention_rate)
+{
+	return (1 / (1 - retention_rate))
+}
 
 library('FinCal')
 customer_lifetime_value <- function(retention_rate_monthly=NULL, retention_rate_annual=NULL,
@@ -92,14 +122,14 @@ customer_lifetime_value <- function(retention_rate_monthly=NULL, retention_rate_
 		{
 			stop("retention_rate_monthly or retention_rate_annual must be given")
 		}
-		clv_info$retention_rate_annual = retention_rate_monthly^(12)
+		clv_info$retention_rate_annual = monthly_retention_to_annual(retention_rate_monthly)
 	}
 	else
 	{
 		clv_info$retention_rate_annual = retention_rate_annual
 	}
 
-	clv_info$avg_customer_life_span = 1 / (1 - clv_info$retention_rate_annual) # ANNUAL! if not annual then you have to adjust your discount rate to monthly (and you can't just divide by 12, you have to do (e.g. in excel) RATE(12, 0, −1, 1.1) i.e. what is the monthly rate that gets you to 10% annual rate (i.e. 1.1), in this case it is 0.797414042890369% so 0.00797 monthly rate
+	clv_info$avg_customer_life_span = retention_to_lifespan(clv_info$retention_rate_annual) # ANNUAL! if not annual then you have to adjust your discount rate to monthly (and you can't just divide by 12, you have to do (e.g. in excel) RATE(12, 0, −1, 1.1) i.e. what is the monthly rate that gets you to 10% annual rate (i.e. 1.1), in this case it is 0.797414042890369% so 0.00797 monthly rate
 
 	if(is.null(avg_annual_customer_revenue))
 	{

@@ -192,3 +192,26 @@ test_that("probability: expected_value_paid_advertising:", {
 	expect_equal(clv_info$return_on_investment_pv, 1.169865, tolerance=0.000001)
 	expect_equal(clv_info$annualized_return_pv, 0.2136912, tolerance=0.000001)
 })
+
+test_that("probability: churn/rention conversion:", {
+	yearly_churn = 0.05 # 5%
+	yearly_retention = 1 - yearly_churn
+	monthly_retention = yearly_retention^(1/12)
+	monthly_churn = 1 - monthly_retention
+	lifespan_years = 1 / (1 - yearly_retention)
+	lifespan_months = 1 / (1 - monthly_retention)
+	expect_equal(yearly_churn + yearly_retention, 1)
+	expect_equal(monthly_churn + monthly_retention, 1)
+	#expect_equal(lifespan_months, lifespan_years*12) WHY?
+
+	expect_equal(monthly_churn_to_annual(monthly_churn), yearly_churn)
+	expect_equal(annual_churn_to_monthly(yearly_churn), monthly_churn)
+	expect_equal(monthly_retention_to_annual(monthly_retention), yearly_retention)
+	expect_equal(annual_retention_to_monthly(yearly_retention), monthly_retention)
+	
+	expect_equal(churn_to_lifespan(yearly_churn), lifespan_years)
+	expect_equal(churn_to_lifespan(monthly_churn), lifespan_months)
+	
+	expect_equal(retention_to_lifespan(yearly_retention), lifespan_years)
+	expect_equal(retention_to_lifespan(monthly_retention), lifespan_months)
+})

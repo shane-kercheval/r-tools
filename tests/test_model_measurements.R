@@ -45,7 +45,7 @@ test_that("general: model_measurements", {
 	expect_equal(model_error_rate, (model_false_neg + model_false_pos)/(model_true_neg+model_false_neg+model_false_pos+model_true_pos))
 	expect_equal(model_positive_predictive_value, model_true_pos / (model_true_pos + model_false_pos))
 	expect_equal(model_negative_predictive_value, model_true_neg / (model_false_neg + model_true_neg))
-	expect_equal(model_prevalence, model_true_pos + model_false_neg / model_total_observations)
+	expect_equal(model_prevalence, (model_true_pos + model_false_neg) / model_total_observations)
 
 	# use same tp/tn/fp/fn as above
 	model_quality = quality_of_model(conf_list)
@@ -57,7 +57,7 @@ test_that("general: model_measurements", {
 	expect_equal(model_quality$error_rate, (model_false_neg + model_false_pos)/(model_true_neg+model_false_neg+model_false_pos+model_true_pos))
 	expect_equal(model_quality$positive_predictive_value, model_true_pos / (model_true_pos + model_false_pos))
 	expect_equal(model_quality$negative_predictive_value, model_true_neg / (model_false_neg + model_true_neg))
-	expect_equal(model_quality$prevalence, model_true_pos + model_false_neg / model_total_observations)
+	expect_equal(model_quality$prevalence, (model_true_pos + model_false_neg) / model_total_observations)
 
 	expect_equal(model_quality$actual_pos_prob, (model_true_pos + model_false_neg) / model_total_observations)
 	expect_equal(model_quality$actual_neg_prob, (model_false_pos  + model_true_neg) / model_total_observations)
@@ -66,4 +66,7 @@ test_that("general: model_measurements", {
 	expect_equal(logistic_response_function(b=-1.5, b1=3, b2=-0.5, x1=1, x2=5), 0.2689414, tolerance=0.0001)
 	expect_equal(logit(b=-1.5, b1=3, b2=-0.5, x1=1, x2=5), -1)
 	expect_equal(odds(b=-1.5, b1=3, b2=-0.5, x1=1, x2=5), 0.3678794, tolerance=0.0001)
+	
+	#specificity is 1-false_positive_rate
+	expect_equal(specificity(conf_list), 1 - false_positive_rate(conf_list))
 })

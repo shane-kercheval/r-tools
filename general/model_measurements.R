@@ -2,7 +2,6 @@ confusion_list <- function(true_pos, true_neg, false_pos, false_neg)
 {
 	return (list(true_pos=true_pos, true_neg=true_neg, false_pos=false_pos, false_neg=false_neg, actual_pos = true_pos + false_neg, actual_neg = true_neg + false_pos, total=sum(true_pos, true_neg, false_pos, false_neg)))
 }
-
 sensitivity <- function(conf_list)
 {
 	return (conf_list$true_pos / conf_list$actual_pos)
@@ -38,7 +37,7 @@ negative_predictive_value <- function(conf_list)
 
 prevalence <- function(conf_list)
 {
-	return (conf_list$true_pos + conf_list$false_neg / conf_list$total)
+	return ((conf_list$true_pos + conf_list$false_neg) / conf_list$total)
 }
 
 expected_value_confusion <- function(true_pos, true_neg, false_pos, false_neg, tp_cost_benefit, tn_cost_benefit, fp_cost_benefit, fn_cost_benefit)

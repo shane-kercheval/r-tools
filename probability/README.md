@@ -2,20 +2,8 @@
 
 - probability related functions
 
-## decision_analysis.R
-
-- functions for aid in decisions
-
-```R
-expected_value <- function(probs=NULL, n_occur=NULL, benefits)
-```
-- calculates the expected value of benefits given the probability of each benefit occurring (`probs`) or the number of expected occurrences for each benefit (`n_occur`)
-	- for example, we can use expected_value to calculate *expected profit* for, say, marketing initiatives given certain conversion rates and expected benefits (e.g. customer lifetime value) and expected costs (e.g. CPC)
-- `benefits`: vector containing the values of expected benefits
-	- values can be positive or negative to represent benefits or costs, respectively
-- `probabilities`: vector of same length as `benefits` and represents respective probabilities that each benefit (or cost if negative value) will occur.
-	- vector should sum to 1
-- `n_occur`: vector of same length as `benefits` and represents the respective number of expected occurrences of each benefit
+## bayes.R
+- helper functions for `bayes rule`
 
 ```R
 bayes_simple <- function(p_e, p_h, p_e_given_h)
@@ -39,7 +27,52 @@ bayes_explicit <- function(p_h, p_e_given_h, p_e_given_nh)
 	- http://sphweb.bumc.bu.edu/otlt/MPH-Modules/BS/BS704_Probability/BS704_Probability6.html
 	- http://www.statsdirect.com/help/clinical_epidemiology/screening_test.htm
 
+```R
+bayes_prevalence <- function(prevalence, sensitivity, specificity=NULL, false_positive_rate=NULL)
+```
+- used for terminology common with medical tests
+	- `D` == disease
+	- `T` == positive test
+	- simple Bayes: `P(D|T) == P(T|D) * P(D) / P(T)`
+- Probability of disease given a positive test == `P(D|T)` == `(prevalence * sensitivity) / ((prevalence * sensitivity) + ((1-prevalence) * (1-specificity)))`
+	- _([source](http://ebp.uga.edu/courses/Chapter%204%20-%20Diagnosis%20I/4%20-%20Sensitivity%20and%20specificity.html))_
+- where
+	- `prevalence` == `P(disease in population)` == `P(H)` == probability of hypothesis in general (e.g disease in the relevant population) == `true_pos + false_neg / total_observations`
+	- `sensitivity` == `P(positive test | disease)` == `P(E|H)` == among patients with disease, the probability of a positive test == `true_pos / actual_pos`
+	- `specificity` == `true negative rate` == `P(not positive test | no disease)` == `P(not E | not H)` == among patients without disease (i.e. healthy patients), the probability of a negative test == `true_neg / actual_neg`
+		- `specificity` is `1 - false positive rate`
+	- `false_positive_rate` == `P(E | not H)` == among patients without disease, the probability of a positive test
+		- `false_positive_rate` is `1 - specificity`
+	- if `specificity` is provided it is simply converted to `false positive rate` == `[ P(not E | not H) == 1 - P(E | not H)]`
+- provide either `specificity` or `false_positive_rate`
+- resources
+	- https://www.math.hmc.edu/funfacts/ffiles/30002.6.shtml
+	- http://ebp.uga.edu/courses/Chapter%204%20-%20Diagnosis%20I/4%20-%20Sensitivity%20and%20specificity.html
 
+```R
+bayes_confusion <- function(conf_list)
+```
+- takes a confusion matrix in the form of a list, returned by `confusion_list` ([/general/README.md](../general/README.md))
+
+```R
+prob_e <- function(p_h, p_e_given_h, p_e_given_nh)
+```
+- simple Bayes rule is `P(H|E)= P(E|H) * P(H) / P(E)`, but if P(E) is unknown, you can use this method which does `P(E)=P(E|H)P(H)+P(E|not H)P(not H)`
+
+## decision_analysis.R
+
+- functions for aid in decisions
+
+```R
+expected_value <- function(probs=NULL, n_occur=NULL, benefits)
+```
+- calculates the expected value of benefits given the probability of each benefit occurring (`probs`) or the number of expected occurrences for each benefit (`n_occur`)
+	- for example, we can use expected_value to calculate *expected profit* for, say, marketing initiatives given certain conversion rates and expected benefits (e.g. customer lifetime value) and expected costs (e.g. CPC)
+- `benefits`: vector containing the values of expected benefits
+	- values can be positive or negative to represent benefits or costs, respectively
+- `probabilities`: vector of same length as `benefits` and represents respective probabilities that each benefit (or cost if negative value) will occur.
+	- vector should sum to 1
+- `n_occur`: vector of same length as `benefits` and represents the respective number of expected occurrences of each benefit
 
 ```R
 customer_lifetime_value <- function(retention_rate_monthly=NULL, retention_rate_annual=NULL, avg_monthly_customer_revenue=NULL, avg_annual_customer_revenue=NULL, contribution_margin_ratio, acquisition_conversion_rates_per_stage=NULL, acquisition_conversion_rate=NULL, cost_per_event=NULL, cost_of_customer_acquisition=NULL, discount_rate=.10)

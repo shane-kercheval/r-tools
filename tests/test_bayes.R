@@ -37,15 +37,35 @@ test_that("probability: bayes_explicit", {
 
 })
 
-test_that("probability: bayes_prevalence", {
+test_that("probability: bayes_confusion, bayes_simple", {
+	model_true_neg = 1820
+	model_false_neg = 10
+	model_false_pos = 180
+	model_true_pos = 20
+	conf_list=confusion_list(true_pos=model_true_pos, true_neg=model_true_neg, false_pos=model_false_pos, false_neg=model_false_neg)
 
-# You are running a mammography screening program in a van that travels around your health district. A 45 year old woman has a mammogram. The study is interpreted as "suspicious for malignancy" by the radiologist. The patient asks you: "Does this mean I have cancer?", and you (correctly) answer "No, we have to do further testing." She then asks, "OK, I understand that the mammogram isn’t the final answer, but given what we know now, what are the chances that I have breast cancer?".  Assume that the overall risk of breast cancer in any 45 year old woman, regardless of mammogram result, is 0.1% or one in a thousand. Assume also that mammography is 80% sensitive and 95% specific. What is the probability that this woman actually has breast cancer?
-# prevalence or pretest probability = probability of disease in the relevant population (i.e. 5% of patients presenting with cough have pneumonia)
-# sensitivity = among patients with disease, the probability of a positive test
-# specificity = among patients without disease (i.e. healthy patients), the probability of a negative test
-# post-test probability = probability of disease given a positive or negative test. Also called the "conditional probability", as in "Probability of disease conditional on the patient having a positive test."
-prevalence=0.001
-specificity = 0.95
-sensitivity = 0.8
-bayes_prevalence()
+	bayes_c = bayes_confusion(conf_list)
+	bayes_s1 = bayes_simple(p_e=(conf_list$false_pos + conf_list$true_pos) / conf_list$total, p_h=prevalence(conf_list), p_e_given_h=sensitivity(conf_list))
+	bayes_s2 = bayes_simple(p_e=prob_e(p_h=prevalence(conf_list), p_e_given_h=sensitivity(conf_list), p_e_given_nh=false_positive_rate(conf_list)), p_h=prevalence(conf_list), p_e_given_h=sensitivity(conf_list))
+
+	# these three bayes methods are equal
+	expect_equal(bayes_c, bayes_s1, bayes_s2)
+	# which means that
+	expect_equal(prob_e(p_h=prevalence(conf_list), p_e_given_h=sensitivity(conf_list), p_e_given_nh=false_positive_rate(conf_list)), (conf_list$false_pos + conf_list$true_pos) / conf_list$total)
+
+	#specificity is 1-false_positive_rate
+	expect_equal(specificity(conf_list), 1 - false_positive_rate(conf_list))
+})
+
+test_that("probability: bayes_prevalence", {
+	# You are running a mammography screening program in a van that travels around your health district. A 45 year old woman has a mammogram. The study is interpreted as "suspicious for malignancy" by the radiologist. The patient asks you: "Does this mean I have cancer?", and you (correctly) answer "No, we have to do further testing." She then asks, "OK, I understand that the mammogram isn’t the final answer, but given what we know now, what are the chances that I have breast cancer?".  Assume that the overall risk of breast cancer in any 45 year old woman, regardless of mammogram result, is 0.1% or one in a thousand. Assume also that mammography is 80% sensitive and 95% specific. What is the probability that this woman actually has breast cancer?
+	# prevalence or pretest probability = probability of disease in the relevant population (i.e. 5% of patients presenting with cough have pneumonia)
+	# sensitivity = among patients with disease, the probability of a positive test
+	# specificity = among patients without disease (i.e. healthy patients), the probability of a negative test
+	# post-test probability = probability of disease given a positive or negative test. Also called the "conditional probability", as in "Probability of disease conditional on the patient having a positive test."
+	prevalence=0.001
+	specificity = 0.95
+	sensitivity = 0.8
+	bayes_p = bayes_prevalence(prevalence=prevalence, sensitivity=sensitivity, specificity=specificity)
+	expect_equal(bayes_p, 0.01576355)
 })

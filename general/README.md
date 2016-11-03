@@ -89,47 +89,61 @@ add_date_columns <- function(data_frame, date_column)
 	- e.g. https://en.wikipedia.org/wiki/Sensitivity_and_specificity
 
 ```R
-sensitivity <- function(true_positives, total_actual_positives)
+confusion_list <- function(true_pos, true_neg, false_pos, false_neg)
+```
+- wrapper for `confusion matrix` (but matrix in R is a specific type, so I use 'list')
+- `conf_list` is list returned by `confusion_list` function
+
+```R
+sensitivity <- function(conf_list)
 ```
 - a.k.a `true positive rate`
 - number of positives predicted correctly (true positives) out of total number of positives
+- `conf_list` is list returned by `confusion_list` function
 
 ```R
-specificity <- function(true_negatives, total_actual_negatives)
+specificity <- function(conf_list)
 ```
 - a.k.a `true negative rate`
 - number of negatives predicted correctly (true negatives) out of total number of negatives
+- `conf_list` is list returned by `confusion_list` function
 
 ```R
-false_negative_rate <- function(false_negatives, total_actual_positives)
+false_negative_rate <- function(conf_list)
 ```
 - number of negatives predicted that were actually positive, out of total number of positives
+- `conf_list` is list returned by `confusion_list` function
 
 ```R
-false_positive_rate <- function(false_positives, total_actual_negatives)
+false_positive_rate <- function(conf_list)
 ```
 - number of positives predicted that were actually negative out of total number of negatives
+- `conf_list` is list returned by `confusion_list` function
 
 ```R
-accuracy <- function(true_negatives, true_positives, total_observations)
+accuracy <- function(conf_list)
 ```
 - number of correct predictions out of total number of observations
+- `conf_list` is list returned by `confusion_list` function
 
 ```R
-error_rate <- function(false_positives, false_negatives, total_observations)
+error_rate <- function(conf_list)
 ```
 - number of incorrect predictions out of total number of observations
 - however, because not all errors are treated the same (e.g. false negative for cancer detection is worse than false positive), this number shouldn't be looked at alone.
+- `conf_list` is list returned by `confusion_list` function
 
 ```R
-positive_predictive_value <- function(true_positives, false_positives)
+positive_predictive_value <- function(conf_list)
 ```
 - number of positives predicted correctly out of total number positive predictions
+- `conf_list` is list returned by `confusion_list` function
 
 ```R
-negative_predictive_value <- function(true_negatives, false_negatives)
+negative_predictive_value <- function(conf_list)
 ```
 - number of negatives predicted correctly out of total number of negative predictions
+- `conf_list` is list returned by `confusion_list` function
 
 ```R
 quality_of_model_from_confusion <- function(confusion_matrix)
@@ -146,8 +160,9 @@ quality_of_model_from_confusion <- function(confusion_matrix)
 	- e.g. logistic regression predicting (detecting) fraud. A positive would be a predicted or actual fraud occurance. So a `false positive` would be a case when we *predict* a positive (i.e. fraud), but the *actual* case was not fraud.
 
 ```R
-quality_of_model <- function(true_positives, true_negatives, false_positives, false_negatives)
+quality_of_model <- function(conf_list)
 ```
+- `conf_list` is list returned by `confusion_list` function
 - returns a dataframe that contains the following columns
 	- `accuracy`
 	- `error_rate`

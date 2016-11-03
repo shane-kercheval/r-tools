@@ -18,7 +18,8 @@ expected_value <- function(probs=NULL, n_occur=NULL, benefits)
 # same value as expected-value
 expected_value_conditional <- function(o_tp, o_tn, o_fp, o_fn, b_tp, b_tn, b_fp, b_fn)
 {
-	qom = quality_of_model(true_pos=o_tp, true_neg=o_tn, false_pos=o_fp, false_neg=o_fn)
+	conf_list = confusion_list(true_pos=o_tp, true_neg=o_tn, false_pos=o_fp, false_neg=o_fn)
+	qom = quality_of_model(conf_list)
 
 	# this equation corresponds to equation in Data Science for Business (Provost, Fawcett, kindle loc 4424)
 	# sensitivity == TRUE POSITIVE RATE
@@ -27,21 +28,6 @@ expected_value_conditional <- function(o_tp, o_tn, o_fp, o_fn, b_tp, b_tn, b_fp,
 			(qom$actual_neg_prob * (qom$specificity * b_tn + qom$false_positive_rate * b_fp)))
 
 }
-
-bayes_explicit <- function(p_h, p_e_given_h, p_e_given_nh)
-{
-	p_h_given_e = (p_h * p_e_given_h) / ((p_h * p_e_given_h) + ((1 - p_h) * p_e_given_nh))
-	return (p_h_given_e)
-}
-
-# estimate the probability of hypothesis (h) given evidence (e) p_h_given_e
-# P(E)=P(E|H)*P(H)  +  P(E|not H)*P(not H)|
-bayes_simple <- function(p_e, p_h, p_e_given_h)
-{
-	p_h_given_e = p_e_given_h * p_h / p_e
-	return (p_h_given_e)
-}
-
 
 monthly_churn_to_annual <- function(monthly_churn_rate)
 {

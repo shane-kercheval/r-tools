@@ -64,38 +64,6 @@ test_that("probability: expected_value", {
 	# expected_value & expected_value_conditional give the same value.
 })
 
-test_that("probability: bayes", {
-	# example from Signal v. Noise (Nate Silver) http://www.businessinsider.com/bayess-theorem-nate-silver-2012-9
-
-	# Suppose you are living with a partner and come home from a business trip to discover a strange pair of underwear in your dresser drawer.
-	# You will probably ask yourself: what is the probability that your partner is cheating on you?
-	# hypothesis (h) is that you are being cheated on
-	# evidence (e) are strange panties
-	# probability of being cheated on (p_h a.k.a P(H)) given there exists strange panties (p_a P(E))
-	# P(E) (probability of panties) is clearly 1 (i.e. you see them) and irrelevant
-
-	p_h_given_e = NULL # need to figure this out!!
-
-	# P(E) is the probability that A is happening, even if you didn't know about B. (The general probability you're being cheated on)
-	# This is like a 'base rate'... Studies have found, for instance, that around 4 percent of married partners cheat on their spouses in any given year, so we'll set that as our prior.
-	p_h = 0.04 # prob of being cheated on (base rate)
-
-	# P(E|H) is the probability that the underwear appeared because you are in fact being cheated on.
-	# If he's cheating on you, it's certainly easy enough to imagine how the panties got there. Then again, even (and perhaps especially) if he is cheating on you, might expect him to be more careful.
-	p_e_given_h = 0.5 # Let's say the probability of the panties appearing, conditional on him cheating on you, is 50 percent
-
-	# P(E|H`) is the probability that you found the panties and he's not cheating on you.
-	# Next, you want to estimate the probability that the underwear appears but he's not cheating on you - maybe they're a gift, or a platonic female friend stayed over and left them, or there was a luggage mix up.
-	# Silver says that you could put the probability at 5%
-	p_e_given_nh = 0.05 # probability that the underwear appears but he's not cheating on you
-
-	p_h_given_e = bayes_explicit(p_h, p_e_given_h, p_e_given_nh)
-	expect_equal(p_h_given_e, 0.2941176, tolerance=0.0000001) #29% chance of being cheated on.
-
-	# https://www.math.hmc.edu/funfacts/ffiles/30002.6.shtml
-
-})
-
 test_that("probability: expected_value_paid_advertising:", {
 	# http://andrewchen.co/when-does-paid-acquisition-work-for-saas-startups/
 	# Paid user acquisition works for you when the following proves true:
@@ -208,10 +176,10 @@ test_that("probability: churn/rention conversion:", {
 	expect_equal(annual_churn_to_monthly(yearly_churn), monthly_churn)
 	expect_equal(monthly_retention_to_annual(monthly_retention), yearly_retention)
 	expect_equal(annual_retention_to_monthly(yearly_retention), monthly_retention)
-	
+
 	expect_equal(churn_to_lifespan(yearly_churn), lifespan_years)
 	expect_equal(churn_to_lifespan(monthly_churn), lifespan_months)
-	
+
 	expect_equal(retention_to_lifespan(yearly_retention), lifespan_years)
 	expect_equal(retention_to_lifespan(monthly_retention), lifespan_months)
 })

@@ -1,34 +1,44 @@
-sensitivity <- function(true_pos, total_actual_pos)
+confusion_list <- function(true_pos, true_neg, false_pos, false_neg)
 {
-	return (true_pos / total_actual_pos)
+	return (list(true_pos=true_pos, true_neg=true_neg, false_pos=false_pos, false_neg=false_neg, actual_pos = true_pos + false_neg, actual_neg = true_neg + false_pos, total=sum(true_pos, true_neg, false_pos, false_neg)))
 }
-specificity <- function(true_neg, total_actual_neg)
+
+sensitivity <- function(conf_list)
 {
-	return (true_neg / total_actual_neg)
+	return (conf_list$true_pos / conf_list$actual_pos)
 }
-false_negative_rate <- function(false_neg, total_actual_pos)
+specificity <- function(conf_list)
 {
-	return (false_neg / total_actual_pos)
+	return (conf_list$true_neg / conf_list$actual_neg)
 }
-false_positive_rate <- function(false_pos, total_actual_neg)
+false_negative_rate <- function(conf_list)
 {
-	return (false_pos / total_actual_neg)
+	return (conf_list$false_neg / conf_list$actual_pos)
 }
-accuracy <- function(true_neg, true_pos, total_observations)
+false_positive_rate <- function(conf_list)
 {
-	return ((true_neg + true_pos) / total_observations)
+	return (conf_list$false_pos / conf_list$actual_neg)
 }
-error_rate <- function(false_pos, false_neg, total_observations)
+accuracy <- function(conf_list)
 {
-	return ((false_pos + false_neg) / total_observations)
+	return ((conf_list$true_neg + conf_list$true_pos) / conf_list$total)
 }
-positive_predictive_value <- function(true_pos, false_pos)
+error_rate <- function(conf_list)
 {
-	return (true_pos / (true_pos + false_pos))
+	return ((conf_list$false_pos + conf_list$false_neg) / conf_list$total)
 }
-negative_predictive_value <- function(true_neg, false_neg)
+positive_predictive_value <- function(conf_list)
 {
-	return (true_neg / (true_neg + false_neg))
+	return (conf_list$true_pos / (conf_list$true_pos + conf_list$false_pos))
+}
+negative_predictive_value <- function(conf_list)
+{
+	return (conf_list$true_neg / (conf_list$true_neg + conf_list$false_neg))
+}
+
+prevalence <- function(conf_list)
+{
+	return (conf_list$true_pos + conf_list$false_neg / conf_list$total)
 }
 
 expected_value_confusion <- function(true_pos, true_neg, false_pos, false_neg, tp_cost_benefit, tn_cost_benefit, fp_cost_benefit, fn_cost_benefit)
@@ -51,24 +61,21 @@ quality_of_model_from_confusion <- function(confusion_matrix)
 	return (quality_of_model(true_pos=true_pos, true_neg=true_neg, false_pos=false_pos, false_neg=false_neg))
 }
 
-quality_of_model <- function(true_pos, true_neg, false_pos, false_neg)
+quality_of_model <- function(conf_list)
 {
-	total_observations = true_pos+true_neg+false_pos+false_neg
-	total_actual_pos = true_pos + false_neg
-	total_actual_neg = true_neg + false_pos
-
 	return (list(
-		"accuracy" = accuracy(true_neg=true_neg, true_pos=true_pos, total_observations=total_observations),
-		"error_rate" = error_rate(false_pos=false_pos, false_neg=false_neg, total_observations=total_observations),
-		"positive_predictive_value" = positive_predictive_value(true_pos=true_pos, false_pos=false_pos),
-		"negative_predictive_value" = negative_predictive_value(true_neg=true_neg, false_neg=false_neg),
-		"false_positive_rate" = false_positive_rate(false_pos=false_pos, total_actual_neg=total_actual_neg),
-		"false_negative_rate" = false_negative_rate(false_neg=false_neg, total_actual_pos=total_actual_pos),
-		"sensitivity" = sensitivity(true_pos=true_pos, total_actual_pos=total_actual_pos),
-		"specificity" = specificity(true_neg=true_neg, total_actual_neg=total_actual_neg),
-		'actual_pos_prob' = total_actual_pos / total_observations,
-		'actual_neg_prob' = total_actual_neg / total_observations,
-		"total_observations" = total_observations
+		"accuracy" = accuracy(conf_list),
+		"error_rate" = error_rate(conf_list),
+		"positive_predictive_value" = positive_predictive_value(conf_list),
+		"negative_predictive_value" = negative_predictive_value(conf_list),
+		"false_positive_rate" = false_positive_rate(conf_list),
+		"false_negative_rate" = false_negative_rate(conf_list),
+		"sensitivity" = sensitivity(conf_list),
+		"specificity" = specificity(conf_list),
+		"prevalence" = prevalence(conf_list),
+		'actual_pos_prob' = conf_list$actual_pos / conf_list$total,
+		'actual_neg_prob' = conf_list$actual_neg / conf_list$total,
+		"total_observations" = conf_list$total
 		))
 }
 

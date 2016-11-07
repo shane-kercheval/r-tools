@@ -68,4 +68,13 @@ test_that("probability: bayes_prevalence", {
 	sensitivity = 0.8
 	bayes_p = bayes_prevalence(prevalence=prevalence, sensitivity=sensitivity, specificity=specificity)
 	expect_equal(bayes_p, 0.01576355)
+	
+	# https://aeon.co/essays/it-s-time-for-science-to-abandon-the-term-statistically-significant?utm_campaign=Revue%20newsletter&utm_medium=Newsletter&utm_source=revue
+	# 86 per cent, not 5 per cent, of all positive tests are false positives. So only 14 per cent of positive tests are correct. This happens because most people don’t have the condition, and so the false positives from these people (5 per cent of 99 per cent of the people), outweigh the number of true positives that arise from the much smaller number of people who have the condition (80 per cent of 1 per cent of the people, if we assume 80 per cent of people with the disease are detected successfully).
+	# one thing this article doesn't consider is the fact that a false negative is much works (i.e. being told you don't have the disease if you actually do i.e you could die from not getting treatment) than a false positive, so I assume the test is optimized for false negatives rather than false positives. So to say the test is 'appallingly bad' is a little misleading. 
+	prevalence=0.01
+	specificity = 0.95
+	sensitivity = 0.80
+	bayes_p = bayes_prevalence(prevalence=prevalence, sensitivity=sensitivity, specificity=specificity)
+	expect_equal(round(bayes_p,7), 0.1391304)
 })

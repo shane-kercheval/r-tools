@@ -37,8 +37,8 @@ bayes_prevalence <- function(prevalence, sensitivity, specificity=NULL, false_po
 - Probability of disease given a positive test == `P(D|T)` == `(prevalence * sensitivity) / ((prevalence * sensitivity) + ((1-prevalence) * (1-specificity)))`
 	- _([source](http://ebp.uga.edu/courses/Chapter%204%20-%20Diagnosis%20I/4%20-%20Sensitivity%20and%20specificity.html))_
 - where
-	- `prevalence` == `P(disease in population)` == `P(H)` == probability of hypothesis in general (e.g disease in the relevant population) == `true_pos + false_neg / total_observations`
-	- `sensitivity` == `P(positive test | disease)` == `P(E|H)` == among patients with disease, the probability of a positive test == `true_pos / actual_pos`
+	- `prevalence` == `P(disease in population)` == `P(D)` == probability of hypothesis in general (e.g disease in the relevant population) == `true_pos + false_neg / total_observations`
+	- `sensitivity` == `P(positive test | disease)` == `P(T|D)` == among patients with disease, the probability of a positive test == `true_pos / actual_pos`
 	- `specificity` == `true negative rate` == `P(not positive test | no disease)` == `P(not E | not H)` == among patients without disease (i.e. healthy patients), the probability of a negative test == `true_neg / actual_neg`
 		- `specificity` is `1 - false positive rate`
 	- `false_positive_rate` == `P(E | not H)` == among patients without disease, the probability of a positive test

@@ -24,6 +24,20 @@ test_that("general: model_measurements", {
 	expect_equal(conf_list$actual_neg, model_total_actual_neg)
 	expect_equal(conf_list$total, sum(model_true_pos, model_true_neg, model_false_pos, model_false_neg))
 
+	# |                  | Predicted Negative | Predicted Positive |
+	# | ---------------- | ------------------ | ------------------ |
+	# | Actual Negative  | True Negative      | False Positive     |
+	# | Actual Positive  | False Negative     | True Positive      |
+	confusion_matrix = matrix(c(model_true_neg, model_false_pos, model_false_neg, model_true_pos), nrow=2, ncol=2, byrow = TRUE)
+	conf_list = confusion_list_from_confusion(confusion_matrix)
+	expect_equal(conf_list$true_pos, model_true_pos)
+	expect_equal(conf_list$true_neg, model_true_neg)
+	expect_equal(conf_list$false_pos, model_false_pos)
+	expect_equal(conf_list$false_neg, model_false_neg)
+	expect_equal(conf_list$actual_pos, model_total_actual_pos)
+	expect_equal(conf_list$actual_neg, model_total_actual_neg)
+	expect_equal(conf_list$total, sum(model_true_pos, model_true_neg, model_false_pos, model_false_neg))
+
 	model_total_observations = model_total_actual_pos + model_total_actual_neg
 	expect_equal(model_total_actual_pos, 30)
 	expect_equal(model_total_actual_neg, 2000)
@@ -66,7 +80,7 @@ test_that("general: model_measurements", {
 	expect_equal(logistic_response_function(b=-1.5, b1=3, b2=-0.5, x1=1, x2=5), 0.2689414, tolerance=0.0001)
 	expect_equal(logit(b=-1.5, b1=3, b2=-0.5, x1=1, x2=5), -1)
 	expect_equal(odds(b=-1.5, b1=3, b2=-0.5, x1=1, x2=5), 0.3678794, tolerance=0.0001)
-	
+
 	#specificity is 1-false_positive_rate
 	expect_equal(specificity(conf_list), 1 - false_positive_rate(conf_list))
 })

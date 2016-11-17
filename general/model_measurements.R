@@ -2,6 +2,19 @@ confusion_list <- function(true_pos, true_neg, false_pos, false_neg)
 {
 	return (list(true_pos=true_pos, true_neg=true_neg, false_pos=false_pos, false_neg=false_neg, actual_pos = true_pos + false_neg, actual_neg = true_neg + false_pos, total=sum(true_pos, true_neg, false_pos, false_neg)))
 }
+confusion_list_from_confusion <- function(confusion_matrix)
+{
+	# |                  | Predicted Negative | Predicted Positive |
+	# | ---------------- | ------------------ | ------------------ |
+	# | Actual Negative  | True Negative      | False Positive     |
+	# | Actual Positive  | False Negative     | True Positive      |
+	true_pos = confusion_matrix[2, 2] # actual, predicted
+	true_neg = confusion_matrix[1, 1]
+	false_pos = confusion_matrix[1, 2] # column first; predicted true, but actually was false
+	false_neg = confusion_matrix[2, 1] # column first; predicted false, but actually was true
+
+	return (confusion_list(true_pos=true_pos, true_neg=true_neg, false_pos=false_pos, false_neg=false_neg))
+}
 sensitivity <- function(conf_list)
 {
 	return (conf_list$true_pos / conf_list$actual_pos)
@@ -44,20 +57,6 @@ expected_value_confusion <- function(true_pos, true_neg, false_pos, false_neg, t
 {
 	return (expected_value(	n_occur=c(true_pos, true_neg, false_pos, false_neg),
 							benefits=c(tp_cost_benefit, tn_cost_benefit, fp_cost_benefit, fn_cost_benefit)))
-}
-
-quality_of_model_from_confusion <- function(confusion_matrix)
-{
-	# |                  | Predicted Negative | Predicted Positive |
-	# | ---------------- | ------------------ | ------------------ |
-	# | Actual Negative  | True Negative      | False Positive     |
-	# | Actual Positive  | False Negative     | True Positive      |
-	true_pos = confusion_matrix[2, 2] # actual, predicted
-	true_neg = confusion_matrix[1, 1]
-	false_pos = confusion_matrix[1, 2] # column first; predicted true, but actually was false
-	false_neg = confusion_matrix[2, 1] # column first; predicted false, but actually was true
-
-	return (quality_of_model(true_pos=true_pos, true_neg=true_neg, false_pos=false_pos, false_neg=false_neg))
 }
 
 quality_of_model <- function(conf_list)

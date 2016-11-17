@@ -95,6 +95,20 @@ confusion_list <- function(true_pos, true_neg, false_pos, false_neg)
 - `conf_list` is list returned by `confusion_list` function
 
 ```R
+confusion_list_from_confusion <- function(confusion_matrix)
+```
+- takes a confusion matrix (`confusion_matrix`) with predictions as columns and actuals as rows (negatives first, positives second) and returns a `conf_list` list (from `confusion_list` function)
+- confusion matrix in following format
+
+|                  | Predicted Negative | Predicted Positive |
+| ---------------- | ------------------ | ------------------ |
+| Actual Negative  | True Negative      | False Positive     |
+| Actual Positive  | False Negative     | True Positive      |
+
+- a `positive` can be thought of as a `detection`, while a `negative` is a `non-detection`
+	- e.g. logistic regression predicting (detecting) fraud. A positive would be a predicted or actual fraud occurance. So a `false positive` would be a case when we *predict* a positive (i.e. fraud), but the *actual* case was not fraud.
+- `confusion_matrix` can be constructed with `table(actuals, predictions)`
+```R
 sensitivity <- function(conf_list)
 ```
 - a.k.a `true positive rate`
@@ -144,20 +158,6 @@ negative_predictive_value <- function(conf_list)
 ```
 - number of negatives predicted correctly out of total number of negative predictions
 - `conf_list` is list returned by `confusion_list` function
-
-```R
-quality_of_model_from_confusion <- function(confusion_matrix)
-```
-- takes a confusion matrix with predictions as columns and actuals as rows (negatives first, positives second) and returns a `quality_of_model` list
-- confusion matrix in following format
-
-|                  | Predicted Negative | Predicted Positive |
-| ---------------- | ------------------ | ------------------ |
-| Actual Negative  | True Negative      | False Positive     |
-| Actual Positive  | False Negative     | True Positive      |
-
-- a `positive` can be thought of as a `detection`, while a `negative` is a `non-detection`
-	- e.g. logistic regression predicting (detecting) fraud. A positive would be a predicted or actual fraud occurance. So a `false positive` would be a case when we *predict* a positive (i.e. fraud), but the *actual* case was not fraud.
 
 ```R
 quality_of_model <- function(conf_list)
@@ -214,6 +214,13 @@ get_logical_dataset <- function(data_frame, named_column=NULL)
 get_numeric_logical_dataset <- function(data_frame, named_column=NULL)
 ```
 - returns the numeric and logical columns, as well as the column `named_column` (most likely a row unique identifier)
+
+```R
+normalize <- function(x)
+```
+- min/max normalization that transforms `x` such that all of the values of `x` fall in a range between `0` and `1`
+- `x` is a numeric vector
+- WARNING: extreme values will make the data compress towards the center, consider `z-score standardization`
 
 ```R
 vector_match_regex <- function(the_vector, pattern_to_find, pattern_to_extract=NULL, substitue_find_with=NULL)

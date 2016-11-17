@@ -53,3 +53,8 @@ vector_match_regex <- function(the_vector, pattern_to_find, pattern_to_extract=N
 
 	return (list(indexes_of_match, matches))
 }
+
+normalize <- function(x)
+{
+	return ((x - min(x)) / (max(x) - min(x)))
+}

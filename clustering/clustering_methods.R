@@ -144,7 +144,7 @@ hierarchical_get_clusters_mean_st_dev <- function(hierarchical_results)
 }
 
 hierarchical_get_clusters_means <- function(hierarchical_results)
-{
+{# NOTE: an improvement would be to get the cluster means by (somehow) incorporating a weighted average, rather than straight average. Perhaps each cluster in a particular cluster analysis is weighted by how many rows/elements are in that particular cluster (divided by the total rows/elements).
 	# each top level list in hierarchical_results is 1 cluster analysis (e.g. [[1]] is analysis with 2 clusters, [[2]] is analysis with 3 clusters, etc.)
 	# next level is particular cluster for cluster analysis, so [[1]][[1]] might be the first cluster (cluster 1) of the analysis done with 2 clusters. Each row in [[1]][[1]] will represent a row of data in the dataset (standarded with z-scores) that has been assigned to that particular cluster.
 	cluster_means = hierarchical_results %>% map(~ map(., ~ map_dbl(., mean))) # This will measure the variance (standard deviation) for each column's data for each cluster for each cluster analysis. So [[1]] represents the first cluster analysis and [[1]][[1]] represents the first cluster of the first cluster analysis. It will have the columns from the dataset with the standard deviation among all the data in that cluster for each column

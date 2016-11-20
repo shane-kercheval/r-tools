@@ -55,7 +55,12 @@ test_that("probability: bayes_confusion, bayes_simple", {
 
 	#specificity is 1-false_positive_rate
 	expect_equal(specificity(conf_list), 1 - false_positive_rate(conf_list))
+	
+	# bayes (10%) seems to be the same as `positive predictive value` which makes sense because P(D|T) (i.e. probability of having the disease given a positive test result) is the same as saying TP/(TP+FP) (i.e total `correct` positive predictions divided by total positivie predictions i.e. test results)
+	model_quality = quality_of_model(conf_list)
+	expect_equal(model_quality$positive_predictive_value, bayes_c)
 })
+	
 
 test_that("probability: bayes_prevalence", {
 	# You are running a mammography screening program in a van that travels around your health district. A 45 year old woman has a mammogram. The study is interpreted as "suspicious for malignancy" by the radiologist. The patient asks you: "Does this mean I have cancer?", and you (correctly) answer "No, we have to do further testing." She then asks, "OK, I understand that the mammogram isn’t the final answer, but given what we know now, what are the chances that I have breast cancer?".  Assume that the overall risk of breast cancer in any 45 year old woman, regardless of mammogram result, is 0.1% or one in a thousand. Assume also that mammography is 80% sensitive and 95% specific. What is the probability that this woman actually has breast cancer?

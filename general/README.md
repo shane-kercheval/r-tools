@@ -113,8 +113,39 @@ confusion_list_from_confusion <- function(confusion_matrix)
 sensitivity <- function(conf_list)
 ```
 - a.k.a `true positive rate`
+- measures the proportion of positive examples that were correctly classified
 - number of positives predicted correctly (true positives) out of total number of positives
 - `conf_list` is list returned by `confusion_list` function
+
+
+> NOTE:
+>
+> `sensitivity` a.k.a `true positive rate` a.k.a `recall`, `positive_predictive_value` a.k.a `precision` a.k.a `Posterior Probability` of Bayes theorem, and `prevalence` can all be confused against each other.
+>
+> `prevalence` is number of actual positive _cases_ (`true positives` + `false negatives`) out of *total population*
+> - e.g. how many people actually have the disease out of the total population
+>
+> `sensitivity` is number of correct positive predictions (`true positives`) out of all *_actual_* positives (`true positives` + `false negatives`)
+> - e.g. correct positive tests out of everyone that _actually_ has the disease.
+>
+> `positive_predictive_value` is number of correct positive predictions (`true positives`) out of all *_predicted_* positives (`true positives` + `false positives`)
+> - e.g. correct positive tests out of everyone that we _predicted_ has the disease.
+> - e.g. when a model predicts the positive class, how often is it correct?
+> actually, same as posterior probability of Bayes theorem `P(D|T)` (see [probability/README.md](../probability/README.md))
+>	- the probability of having a Disease (`D`) given a positive test result (`T`) is the same as saying `P(actually being positive | positive result)` i.e positives predicted correctly out of total positive predictions
+>
+> |                  | Predicted Negative | Predicted Positive |
+> | ---------------- | ------------------ | ------------------ |
+> | Actual Negative  | True Negative = 905| False Positive=10  |
+> | Actual Positive  | False Negative = 5 | True Positive=80  |
+>
+> `prevalence` == `TP` + `FN` / `TOTAL` == 80 + 5 / 1000 == `0.085` (e.g. `8.5%` of population has disease)
+>
+> `positive_predictive_value` i.e. `precision` == `TP` / (`TP` + `FP`) == 80 / (80 + 10) == `0.8888889` (e.g. P(D|T) == `89%; if you get a positive test result back, you have an `89%` chance of actually having the disease)
+>
+> `sensitivity` i.e. `recall` == `TP` / (`TP` + `FN`) == 80 / (80 + 5) == `0.9411765` (e.g. `94%` of people who have the disease will be tested positive)
+>
+> often people who receive a positive test result mistake sensitivity with positive predictive value (which is often lower). (see [probability/README.md](../probability/README.md) for more info on relationship)
 
 ```R
 specificity <- function(conf_list)
@@ -138,44 +169,87 @@ false_positive_rate <- function(conf_list)
 ```R
 accuracy <- function(conf_list)
 ```
+- sometimes called the `success rate`
 - number of correct predictions out of total number of observations
 - `conf_list` is list returned by `confusion_list` function
 
 ```R
 error_rate <- function(conf_list)
 ```
+- the error rate is `1 - accuracy`
 - number of incorrect predictions out of total number of observations
 - however, because not all errors are treated the same (e.g. false negative for cancer detection is worse than false positive), this number shouldn't be looked at alone.
 - `conf_list` is list returned by `confusion_list` function
 
 ```R
+kappa <- function(conf_list)
+```
+- `kappa` statistic adjusts accuracy by accounting for the possibility of a correct prediction by chance alone.
+	- this is especially important for datasets with a severe class imbalance, because a classifier can obtain high accuracy simply by always guessing the most frequent class.
+- common interpretation:
+	- `Poor` Agreement: `0.0 to 0.2`
+	- `Fair` Agreement: `0.2 to 0.4`
+	- `Moderate` Agreement: `0.4 to 0.6`
+	- `Good` Agreement: `0.6 to 0.8`
+	- `Very Good` Agreement: `0.8 to 1.0`
+- _source: Machine Learning with R (2nd Ed) - Lantz - pg 323-326_
+```R
 positive_predictive_value <- function(conf_list)
 ```
-- number of positives predicted correctly out of total number positive predictions
+- number of positives predicted correctly out of total number positive _predictions_
+- in other words, when model predicts the positive class, how often is it correct?
+- actually, same as posterior probability of Bayes Rule `P(D|T)`
+	- the probability of having a Disease (`D`) given a positive test result (`T`) is the same as saying `P(actually being positive | positive result)` i.e positives predicted correctly out of total positive predictions
+- also known as `precision`
 - `conf_list` is list returned by `confusion_list` function
 
 ```R
 negative_predictive_value <- function(conf_list)
 ```
-- number of negatives predicted correctly out of total number of negative predictions
+- number of negatives predicted correctly out of total number of negative _predictions_
+- in other words, when model predicts the negative class, how often is it correct?
 - `conf_list` is list returned by `confusion_list` function
+
+```R
+recall <- function(conf_list)
+```
+- same as `sensitivity`
+- slightly different interpretation.
+- a model with high recall captures a large portion of the positive examples, meaning that it has wide breadth.
+
+```R
+prevalence <- function(conf_list)
+```
+- actual positives out of total population.
+	- e.g. prevalence of a disease
+	- same as `actual positive probability`
 
 ```R
 quality_of_model <- function(conf_list)
 ```
 - `conf_list` is list returned by `confusion_list` function
 - returns a dataframe that contains the following columns
+	- `kappa`
 	- `accuracy`
 	- `error_rate`
-	- `positive_predictive_value`
-	- `negative_predictive_value`
-	- `false_positive_rate`
-	- `false_negative_rate`
 	- `sensitivity`
 	- `specificity`
+	- `false_positive_rate`
+	- `false_negative_rate`
+	- `positive_predictive_value`
+	- `negative_predictive_value`
+	- `recall`
+	- `prevalence`
 	- `actual_pos_prob` (total actual positives / total observations)
 	- `actual_neg_prob` (total actual negatives / total observations)
 	- `total_observations`
+
+```R
+visualize_quality_of_model <- function(conf_list)
+```
+- takes a `conf_list` and returns a `ggplot` of various measurements from `quality_of_model` data.frame
+
+![../readme/quality_of_model_plot.png](../readme/quality_of_model_plot.png)
 
 ```R
 logistics_regression_coefficients <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)

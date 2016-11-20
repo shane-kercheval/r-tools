@@ -1,4 +1,5 @@
 library('testthat')
+library('caret')
 source('../tools.R', chdir=TRUE)
 
 #to run from command line, use:
@@ -37,6 +38,43 @@ test_that("general: model_measurements", {
 	expect_equal(conf_list$actual_pos, model_total_actual_pos)
 	expect_equal(conf_list$actual_neg, model_total_actual_neg)
 	expect_equal(conf_list$total, sum(model_true_pos, model_true_neg, model_false_pos, model_false_neg))
+
+	##### Compare with confusionMatrix from caret library
+	lvs <- c("neg", "pos")
+	truth <- factor(rep(lvs, times = c(model_true_neg+model_false_pos, model_true_pos + model_false_neg)),
+					levels = rev(lvs))
+	pred <- factor(
+		c(
+			rep(lvs, times = c(model_true_neg, model_false_pos)),
+			rep(lvs, times = c(model_false_neg, model_true_pos))),
+		levels = rev(lvs))
+
+	#xtab <- table(pred, truth)
+	#confusionMatrix(xtab)
+	confusion_matrix_caret = confusionMatrix(pred, truth, positive = 'pos')
+	model_quality = quality_of_model(conf_list)
+
+	expect_equal(confusion_matrix_caret$overall[['Accuracy']], model_quality$accuracy)
+	expect_equal(confusion_matrix_caret$overall[['Kappa']], model_quality$kappa)
+	expect_equal(confusion_matrix_caret$byClass[['Sensitivity']], model_quality$sensitivity)
+	expect_equal(confusion_matrix_caret$byClass[['Specificity']], model_quality$specificity)
+	expect_equal(confusion_matrix_caret$byClass[['Pos Pred Value']], model_quality$positive_predictive_value)
+	#expect_equal(confusion_matrix_caret$byClass[['Precision']], model_quality$positive_predictive_value)
+	expect_equal(confusion_matrix_caret$byClass[['Neg Pred Value']], model_quality$negative_predictive_value)
+	expect_equal(confusion_matrix_caret$byClass[['Prevalence']], model_quality$prevalence)
+	#expect_equal(confusion_matrix_caret$byClass[['Recall']], model_quality$recall)
+	#expect_equal(confusion_matrix_caret$byClass[['Recall']], model_quality$sensitivity) # recall same as sensitivity
+
+	# positive predictive value i.e. precision is same as bayes rule
+	bayes_c = bayes_confusion(conf_list)
+	expect_equal(bayes_c, model_quality$positive_predictive_value)
+
+	# test visualization
+	file_name = '../readme/quality_of_model_plot.png'
+	file.remove(file_name)
+	quality_plot = visualize_quality_of_model(conf_list)
+	ggsave(plot=quality_plot, filename=file_name)
+	expect_true(file.exists(file_name))
 
 	model_total_observations = model_total_actual_pos + model_total_actual_neg
 	expect_equal(model_total_actual_pos, 30)

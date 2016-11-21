@@ -193,6 +193,7 @@ kappa <- function(conf_list)
 	- `Good` Agreement: `0.6 to 0.8`
 	- `Very Good` Agreement: `0.8 to 1.0`
 - _source: Machine Learning with R (2nd Ed) - Lantz - pg 323-326_
+
 ```R
 positive_predictive_value <- function(conf_list)
 ```

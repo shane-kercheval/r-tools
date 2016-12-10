@@ -11,11 +11,19 @@ calculate_outlier_thresholds <- function(vect)
 	return (thresholds)
 }
 
-remove_outliers <- function(vect) 
+remove_outliers <- function(vect)
 {
 	outlier_thresholds = calculate_outlier_thresholds(vect)
 	no_outliers = vect
 	no_outliers[no_outliers < outlier_thresholds[1]] <- NA # set NA to anything lower than lower threshold
 	no_outliers[no_outliers > outlier_thresholds[2]] <- NA # set NA to anything higher than upper threshold
 	return (no_outliers)
+}
+
+which_outliers <- function(vect)
+{
+	outlier_thresholds = calculate_outlier_thresholds(vect)
+	indexes_above = which(vect > outlier_thresholds['upper'])
+	indexes_below = which(vect < outlier_thresholds['lower'])
+	return (c(indexes_below, indexes_above))
 }

@@ -317,7 +317,12 @@ calculate_outlier_thresholds <- function(vect)
 ```R
 remove_outliers <- function(vect)
 ```
-- changes any outliers in vector to NA
+- changes any outliers in vector `vect` to NA, based on `calculate_outlier_thresholds` function
+
+```R
+which_outliers <- function(vect)
+```
+- returns the indexes of outliers from a vector `vect`, based on `calculate_outlier_thresholds` function
 
 ## utlities
 

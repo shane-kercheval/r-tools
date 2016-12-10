@@ -13,16 +13,19 @@ test_that("general: outliers", {
 	expect_that(thresholds[[1]], equals(-48.25, tolerance=0.001))
 	expect_that(thresholds[['upper']], equals(1209.85, tolerance=0.001))
 	expect_that(thresholds[[2]], equals(1209.85, tolerance=0.001))
-	
+
 	# verify we have 2 outliers in data
 	expect_that(length(observations), equals(91))
 	expect_that(length(which(observations < thresholds['lower'])), equals(1)) # should be 1 outlier below threshold
 	expect_that(length(which(observations > thresholds['upper'])), equals(1)) # should be 1 outlier above threshold
-	
+
 	no_outliers = remove_outliers(observations)
 	# verify we have removed outliers
 	expect_that(length(no_outliers), equals(91)) # should be same length, just with 2 NAs
 	expect_that(length(which(is.na(no_outliers))), equals(2))
 	expect_true(all(no_outliers > thresholds['lower'], na.rm=TRUE)) # ignoring NA's, all data should be above lower and below upper
 	expect_true(all(no_outliers < thresholds['upper'], na.rm=TRUE))
+
+	outlier_indexes = which_outliers(vect=observations)
+	expect_equal(outlier_indexes, c(1, 91))
 })

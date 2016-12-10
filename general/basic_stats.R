@@ -14,7 +14,7 @@ create_percentile_matrix <- function(list_of_datasets, row_names, percentiles=c(
 	rownames(percentile_matrix) = row_names
 
 	percentile_matrix[,1:(num_columns-2)] = round(percentile_matrix[,1:(num_columns-2)], round_by)
-	percentile_matrix[,(num_columns-1):num_columns] = round(percentile_matrix[,(num_columns-1):num_columns], round_by)
+	percentile_matrix[,(num_columns-1):num_columns] = round(percentile_matrix[,(num_columns-1):num_columns], 3)
 
 	return (percentile_matrix)
 }

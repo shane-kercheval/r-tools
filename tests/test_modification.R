@@ -113,3 +113,16 @@ test_that("modification: normalize", {
 	expect_equal(normalize(c(1, 2, 3, 4, 5)), c(0.00, 0.25, 0.50, 0.75, 1.00))
 	expect_equal(normalize(c(10, 20, 30, 40, 50)), c(0.00, 0.25, 0.50, 0.75, 1.00))
 })
+
+test_that("modification: normalize", {
+	contingency_table = matrix(c(60, 255, 86, 426, 58, 450, 21, 382), nrow = 2, dimnames = list(c('yes', 'no'), c('18-29', '30-49', '50-64', '65+')))
+	contingency_table = add_matrix_totals(contingency_table)
+
+	# check column totals
+	expect_equal(as.vector(contingency_table[3, ]), c(315, 512, 508, 403, 1738))
+	# check row totals
+	expect_equal(as.vector(contingency_table[, 5]), c(225, 1513, 1738))
+	# check labels
+	expect_equal(colnames(contingency_table), c("18-29", "30-49", "50-64", "65+", "TOTALS"))
+	expect_equal(rownames(contingency_table), c("yes", "no", "TOTALS"))
+})

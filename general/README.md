@@ -271,6 +271,11 @@ logit <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)
 ## modification.R
 
 ```R
+add_matrix_totals <- function(contingency_table)
+```
+- takes a matrix (i.e. in contingency table format) and adds row and column totals.
+
+```R
 get_scaled_dataset <- function(data_frame, named_column)
 ```
 - scales data to `z-scores` so they can be compared against each other (e.g. in clustering)

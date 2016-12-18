@@ -17,11 +17,11 @@ test_that('output: plot: line_plot_wide_data', {
 	line_plot = line_plot_wide_data(df_wide)
 	expect_false(is.null(line_plot))
 	expect_false(file.exists(file_name))
-	
+
 	line_plot = line_plot_wide_data(df_wide, save_file=file_name)
 	expect_false(is.null(line_plot))
 	expect_true(file.exists(file_name))
-	
+
 	file_name = '../output/example_line_plot_wide_data_stack.png'
 	file.remove(file_name) # remove file to ensure no file is created for first test
 	line_plot = line_plot_wide_data(df_wide, y_factor_order=colnames(df_wide)[2:4], stack=TRUE, save_file=file_name)
@@ -50,7 +50,7 @@ test_that('output: plot: heat_map', {
 	mock_website_visitors_su = round(dnorm(seq(from=1, to=-1, length.out=24))*400)
 	df_wide = data.frame(hour=0:23, monday=mock_website_visitors_mo, tuesday=mock_website_visitors_tu,wednesday=mock_website_visitors_we,thursday=mock_website_visitors_th,friday=mock_website_visitors_fr,saturday=mock_website_visitors_sa,sunday=mock_website_visitors_su)
 	colnames(df_wide)[1] = 'x'
-	
+
 	ordered_factor = colnames(df_wide)[2:ncol(df_wide)]
 	# NOTE THIS TESTS line_plot_wide_data & line_plot_long_data
 	file_name = '../output/example_heat_map_wide_data.png'
@@ -62,8 +62,30 @@ test_that('output: plot: heat_map', {
 	heat_map = heat_map_wide_data(df_wide, y_factor_order=ordered_factor)
 	expect_false(is.null(heat_map))
 	expect_false(file.exists(file_name))
-	
+
 	heat_map = heat_map_wide_data(df_wide, , y_factor_order=ordered_factor, save_file=file_name)
 	expect_false(is.null(heat_map))
 	expect_true(file.exists(file_name))
+})
+
+test_that('output: plot: tree_diagram', {
+
+	# example from OpenIntro Statistics pg 98
+	# Probability of a
+	p_a = 0.0035
+	# Probability (b | a)
+	p_b_given_a = 0.89
+	# Probability (b | ¬a)
+	p_b_given_not_a = 0.07
+	
+	file_name = '../output/example_tree_diagram.png'
+	file.remove(file_name)
+	expect_false(file.exists(file_name))
+	tree_diagram(p_a=p_a, p_b_given_a=p_b_given_a, p_b_given_not_a=p_b_given_not_a)
+	expect_false(file.exists(file_name))
+	tree_diagram(p_a=p_a, p_b_given_a=p_b_given_a, p_b_given_not_a=p_b_given_not_a, file_name = file_name)
+	expect_true(file.exists(file_name))
+	
+	bayes_result = bayes_prevalence(prevalence = p_a, sensitivity = p_b_given_a, false_positive_rate = p_b_given_not_a)
+	expect_equal(bayes_result, 0.04274736) # this is what should be displayed on graph for P(A|B)
 })

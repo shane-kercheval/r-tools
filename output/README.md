@@ -176,7 +176,7 @@ heat_map_wide_data <- function(df_wide, title='heat map', x_label='x', y_label='
 ```
 - graphs a heatmap of df that has wide data (e.g. hours as rows, days as columns, and count of website visitors as values)
 - `x_factor_order` and `y_factor_order` take vectors that represent the order in which the x/y axis should be labeled, converts the underlying categorical data to factor.
-- see [test_plots.R](../tests/test_plots.R) for example, which produces the following heatmap 
+- see [test_plots.R](../tests/test_plots.R) for example, which produces the following heatmap
 
 ![heat_map_wide_data](example_heat_map_wide_data.png)
 
@@ -186,3 +186,15 @@ heat_map_long_data <- function(df_long, title='heat map', x_label='x', y_label='
 - same as `heat_map_wide_data`, but takes data in long format (e.g. rows that make up hour/day combinations).
 - `x_factor_order` and `y_factor_order` take vectors that represent the order in which the x/y axis should be labeled, converts the underlying categorical data to factor.
 - see [test_plots.R](../tests/test_plots.R) for example, simply call `gather_data` on df_wide to see dataset.
+
+```R
+tree_diagram <- function(p_a, p_b_given_a, p_b_given_not_a)
+```
+
+- `p_a` is probability of event A (i.e. `prevalence`)
+- `p_b_given_a` is probability of event B given event A (i.e. `sensitivity`)
+- `p_b_given_not_a` is probability of event B given event ~A (complement of A) (i.e. `false positive rate`)
+- code modified from: http://www.harrysurden.com/wordpress/archives/292
+
+example:
+![example_tree_diagram](example_tree_diagram.png)

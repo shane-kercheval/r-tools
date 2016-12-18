@@ -58,3 +58,15 @@ normalize <- function(x)
 {
 	return ((x - min(x)) / (max(x) - min(x)))
 }
+
+add_matrix_totals <- function(contingency_table)
+{
+	# add row totals
+	contingency_table = cbind(contingency_table, rowSums(contingency_table))
+	colnames(contingency_table) = c(colnames(contingency_table)[1:(length(colnames(contingency_table))-1)], 'TOTALS')
+	# add column totals
+	contingency_table = rbind(contingency_table, colSums(contingency_table))
+	rownames(contingency_table) = c(rownames(contingency_table)[1:(length(rownames(contingency_table))-1)], 'TOTALS')
+
+	return (contingency_table)
+}

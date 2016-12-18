@@ -75,3 +75,109 @@ convert_to_factors <- function(df_long, x_factor_order=NULL, y_factor_order=NULL
 	}
 	return (df_long)
 }
+
+tree_diagram <- function (p_a, p_b_given_a, p_b_given_not_a, file_name = NULL)
+{
+	# code from http://www.harrysurden.com/wordpress/archives/292
+	# R Conditional Probability Tree Diagram
+
+	# The Rgraphviz graphing package must be installed to do this
+	#install
+		#source("http://bioconductor.org/biocLite.R")
+		#biocLite("Rgraphviz")
+	suppressWarnings(require("Rgraphviz"))
+
+	# # Probability of a
+	# p_a = 0.01
+	# # Probability (b | a)
+	# p_b_given_a = 0.99
+	# # Probability (b | ¬a)
+	# p_b_given_not_a = 0.10
+
+	# Calculate the rest of the values based upon the 3 variables above
+	p_not_b_given_a = 1 - p_b_given_a
+	p_not_a = 1 - p_a
+	p_not_b_given_not_a = 1 - p_b_given_not_a
+
+	#Joint Probabilities of a and B, a and not_b, p_not_a and b, p_not_a and not_b
+	p_a_and_b = p_a * p_b_given_a
+	p_a_and_not_b = p_a * p_not_b_given_a
+	p_not_a_and_b = p_not_a * p_b_given_not_a
+	p_not_a_and_not_b = p_not_a * p_not_b_given_not_a
+
+	# Probability of B
+	p_b = p_a_and_b + p_not_a_and_b
+	p_not_b = 1 - p_b
+
+	# Bayes theorum - probabiliyt of A | B
+	# (a | b) = Prob (a AND b) / prob (b)
+	p_a_given_b = p_a_and_b / p_b
+
+	# These are the labels of the nodes on the graph
+	# To signify "Not A" - we use A' or A prime
+
+	node1 = "P"
+	node2 = "A"
+	node3 = "A'"
+	node4 = "A&B"
+	node5 = "A&B'"
+	node6 = "A'&B"
+	node7 = "A'&B'"
+	nodeNames=c(node1,node2,node3,node4, node5,node6, node7)
+
+	rEG = new("graphNEL", nodes=nodeNames, edgemode="directed")
+
+	# Draw the "lines" or "branches" of the probability Tree
+	rEG = addEdge(nodeNames[1], nodeNames[2], rEG, 1)
+	rEG = addEdge(nodeNames[1], nodeNames[3], rEG, 1)
+	rEG = addEdge(nodeNames[2], nodeNames[4], rEG, 1)
+	rEG = addEdge(nodeNames[2], nodeNames[5], rEG, 1)
+	rEG = addEdge(nodeNames[3], nodeNames[6], rEG, 1)
+	rEG = addEdge(nodeNames[3], nodeNames[7], rEG, 10)
+
+	eAttrs = list()
+
+	q = edgeNames(rEG)
+
+	# Add the probability values to the the branch lines
+
+	eAttrs$label = c(toString(p_a),toString(p_not_a), toString(p_b_given_a), toString(p_not_b_given_a), toString(p_b_given_not_a), toString(p_not_b_given_not_a))
+	names(eAttrs$label) = c(q[1],q[2], q[3], q[4], q[5], q[6])
+	edgeAttrs=eAttrs
+
+	# Set the color, etc, of the tree
+	attributes=list(node=list(label="foo", fillcolor="lightgreen", fontsize="15"), edge=list(color="red"),graph=list(rankdir="LR"))
+
+	result = tryCatch({ dev.off()}, error = function(e) {})
+
+	#Plot the probability tree using Rgraphvis
+	if(!is.null(file_name))
+	{
+		png(file_name, width = 500, height = 500)
+	}
+
+	plot(rEG, edgeAttrs=eAttrs, attrs=attributes)
+	nodes(rEG)
+	edges(rEG)
+
+	#Add the probability values to the leaves of A&B, A&B', A'&B, A'&B'
+	text(500, 420, round(p_a_and_b, 5), cex=.8)
+	text(500, 280, round(p_a_and_not_b, 5), cex=.8)
+	text(500, 160, round(p_not_a_and_b, 5), cex=.8)
+	text(500, 30, round(p_not_a_and_not_b, 5), cex=.8)
+	text(340, 440,"(B | A)", cex=.8)
+	text(340, 230,"(B | A')", cex=.8)
+
+	#Write a table in the lower left of the probablites of A and B
+	text(80, 50, paste("P(A):", p_a), cex=.9, col="darkgreen")
+	text(80, 20, paste("P(A'):", p_not_a), cex=.9, col="darkgreen")
+
+	text(160, 50, paste("P(B):", round(p_b, digits=4)), cex=.9)
+	text(160, 20, paste("P(B'):", round(p_not_b, digits=4)), cex=.9)
+	text(80, 420, paste("P(A|B): ", round(p_a_given_b, digits=4)), cex=.9, col="blue")
+
+	if(!is.null(file_name))
+	{
+		result = tryCatch({ dev.off()}, error = function(e) {})
+	}
+}

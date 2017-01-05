@@ -1,4 +1,31 @@
-ab_test.indep <- function(s, o=NULL, ns=NULL, correct=TRUE)
+z.prop <- function(x1, x2, n1, n2)
+{ # ORIGINAL: https://www.r-bloggers.com/comparison-of-two-proportions-parametric-z-test-and-non-parametric-chi-squared-methods/
+	numerator = (x1/n1) - (x2/n2)
+	p_common = (x1+x2) / (n1+n2)
+	denominator = sqrt(p_common * (1-p_common) * (1/n1 + 1/n2))
+	z_prop_ris = numerator / denominator
+	return(z_prop_ris)
+}
+
+convert.z.score <- function(z, one.sided=NULL) 
+{
+	if(is.null(one.sided)) 
+	{
+		pval = pnorm(-abs(z))
+		pval = 2 * pval
+	} 
+	else if(one.sided=="-") 
+	{
+		pval = pnorm(z)
+	} 
+	else 
+	{
+		pval = pnorm(-z)
+	}
+	return(pval)
+}  
+
+chi.square.independence <- function(s, o=NULL, ns=NULL, correct=TRUE)
 {
 	o = get_observations(s=s, ns=ns, o=o)
 	return (prop.test(x=s, n=o, correct=correct))
@@ -6,7 +33,7 @@ ab_test.indep <- function(s, o=NULL, ns=NULL, correct=TRUE)
 	# return (chisq.test(trial_matrix, simulate.p.value = simulate.p.value))
 }
 
-ab_test.gof <- function(s, o=NULL, ns=NULL, correct=TRUE)
+chi.square.goodness_of_fit <- function(s, o=NULL, ns=NULL, correct=TRUE)
 {	# with this test, we want to get the proportion of the first trial, use that as p, and pass in the rest of successes/observations
 	o = get_observations(s=s, ns=ns, o=o)
 	first_success = s[1]

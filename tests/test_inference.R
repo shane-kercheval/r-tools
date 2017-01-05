@@ -3,33 +3,33 @@ source('../tools.R', chdir=TRUE)
 
 #to run from command line, use:
 #library('testthat')
-#test_file("test_ab_tests.R")
+#test_file("test_inference.R")
 
-test_that("general: ab_tests", {
+test_that("general: original", {
 	successes = c(50, 70)
 	non_successes = c(950, 930)
 	observations = c(1000,1000)
 
-	test_results = ab_test.indep(s=successes, ns=non_successes)
+	test_results = chi.square.independence(s=successes, ns=non_successes)
 	expect_that(test_results$p.value, equals(0.07362231))
 	expect_that(as.numeric(test_results$estimate[1]), equals(successes[1]/observations[1]))
 	expect_that(as.numeric(test_results$estimate[2]), equals(successes[2]/observations[2]))
 
-	test_results = ab_test.indep(s=successes, o=observations)
+	test_results = chi.square.independence(s=successes, o=observations)
 	expect_that(test_results$p.value, equals(0.07362231))
 	expect_that(as.numeric(test_results$estimate[1]), equals(successes[1]/observations[1]))
 	expect_that(as.numeric(test_results$estimate[2]), equals(successes[2]/observations[2]))
 
 	# prop.test like this is basically Chi-square of independene.
 	pt_p1 = prop.test(x=successes, n=observations)$p.value # chi-square via prop.test.. http://www.marketingdistillery.com/2014/08/03/ab-tests-in-marketing-sample-size-and-significance-using-r/   https://www.r-bloggers.com/comparison-of-two-proportions-parametric-z-test-and-non-parametric-chi-squared-methods/
-	pt_p2 = ab_test.indep(s=successes, o=observations)$p.value
-	pt_p3 = ab_test.indep(s=successes, ns=non_successes)$p.value
+	pt_p2 = chi.square.independence(s=successes, o=observations)$p.value
+	pt_p3 = chi.square.independence(s=successes, ns=non_successes)$p.value
 	expect_equal(pt_p1, pt_p2, pt_p3, 0.07362231)
 	ch_p = chisq.test(matrix(c(successes, non_successes), byrow = TRUE, nrow = 2))$p.value # with chisq.test you need to pass in non_successes, but
 	expect_equal(pt_p1, ch_p)
 
 	# correct=FALSE is like calculating by hand, confirmed in excel spreadsheet:
-	pt_c = ab_test.indep(s=successes, o=observations, correct=FALSE)$p.value
+	pt_c = chi.square.independence(s=successes, o=observations, correct=FALSE)$p.value
 	ch_c = chisq.test(matrix(c(successes, non_successes), byrow = TRUE, nrow = 2), correct = FALSE)$p.value
 	expect_equal(pt_c, ch_c)
 
@@ -38,8 +38,8 @@ test_that("general: ab_tests", {
 	expect_equal(ab.bin$p.value, bin.test$p.value, 0.0126582)
 
 	ptp_p1 = prop.test(70,1000, p=50/1000)$p.value # chi-square goodness of fit? http://www.r-tutor.com/elementary-statistics/hypothesis-testing/two-tailed-test-population-proportion
-	ptp_p2 = ab_test.gof(s=successes, o=observations)$p.value
-	ptp_p3 = ab_test.gof(s=successes, ns=non_successes)$p.value
+	ptp_p2 = chi.square.goodness_of_fit(s=successes, o=observations)$p.value
+	ptp_p3 = chi.square.goodness_of_fit(s=successes, ns=non_successes)$p.value
 	expect_equal(ptp_p1, ptp_p2, ptp_p3, 0.004664158)
 
 	fisher_p1 = fisher.test(rbind(c(50, 70), c(950, 930)))$p.value
@@ -55,4 +55,20 @@ test_that("general: ab_tests", {
 # 	prop.test(65, 103, p=10/74)
 # 	prop.test(x=c(30,65), n=c(74,103))
 	#https://www.r-bloggers.com/comparison-of-two-proportions-parametric-z-test-and-non-parametric-chi-squared-methods/
+})
+
+
+test_that("general: inference", {
+	expect_equal(z.prop(500, 505, 44425, 44405), -0.1657983, tolerance=0.00001) # OpenIntro Statistics Mammogram example page 286-284
+	expect_equal(z.prop(30, 65, 74, 103), -2.969695, tolerance=0.00001) # https://www.r-bloggers.com/comparison-of-two-proportions-parametric-z-test-and-non-parametric-chi-squared-methods/
+	expect_equal(convert.z.score(z.prop(500, 505, 44425, 44405)), 0.8683157, tolerance=0.000001)
+
+
+	# x = 30
+	# x_total = 65
+	# y = 74
+	# y_total = 103
+	# fisher.test(matrix(c(x, x_total - x, y, y_total-y), ncol=2))
+	# 
+	# prop.test(x = c(x, x_total), n = c(y, y_total), correct = FALSE)
 })

@@ -10,11 +10,11 @@ test_output_file <- function(output_file, FUN, expected_chars, expected_file_out
 	FUN()
 	expect_true(file.exists(output_file))	
 	test_file_text = read_file(output_file)
-	expect_that(nchar(test_file_text), equals(expected_chars))
+	expect_equal(nchar(test_file_text), expected_chars)
 	
 	if(!is.null(expected_file_output))
 	{
-		expect_that(expected_file_output, equals(test_file_text))
+		expect_equal(expected_file_output, test_file_text)
 	}
 
 	if(delete_output_file)

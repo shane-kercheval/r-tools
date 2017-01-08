@@ -70,5 +70,5 @@ test_that("general: inference", {
 	# y_total = 103
 	# fisher.test(matrix(c(x, x_total - x, y, y_total-y), ncol=2))
 	# 
-	# prop.test(x = c(x, x_total), n = c(y, y_total), correct = FALSE)
+	# tt = prop.test(x = c(x, x_total), n = c(y, y_total), correct = FALSE)$p.value
 })

@@ -201,3 +201,18 @@ ab_test.fisher <- function(s, o=NULL, ns=NULL)
 - same inputs as `ab_test.indep`
 - uses R's `fisher.test`
 	- `fisher.test` will perform a test analogous to the chi-square test of independence but not the chi-square goodness of fit test. ([source](http://stats.stackexchange.com/questions/96835/chisq-test-in-r-doesnt-produce-same-answer-as-by-hand))
+
+```R
+bayes.t.test = function(numeric_vector, n0=1, mu0 = 0,  prior_h1=.5)
+```
+
+**Original Source**: Dr. Merlise Clyde: https://github.com/StatsWithR/figures/blob/master/04_bayesian_statistics/week_03/4.3.2_comparing_two_paired_means/Docs/4-3-2-pair-notes.pdf
+
+- `bayes.t.test` is used for comparing two paired means using Bayes Factors.
+- the hypotheses of interest in terms of the original parameters and the mean of the differences:
+	- no difference: `H1 : μa =μb -> μdiff = 0`
+	- means are different: `H2 : μa != μb -> μdiff != 0`
+	- mean from sample 1 is larger than mean of sample 2: `H3 : μa >μb -> μdiff > 0`
+	- mean from sample 2 is larger than mean of sample 1: `H4 : μa <μb -> μdiff < 0`
+- It should be clear that H3 and H4 are included in H2, so that we first need to find the probability of H1 and H2.
+

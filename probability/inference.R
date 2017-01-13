@@ -25,19 +25,19 @@ convert.z.score <- function(z, one.sided=NULL)
 	return(pval)
 }
 
-bayes.t.test = function(x, n0=1, mu0 = 0,  prior.H1=.5)
+bayes.t.test = function(numeric_vector, n0=1, mu0 = 0,  prior_h1=.5)
 {
 	# source: Dr. Merlise Clyde: https://github.com/StatsWithR/figures/blob/master/04_bayesian_statistics/week_03/4.3.2_comparing_two_paired_means/Docs/4-3-2-pair-notes.pdf
-	out = t.test(x - mu0)
-	t = as.numeric(abs(out$statistic)) 
-	n = length(x)
-	df=n-1
-	#BF is BF of H1 to H2 
-	BF=exp(.5*(log(n + n0) - log(n0) + (df + 1)*(log(t^2*n0/(n + n0) + df) - log(t^2 + df))))
-	PO= BF*prior.H1/(1 - prior.H1)
-	post.prob = 1/(1 + 1/PO)
+	t_test_results = t.test(numeric_vector - mu0)
+	t_statistic = as.numeric(abs(t_test_results$statistic)) 
+	data_length = length(numeric_vector)
+	degrees_of_freedom = data_length - 1
+	#bayes_factor is Bayes Factor of Hypothesis 1 to Hypothesis 2
+	bayes_factor = exp(0.5 * (log(data_length + n0) - log(n0) + (degrees_of_freedom + 1) * (log(t_statistic^ 2 * n0 / (data_length + n0) + degrees_of_freedom) - log(t_statistic^2 + degrees_of_freedom))))
+	prior_odds = bayes_factor * prior_h1 / (1 - prior_h1)
+	post_prob_H1 = 1 / (1 + 1/prior_odds)
 
-	return (list(BF.H1.H2=BF, post.prob.H1 = post.prob, post.prob.H2= 1 - post.prob, t=t, p.value=out$p.value, df=n-1))
+	return (list(bayes_factor.H1.H2=bayes_factor, bayes_factor.H2.H1=1/bayes_factor, post.prob.H1=post_prob_H1, post.prob.H2= 1 - post_prob_H1, t.statistic=t_statistic, p.value=t_test_results$p.value, degrees.of.freedom=data_length-1))
 }
 
 chi.square.independence <- function(s, o=NULL, ns=NULL, correct=TRUE)

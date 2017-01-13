@@ -72,3 +72,15 @@ test_that("general: inference", {
 	# 
 	# tt = prop.test(x = c(x, x_total), n = c(y, y_total), correct = FALSE)$p.value
 })
+
+test_that("general: inference: bayes.t.test", {
+	data = c(0.015, 0.028, 0.177, 0.121, 0.102, 0.107, 0.019, 0.066, 0.058, 0.111)
+	bayes_t_test_results = bayes.t.test(numeric_vector=data)
+	expect_equal(bayes_t_test_results$bayes_factor.H1.H2, 0.01539321, tolerance=0.00000001)
+	expect_equal(bayes_t_test_results$bayes_factor.H2.H1, 64.96373, tolerance=0.00001)
+	expect_equal(bayes_t_test_results$post.prob.H1, 0.01515985, tolerance=0.00000001)
+	expect_equal(bayes_t_test_results$post.prob.H2, 0.9848402, tolerance=0.0000001)
+	expect_equal(bayes_t_test_results$t.statistic, 4.863813, tolerance=0.0000001)
+	expect_equal(bayes_t_test_results$p.value, 0.0008911155, tolerance=0.00000001)
+	expect_equal(bayes_t_test_results$degrees.of.freedom, 9)
+})

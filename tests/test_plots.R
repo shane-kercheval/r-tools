@@ -89,3 +89,16 @@ test_that('output: plot: tree_diagram', {
 	bayes_result = bayes_prevalence(prevalence = p_a, sensitivity = p_b_given_a, false_positive_rate = p_b_given_not_a)
 	expect_equal(bayes_result, 0.04274736) # this is what should be displayed on graph for P(A|B)
 })
+
+test_that('output: plot: gg_qq_plot', {
+	file_name = '../output/example_gg_qq_plot.png'
+	if(file.exists(file_name))
+	{
+		file.remove(file_name)
+	}
+
+	data = c(0.015, 0.028, 0.177, 0.121, 0.102, 0.107, 0.019, 0.066, 0.058, 0.111)
+	ggsave(filename= file_name, gg_qq_plot(data = data))
+
+	expect_true(file.exists(file_name))
+})

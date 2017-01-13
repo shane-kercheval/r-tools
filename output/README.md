@@ -133,6 +133,13 @@ print_c <- function(something, collapse=TRUE, trim=TRUE)
 ## plots.R
 
 ```R
+gg_qq_plot <- function(data_vector)
+```
+- takes a numberic vector (`data_vector`) and returns a 'QQ' plot which is used to check the validity of a normal distributional assumption for the numeric vector
+
+![gg_qq_plot](example_gg_qq_plot.png)
+
+```R
 line_plot_wide_data <- function(df_wide, title='line plot', x_label='x', y_label='count')
 ```
 - takes a wide dataset with column x (representing an index row which will be in x-axis) and all additional columns as summation/count rows; plots as line graph x as x-axis, values in remaining columns as y-axis, and each additional column (from x) as a single line

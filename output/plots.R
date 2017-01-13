@@ -141,7 +141,7 @@ tree_diagram <- function (p_a, p_b_given_a, p_b_given_not_a, file_name = NULL)
 
 	# Add the probability values to the the branch lines
 
-	eAttrs$label = c(toString(p_a),toString(p_not_a), toString(p_b_given_a), toString(p_not_b_given_a), toString(p_b_given_not_a), toString(p_not_b_given_not_a))
+	eAttrs$label = c(toString(round(p_a, 4)),toString(round(p_not_a, 4)), toString(round(p_b_given_a, 4)), toString(round(p_not_b_given_a, 4)), toString(round(p_b_given_not_a, 4)), toString(round(p_not_b_given_not_a, 4)))
 	names(eAttrs$label) = c(q[1],q[2], q[3], q[4], q[5], q[6])
 	edgeAttrs=eAttrs
 
@@ -161,16 +161,16 @@ tree_diagram <- function (p_a, p_b_given_a, p_b_given_not_a, file_name = NULL)
 	edges(rEG)
 
 	#Add the probability values to the leaves of A&B, A&B', A'&B, A'&B'
-	text(500, 420, round(p_a_and_b, 5), cex=.8)
-	text(500, 280, round(p_a_and_not_b, 5), cex=.8)
-	text(500, 160, round(p_not_a_and_b, 5), cex=.8)
-	text(500, 30, round(p_not_a_and_not_b, 5), cex=.8)
+	text(500, 420, round(p_a_and_b, 4), cex=.8)
+	text(500, 280, round(p_a_and_not_b, 4), cex=.8)
+	text(500, 160, round(p_not_a_and_b, 4), cex=.8)
+	text(500, 30, round(p_not_a_and_not_b, 4), cex=.8)
 	text(340, 440,"(B | A)", cex=.8)
 	text(340, 230,"(B | A')", cex=.8)
 
 	#Write a table in the lower left of the probablites of A and B
-	text(80, 50, paste("P(A):", p_a), cex=.9, col="darkgreen")
-	text(80, 20, paste("P(A'):", p_not_a), cex=.9, col="darkgreen")
+	text(80, 50, paste("P(A):", round(p_a, 4)), cex=.9, col="darkgreen")
+	text(80, 20, paste("P(A'):", round(p_not_a, 4)), cex=.9, col="darkgreen")
 
 	text(160, 50, paste("P(B):", round(p_b, digits=4)), cex=.9)
 	text(160, 20, paste("P(B'):", round(p_not_b, digits=4)), cex=.9)
@@ -180,4 +180,14 @@ tree_diagram <- function (p_a, p_b_given_a, p_b_given_not_a, file_name = NULL)
 	{
 		result = tryCatch({ dev.off()}, error = function(e) {})
 	}
+}
+
+gg_qq_plot <- function(data_vector)
+{
+	# QQ Plot (examine fit of normal distribution)
+	slope = diff(quantile(data_vector, c(0.25, 0.75))) / diff(qnorm(c(0.25, 0.75)))
+	int = quantile(data_vector, 0.25) - slope * qnorm(0.25)
+	return (ggplot(NULL, aes(sample=data_vector)) +
+				geom_qq() +
+				geom_abline(aes(slope=slope, intercept = int), col='red'))
 }

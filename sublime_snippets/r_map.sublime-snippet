@@ -1,13 +1,14 @@
 <snippet>
 	<content><![CDATA[
-${1:return_variable} = map${2:_type}(${3:list}, ~ 
+${1:return_variable} <- map${2:_type}(${3:list}, ~ 
 {
-	${4:item} = .
+	${4:item} <- .
 
 	${5:code}
 
 	return ()
 })
+
 
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->

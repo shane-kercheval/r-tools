@@ -3,6 +3,8 @@
 ```{r${1:, echo=FALSE}}
 ${2:code}
 ```
+
+
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>r_md_block</tabTrigger>

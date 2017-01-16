@@ -1,13 +1,14 @@
 <snippet>
 	<content><![CDATA[
-${1:library(readr)}
-${2:df_data} <- read_delim(file='./data/${3:file_name}.csv', delim=',')
-${2:df_data}
+${1:diamonds} %>% 
+	count(${2:color}, ${3:cut}) %>%
+	ggplot(mapping = aes(x = ${2:color}, y = ${3:cut})) +
+	geom_tile(mapping = aes(fill = n))
 
 
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
-	<tabTrigger>r_read_csv</tabTrigger>
+	<tabTrigger>r_ggplot_categorical_two_variables</tabTrigger>
 	<!-- Optional: Set a scope to limit where the snippet will trigger -->
 	<!-- <scope>source.python</scope> -->
 </snippet>

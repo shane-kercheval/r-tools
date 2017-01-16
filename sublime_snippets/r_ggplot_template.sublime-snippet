@@ -1,0 +1,15 @@
+<snippet>
+	<content><![CDATA[
+ggplot(data = ${1:< DATA >}, mapping = aes(${3:< MAPPINGS >})) + 
+	${4:< GEOM_FUNCTION >}(stat = ${5:< STAT >}, position = ${6:< POSITION >} ) + 
+	${7:< COORDINATE_FUNCTION >} + 
+	${8:< FACET_FUNCTION >} +
+	xlab('${9:x}') + ylab('${10:y}') + ggtitle('${11:plot}')
+
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>r_ggplot_template</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

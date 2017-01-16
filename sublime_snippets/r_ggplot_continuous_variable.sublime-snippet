@@ -1,0 +1,23 @@
+<snippet>
+	<content><![CDATA[
+df_data <- data.frame(continuous_variable=rnorm(1000, 0, 1))
+fun_args <- list(mean = mean(${1:df_data}\$${2:continuous_variable}), sd = sd(${1:df_data}\$${2:continuous_variable}))
+ggplot(data = ${1:df_data}, mapping = aes(x = ${2:continuous_variable})) +
+	geom_histogram(mapping=aes(y = ..density..), bins = 30) + # histogram of data
+	geom_density(col = "red") + # emperical PDF
+	stat_function(fun = dnorm, args = fun_args, col = "blue") + # theoretical normal PDF, based on data's mean & standard deviation
+	coord_cartesian(xlim = c(-3, 3))
+
+source('~/r-tools/tools.R', chdir=TRUE)
+gg_qq_plot(data = ${1:df_data}\$${2:continuous_variable})
+
+ggplot(data = ${1:df_data}, mapping = aes(x = ${2:continuous_variable},  y = ${2:continuous_variable}, group = 1)) +
+	geom_boxplot()
+
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>r_ggplot_continuous_variable</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

@@ -1,0 +1,27 @@
+<snippet>
+	<content><![CDATA[
+# https://www.researchgate.net/post/How_can_we_statistically_control_the_effect_of_some_variable_while_using_SPSS2
+# Let say you want check the effect of education on earning controlling or removing the effect of age, the procedure is as follows
+# 1 regress income on age (income= a +b(age)) and save the residuals (income*)
+# 2 regress education on age (edu= c+d(age)) and save the residuals (education*)
+# 3 The find the correlation of these two residuals.
+# by regressing in first and 2nd step we actually net out the effect of age in explaining these variables so by using residuals we actually use that part of variables which has not any effect of age.
+
+# Wickham, Hadley; Grolemund, Garrett (2016-12-12). R for Data Science: Import, Tidy, Transform, Visualize, and Model Data (Kindle Locations 2257-2259). O'Reilly Media. Kindle Edition. 
+# The following code fits a model that predicts ${2:price} from ${3:carat} and then computes the residuals (the difference between the predicted value and the actual value). The residuals give us a view of the ${2:price} of the diamond, once the effect of ${3:carat} has been removed:
+library(modelr)
+mod <- lm(log(${2:price}) ~ log(${3:carat}), data = ${1:diamonds}) # ${3:carat} is a confounding variable to the `${4:cut}` and `${2:price}` variables
+${1:diamonds}_with_resids <- ${1:diamonds} %>% add_residuals(mod) %>% mutate(resid = exp(resid)) # by taking the residuals, these are the estimates of ${2:price} that are NOT expalined by ${3:carat}, so we are removing the effect of caret.. i.e. this is predictor for ${2:price} for everything but carets
+ggplot(data = ${1:diamonds}_with_resids) +
+	geom_point(mapping = aes(x = ${3:carat}, y = resid)) # ${3:carat} is a confounding variable to the other two variables
+
+ggplot(data = ${1:diamonds}_with_resids) +
+	geom_boxplot(mapping = aes(x = ${4:cut}, y = resid))
+
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>r_remove_confounding_variable_effect</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

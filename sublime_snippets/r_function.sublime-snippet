@@ -6,6 +6,8 @@ ${1:function_name} <- function(${2:data})
 
 	return ()
 }
+
+
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>function</tabTrigger>

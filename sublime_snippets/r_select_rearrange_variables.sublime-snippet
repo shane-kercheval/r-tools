@@ -2,6 +2,7 @@
 	<content><![CDATA[
 ${1:flights} %>% select(${2:time_hour, air_time}, everything())
 
+
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>r_select_rearrange_variables</tabTrigger>

@@ -1,0 +1,13 @@
+<snippet>
+	<content><![CDATA[
+ggplot(data = ${1:diamonds}, mapping = aes(x = ${2:cut})) + 
+	geom_bar(mapping=aes(fill = ${2:cut})) + 
+	ggtitle('Histogram of ${2:cut}') + ylab('Count') + xlab('${2:cut}') + theme(axis.text.x = element_text(angle = 50, hjust = 1)) + guides(fill = FALSE)
+
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>r_ggplot_categorical_variable</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

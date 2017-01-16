@@ -4,6 +4,7 @@ ggplot(data = ${1:mpg}, mapping = aes(x = ${2:displ}, y = ${3:hwy})) +
 	geom_point(mapping = aes(color = ${4:class})) + 
 	geom_smooth()
 
+
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>r_ggplot_geom_scatterplot</tabTrigger>

@@ -188,6 +188,6 @@ gg_qq_plot <- function(data_vector)
 	slope = diff(quantile(data_vector, c(0.25, 0.75))) / diff(qnorm(c(0.25, 0.75)))
 	int = quantile(data_vector, 0.25) - slope * qnorm(0.25)
 	return (ggplot(NULL, aes(sample=data_vector)) +
-				geom_qq() +
+				geom_qq(alpha=0.3) +
 				geom_abline(aes(slope=slope, intercept = int), col='red'))
 }

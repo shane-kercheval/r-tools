@@ -45,7 +45,7 @@ save_hierarchical_heatmaps <- function(hierarchical_results, folder, subscript='
 	})
 }
 
-save_hierarchical_dendogram <-function(data_frame, named_column, ideal_cluster_size=NULL, path='./dendogram.png')
+hierarchical_dendogram <-function(data_frame, named_column, ideal_cluster_size=NULL, path='./dendogram.png')
 {
 	cluster_data = get_numeric_logical_dataset(data_frame, named_column)
 	dataset_na_omited = na.omit(cluster_data)
@@ -61,6 +61,9 @@ save_hierarchical_dendogram <-function(data_frame, named_column, ideal_cluster_s
 	clusters = hclust(distances, method = "ward.D") 
 	plot(clusters, cex=0.5, cex.lab=1, cex.axis=1, cex.main=1, cex.sub=1) # display dendogram
 	rect.hclust(clusters, k=ideal_cluster_size, border="red")
-	dev.copy(png,filename=path, width=500, height=500);
-	dev.off();
+	if(!is.null(path))
+	{
+		dev.copy(png,filename=path, width=500, height=500);
+		dev.off();
+	}
 }

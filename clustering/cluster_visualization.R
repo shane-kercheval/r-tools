@@ -29,7 +29,7 @@ save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='')
 	})
 }
 
-save_hierarchical_heatmaps <- function(hierarchical_results, folder, subscript='')
+save_hierarchical_heatmaps <- function(hierarchical_results, folder, subscript='', save_file=FALSE)
 {
 	if(subscript != '')
 	{
@@ -41,8 +41,13 @@ save_hierarchical_heatmaps <- function(hierarchical_results, folder, subscript='
 		results_df = as.data.frame(t(results_df)) # t (transpose) results in a matrix, convert back to df
 		results_df$cluster_name = 1:nrow(results_df)
 		heatmap_plot = cluster_heatmap(results_df = results_df)
-		ggsave(filename=sprintf("./%s/hierarchical%s_%s_clusters_%s.png", folder, subscript, length(hierarchical_result), Sys.Date()), plot=heatmap_plot)
+		if(save_file)
+		{
+			ggsave(filename=sprintf("./%s/hierarchical%s_%s_clusters_%s.png", folder, subscript, length(hierarchical_result), Sys.Date()), plot=heatmap_plot)
+		}
 	})
+
+	return (temp)
 }
 
 hierarchical_dendogram <-function(data_frame, named_column, ideal_cluster_size=NULL, path='./dendogram.png')

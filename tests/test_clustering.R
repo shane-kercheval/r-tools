@@ -63,7 +63,7 @@ test_that("clustering: methods", {
 	final_hierarchical = hierarchical_merge_cluster_data(original_data_frame=worlddata_no_na, merge_column='country')
 	expect_that(nrow(worlddata_no_na), equals(nrow(final_hierarchical)))
 	expect_false(any(is.na(final_hierarchical)))
-	save_hierarchical_heatmaps(hierarchical_results = hierarchical_results, folder='.')
+	save_hierarchical_heatmaps(hierarchical_results = hierarchical_results, folder='.', save_file=TRUE)
 	invisible(walk(kmeans_vector, ~{
 		filename = sprintf('hierarchical_%s_clusters_%s.png', ., Sys.Date())
 		expect_true(file.exists(filename))

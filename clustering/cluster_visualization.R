@@ -29,7 +29,7 @@ save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='')
 	})
 }
 
-save_hierarchical_heatmaps <- function(hierarchical_results, folder, subscript='', save_file=FALSE)
+save_hierarchical_heatmaps <- function(hierarchical_results, folder='', subscript='', save_file=FALSE)
 {
 	if(subscript != '')
 	{

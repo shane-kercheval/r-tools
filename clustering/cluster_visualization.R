@@ -10,7 +10,8 @@ cluster_heatmap <- function(results_df, start_stop=1)
 	heatmap = ggplot(data=results_df_melted, aes(x = variable, y = cluster_name)) + 
 		geom_tile(aes(fill = means), colour = "white") +
 		theme(axis.text.x = element_text(angle = 60, hjust = 1)) + 
-		scale_fill_manual(values = heatmap_colors, drop = FALSE) # drop=FALSE so that scale shows every value, even if not in dataset
+		scale_fill_manual(values = heatmap_colors, drop = FALSE) + # drop=FALSE so that scale shows every value, even if not in dataset
+		scale_y_discrete()
 
 	return (heatmap)
 }

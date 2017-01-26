@@ -1,6 +1,3 @@
-library('arulesSequences')
-library('stringr')
-
 #######################################################################################################################################
 # conducts an apriori sequence analysis
 # returns `sequencerules (attr(,"package") "arulesSequences")` object

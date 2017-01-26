@@ -1,5 +1,3 @@
-library('tidyr')
-
 line_plot_wide_data <- function(df_wide, title='line plot', x_label='x', y_label='count', x_factor_order=NULL, y_factor_order=NULL, stack=FALSE, save_file=NULL)
 {
 	df_long = gather_data(df_wide)

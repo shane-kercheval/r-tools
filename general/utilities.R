@@ -1,5 +1,3 @@
-library('purrr')
-
 stopif <- function(condition, message, call=FALSE)
 {
 	if(condition)

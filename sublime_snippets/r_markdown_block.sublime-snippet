@@ -1,7 +1,7 @@
 <snippet>
 	<content><![CDATA[
-```{r${1:, echo=FALSE}}
-${2:code}
+```{r ${1:chunk_name}${2:, echo=FALSE}}
+${3:code}
 ```
 
 

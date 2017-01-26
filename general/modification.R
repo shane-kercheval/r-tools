@@ -1,5 +1,3 @@
-library('purrr')
-
 get_scaled_dataset <- function(data_frame, named_column)
 {
 	return (as.data.frame(lapply(data_frame[, -grep(named_column, colnames(data_frame))], scale)))

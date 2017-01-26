@@ -1,8 +1,3 @@
-library('RColorBrewer')
-library('ggplot2')
-library('scales')
-library(reshape2) # melt
-
 cluster_heatmap <- function(results_df, start_stop=1)
 {
 	heatmap_breaks = c(-Inf, seq(from=(-1 * start_stop), to=start_stop, by=(start_stop/5)), Inf)

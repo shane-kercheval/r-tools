@@ -1,7 +1,3 @@
-require(ggplot2)
-library(reshape2)
-library(dplyr)
-
 confusion_list <- function(true_pos, true_neg, false_pos, false_neg)
 {
 	return (list(true_pos=true_pos, true_neg=true_neg, false_pos=false_pos, false_neg=false_neg, actual_pos = true_pos + false_neg, actual_neg = true_neg + false_pos, total=sum(true_pos, true_neg, false_pos, false_neg)))

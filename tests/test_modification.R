@@ -49,13 +49,28 @@ test_that("modification: get_scaled_dataset", {
 	b_logical = c(FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE)
 	b_numeric = c(0, 1, 0, 1, 0, 1, 0, 1, 0, 1)
 
+	expected_scaled = tribble(
+				~a, ~b,
+		-1.4863011, -0.9486833,
+		-1.1560120,  0.9486833,
+		-0.8257228, -0.9486833,
+		-0.4954337,  0.9486833,
+		-0.1651446, -0.9486833,
+		 0.1651446,  0.9486833,
+		 0.4954337, -0.9486833,
+		 0.8257228,  0.9486833,
+		 1.1560120, -0.9486833,
+		 1.4863011,  0.9486833)
+	
 	data_frame_logical = data.frame(named_column, a, b_logical)
 	scaled_logical = get_scaled_dataset(data_frame=data_frame_logical, named_column='named_column')
-
+	expect_equal(scaled_logical$a, expected_scaled$a, tolerance=0.0000001)
+	expect_equal(scaled_logical$b_logical, expected_scaled$b, tolerance=0.0000001)
+	
 	data_frame_numeric = data.frame(named_column, a, b_numeric)
 	scaled_numeric = get_scaled_dataset(data_frame=data_frame_numeric, named_column='named_column')
-
-	expect_true(all(scaled_logical == scaled_numeric))
+	expect_equal(scaled_numeric$a, expected_scaled$a, tolerance=0.0000001)
+	expect_equal(scaled_numeric$b_numeric, expected_scaled$b, tolerance=0.0000001)
 })
 
 test_that("modification: match_regex", {

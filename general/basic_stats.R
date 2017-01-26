@@ -1,4 +1,3 @@
-library('purrr')
 source('outliers.R', chdir=TRUE)
 
 create_percentile_matrix <- function(list_of_datasets, row_names, percentiles=c(0, 0.025, 0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95, 0.975, 1), round_by=1)	

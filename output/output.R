@@ -1,5 +1,3 @@
-library('stringr')
-
 note_if <- function(x, description=NULL, should_note=FALSE)
 {
 	if(should_note)

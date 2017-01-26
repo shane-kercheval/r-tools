@@ -1,7 +1,4 @@
 source('../general/modification.R', chdir=TRUE)
-library('fpc')
-library('NbClust')
-library('purrr')
 
 hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123)
 {

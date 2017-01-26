@@ -1,3 +1,16 @@
+library(RColorBrewer)
+library(scales)
+library(reshape2)
+library(arules)
+library(arulesSequences)
+library(stringr)
+library(Hmisc)
+library(corrr)
+library(fpc)
+library(NbClust)
+
+library(tidyverse)
+
 source('./clustering/clustering_methods.R', chdir=TRUE)
 source('./clustering/cluster_visualization.R', chdir=TRUE)
 source('./general/basic_stats.R', chdir=TRUE)

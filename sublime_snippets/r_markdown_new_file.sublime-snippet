@@ -11,11 +11,17 @@ output:
     toc_depth: 2
 ---
 
-```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+```{r setup, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 source('~/r-tools/tools.R', chdir=TRUE)
-options(scipen=999)
+options(scipen=999) # non-scientific notation
 options(width=180)
 library(tidyverse)
+library(knitr)
+#clean_cache()
+
+opts_chunk$set(out.width='750px', dpi=200)
+
+${3:code}
 ```
 
 

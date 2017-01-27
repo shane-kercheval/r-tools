@@ -11,7 +11,7 @@ ggplot(data = ${1:df_data}, mapping = aes(x = ${2:continuous_variable})) +
 source('~/r-tools/tools.R', chdir=TRUE)
 gg_qq_plot(data = ${1:df_data}\$${2:continuous_variable})
 
-ggplot(data = ${1:df_data}, mapping = aes(x = ${2:continuous_variable},  y = ${2:continuous_variable}, group = 1)) +
+ggplot(data = ${1:df_data}, mapping = aes(x = '${2:continuous_variable}',  y = ${2:continuous_variable}, group = 1)) +
 	geom_boxplot()
 
 

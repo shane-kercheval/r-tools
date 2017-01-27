@@ -59,11 +59,16 @@ test_that("general: original", {
 
 
 test_that("general: inference", {
-	expect_equal(z.prop(500, 505, 44425, 44405), -0.1657983, tolerance=0.00001) # OpenIntro Statistics Mammogram example page 286-284
+	mammogram_yes <- 500
+	mammogram_no <- 44425
+	control_yes <- 505
+	control_no <- 44405
+	z_prop_results = z.prop(mammogram_yes, control_yes, (mammogram_yes + mammogram_no), (control_yes + control_no))
+	expect_equal(z_prop_results, -0.163933, tolerance=0.00001) # OpenIntro Statistics Mammogram example page 286-284
+	expect_equal(convert.z.score(z_prop_results), 0.8697839, tolerance=0.000001)
+
 	expect_equal(z.prop(30, 65, 74, 103), -2.969695, tolerance=0.00001) # https://www.r-bloggers.com/comparison-of-two-proportions-parametric-z-test-and-non-parametric-chi-squared-methods/
-	expect_equal(convert.z.score(z.prop(500, 505, 44425, 44405)), 0.8683157, tolerance=0.000001)
-
-
+	
 	# x = 30
 	# x_total = 65
 	# y = 74

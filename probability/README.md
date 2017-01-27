@@ -216,3 +216,15 @@ bayes.t.test = function(numeric_vector, n0=1, mu0 = 0,  prior_h1=.5)
 	- mean from sample 2 is larger than mean of sample 1: `H4 : μa <μb -> μdiff < 0`
 - It should be clear that H3 and H4 are included in H2, so that we first need to find the probability of H1 and H2.
 
+```R
+z.prop <- function(x1, x2, n1, n2)
+```
+
+- `x`'s are 'success'
+- `n`'s are total observations (so if you have a contingency table, add both the 'success' and 'failure' cells together)
+
+```R
+convert.z.score <- function(z, one.sided=NULL)
+```
+
+- converts a `z score` from `z.prop` to a `p-value`.

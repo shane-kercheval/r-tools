@@ -31,7 +31,7 @@ save_hierarchical_heatmaps <- function(hierarchical_results, folder, subscript='
 save_hierarchical_dendogram <-function(data_frame, named_column, ideal_cluster_size=NULL, path='./dendogram.png')
 ```
 - takes a data_frame (same as `hierarchical_cluster_analysis`) and generates a dendogram showing ideal number of clusters
-- `named_column` is not used directly but indicates which column should be ignored _(e.g. there would typically be a column that represents a unique row id (e.g. customer_id, that would be ignored by clustering algorithm))_
+- `merge_column` represents a **unique row id** (e.g. customer_id, that would be ignored by clustering algorithm, but is used to merge data back in)
 - if `ideal_cluster_size` was previously calculated, that can be passes as a parameter, otherwise it will be calculated
 
 
@@ -44,15 +44,14 @@ Example of dendogram, which shows the calculated ideal number of clusters:
 ### hierarchical
 
 ```R
-hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123, allow_duplicates=FALSE)
+hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123)
 ```
 - takes a dataframe and runs hierarchical cluster analysis using all numeric and logical (TRUE/FALSE) columns
-- `merge_column` is the name of the that represents a unique row idea _(e.g. customer_id)_ which should be ignored by the cluster analysis. It is also used for merging cluster information and assigning cluster numbers to original data
+-- `merge_column` represents a **unique row id** (e.g. customer_id, that would be ignored by clustering algorithm, but is used to merge data back in)
 - `num_clusters` and `plus_minus` are used to indicate the number of clusters that should be calculated
     - [num_clusters - plus_minus, num_clusters + plus_minus] default: (5-3,5+3) == (2,8)
     - so a cluster analysis will be run for cluster size of 2, 3, ..., 7, 8
-- to allow duplicate rows, set `allow_duplicates` to `TRUE`.
-	- it isn't necessary a problem to have duplicated rows, but more of a reminder to see why there are duplicates and if this is valid
+- duplicate values are not allowed with this implementation because there should be a column that represents a unique id
 
 ```R
 hierarchical_merge_cluster_data <- function(original_data_frame, merge_column, num_clusters=5, plus_minus=3)
@@ -83,7 +82,7 @@ hierarchical_nrow <- function(hierarchical_results)
 kmeans_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123)
 ```
 - takes a dataframe and runs kmeans cluster analysis using all numeric and logical (TRUE/FALSE) columns
-- `merge_column` is the name of the that represents a unique row idea _(e.g. customer_id)_ which should be ignored by the cluster analysis. It is also used for merging cluster information and assigning cluster numbers to original data
+- `merge_column` represents a **unique row id** (e.g. customer_id, that would be ignored by clustering algorithm, but is used to merge data back in)
 - `num_clusters` and `plus_minus` are used to indicate the number of clusters that should be calculated
     - [num_clusters - plus_minus, num_clusters + plus_minus] default: (5-3,5+3) == (2,8)
     - so a cluster analysis will be run for cluster size of 2, 3, ..., 7, 8

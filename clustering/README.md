@@ -44,13 +44,15 @@ Example of dendogram, which shows the calculated ideal number of clusters:
 ### hierarchical
 
 ```R
-hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123)
+hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123, allow_duplicates=FALSE)
 ```
 - takes a dataframe and runs hierarchical cluster analysis using all numeric and logical (TRUE/FALSE) columns
 - `merge_column` is the name of the that represents a unique row idea _(e.g. customer_id)_ which should be ignored by the cluster analysis. It is also used for merging cluster information and assigning cluster numbers to original data
 - `num_clusters` and `plus_minus` are used to indicate the number of clusters that should be calculated
     - [num_clusters - plus_minus, num_clusters + plus_minus] default: (5-3,5+3) == (2,8)
     - so a cluster analysis will be run for cluster size of 2, 3, ..., 7, 8
+- to allow duplicate rows, set `allow_duplicates` to `TRUE`.
+	- it isn't necessary a problem to have duplicated rows, but more of a reminder to see why there are duplicates and if this is valid
 
 ```R
 hierarchical_merge_cluster_data <- function(original_data_frame, merge_column, num_clusters=5, plus_minus=3)

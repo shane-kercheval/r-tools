@@ -1,9 +1,8 @@
 source('../general/modification.R', chdir=TRUE)
 
-hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123)
+hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123, allow_duplicates=FALSE)
 {
-	# make sure there are no duplicate rows for analysis
-	if(any(duplicated(data_frame)))
+	if(!allow_duplicates && any(duplicated(data_frame)))
 	{
 		stop('duplicated values found in dataframe')
 	}
@@ -30,10 +29,9 @@ hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters
 	return (hierarchical_results)
 }
 
-hierarchical_merge_cluster_data <- function(original_data_frame, merge_column, num_clusters=5, plus_minus=3)
+hierarchical_merge_cluster_data <- function(original_data_frame, merge_column, num_clusters=5, plus_minus=3, allow_duplicates=FALSE)
 {
-		# make sure there are no duplicate rows for analysis
-	if(any(duplicated(original_data_frame)))
+	if(!allow_duplicates && any(duplicated(original_data_frame)))
 	{
 		stop('duplicated values found in dataframe')
 	}
@@ -67,10 +65,9 @@ hierarchical_merge_cluster_data <- function(original_data_frame, merge_column, n
 	return (final)
 }
 
-kmeans_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123)
+kmeans_cluster_analysis <- function(data_frame, merge_column, num_clusters=5, plus_minus=3, seed_num=123, allow_duplicates=FALSE)
 {
-	# make sure there are no duplicate rows for analysis
-	if(any(duplicated(data_frame)))
+	if(!allow_duplicates && any(duplicated(data_frame)))
 	{
 		stop('duplicated values found in dataframe')
 	}

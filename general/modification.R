@@ -68,3 +68,18 @@ add_matrix_totals <- function(contingency_table)
 
 	return (contingency_table)
 }
+
+add_dummy_columns <- function(data_frame, column_name, sort_levels=FALSE)
+{
+	levels <- unique(data_frame[, column_name])
+	if(sort_levels)
+	{
+		levels <- sort(levels)
+	}
+	for(level in levels[1:(length(levels)-1)])
+	{
+		data_frame[paste(column_name, "_dum_", level, sep = "_")] <- ifelse(data_frame[,column_name] == level, 1, 0)
+	}
+
+	return(data_frame)
+}

@@ -236,6 +236,12 @@ logit <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)
 ## modification.R
 
 ```R
+add_dummy_columns <- function(data_frame, column_name, sort_levels=FALSE)
+```
+- takes a dataframe and for the specified (string) column `column_name`, creates x-1 dummy columns where x is the number of levels/factors of `column_name`
+- `sort_levels` TRUE indicates that the order of columns should depend on `sort` method of levels.
+
+```R
 add_matrix_totals <- function(contingency_table)
 ```
 - takes a matrix (i.e. in contingency table format) and adds row and column totals.

@@ -141,3 +141,15 @@ test_that("modification: normalize", {
 	expect_equal(colnames(contingency_table), c("18-29", "30-49", "50-64", "65+", "TOTALS"))
 	expect_equal(rownames(contingency_table), c("yes", "no", "TOTALS"))
 })
+
+test_that("modification: add_dummy_columns", {
+	
+	df_test <- data.frame(strcol = c("A", "A", "B", "F", "C", "G", "C", "D", "E", "F"))
+	df_actual <- add_dummy_columns(data_frame = df_test, column_name = 'strcol')
+	df_expected <- readRDS('./data/add_dummy_columns_sort_false.Rds')
+	expect_true(all(df_actual == df_expected))
+	df_test <- data.frame(strcol = c("A", "A", "B", "F", "C", "G", "C", "D", "E", "F"))
+	df_actual <- add_dummy_columns(data_frame = df_test, column_name = 'strcol', sort_levels = TRUE)
+	df_expected <- readRDS('./data/add_dummy_columns_sort_true.Rds')
+	expect_true(all(df_actual == df_expected))
+})

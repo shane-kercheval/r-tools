@@ -143,13 +143,19 @@ test_that("modification: normalize", {
 })
 
 test_that("modification: add_dummy_columns", {
-	
+	# default
 	df_test <- data.frame(strcol = c("A", "A", "B", "F", "C", "G", "C", "D", "E", "F"))
 	df_actual <- add_dummy_columns(data_frame = df_test, column_name = 'strcol')
 	df_expected <- readRDS('./data/add_dummy_columns_sort_false.Rds')
 	expect_true(all(df_actual == df_expected))
+	# sort levels
 	df_test <- data.frame(strcol = c("A", "A", "B", "F", "C", "G", "C", "D", "E", "F"))
 	df_actual <- add_dummy_columns(data_frame = df_test, column_name = 'strcol', sort_levels = TRUE)
 	df_expected <- readRDS('./data/add_dummy_columns_sort_true.Rds')
+	expect_true(all(df_actual == df_expected))
+	# use factor levels in variable
+	df_test <- data.frame(strcol = factor(c("A", "A", "B", "F", "C", "G", "C", "D", "E", "F"), levels = c('G', 'F', 'E', 'D', 'C', 'B', 'A')))
+	df_actual <- add_dummy_columns(data_frame = df_test, column_name = 'strcol', use_levels = TRUE)
+	df_expected <- readRDS('./data/add_dummy_columns_use_levels.Rds')
 	expect_true(all(df_actual == df_expected))
 })

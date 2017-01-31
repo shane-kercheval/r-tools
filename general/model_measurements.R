@@ -98,7 +98,7 @@ visualize_quality_of_model <- function(conf_list)
 {
 	model_quality = quality_of_model(conf_list)
 
-	df_quality = melt(model_quality %>% select(-recall, -actual_pos_prob, -total_observations), id.vars=NULL)
+	df_quality = melt(model_quality %>% dplyr::select(-recall, -actual_pos_prob, -total_observations), id.vars=NULL)
 	df_quality$value = round(df_quality$value, 3)
 	df_quality$category = factor(NA,levels=c('data','overall','pos correct', 'neg correct', 'incorrect'),ordered=TRUE)
 

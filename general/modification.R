@@ -71,6 +71,7 @@ add_matrix_totals <- function(contingency_table)
 
 add_dummy_columns <- function(data_frame, column_name, sort_levels=FALSE, use_levels=FALSE, custom_levels = NULL)
 {
+	data_frame <- as.data.frame(data_frame) # if it is a tibble, at times columns are class matrix
 	levels <- unique(as.character(data_frame[, column_name]))
 	if(sort_levels)
 	{

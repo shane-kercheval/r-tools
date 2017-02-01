@@ -86,7 +86,7 @@ add_dummy_columns <- function(data_frame, column_name, sort_levels=FALSE, use_le
 	}
 	for(level in levels[1:(length(levels)-1)])
 	{
-		data_frame[paste(column_name, "_dum_", level, sep = "_")] <- ifelse(data_frame[,column_name] == level, 1, 0)
+		data_frame[paste0(column_name, "_dum_", level)] <- ifelse(data_frame[,column_name] == level, 1, 0)
 	}
 
 	return(data_frame)

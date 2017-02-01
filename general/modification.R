@@ -69,7 +69,7 @@ add_matrix_totals <- function(contingency_table)
 	return (contingency_table)
 }
 
-add_dummy_columns <- function(data_frame, column_name, sort_levels=FALSE, use_levels=FALSE)
+add_dummy_columns <- function(data_frame, column_name, sort_levels=FALSE, use_levels=FALSE, custom_levels = NULL)
 {
 	levels <- unique(as.character(data_frame[, column_name]))
 	if(sort_levels)
@@ -79,6 +79,10 @@ add_dummy_columns <- function(data_frame, column_name, sort_levels=FALSE, use_le
 	if(use_levels)
 	{
 		levels <- levels(data_frame[, column_name])
+	}
+	if(!is.null(custom_levels))
+	{
+		levels <- custom_levels
 	}
 	for(level in levels[1:(length(levels)-1)])
 	{

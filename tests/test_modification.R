@@ -158,4 +158,9 @@ test_that("modification: add_dummy_columns", {
 	df_actual <- add_dummy_columns(data_frame = df_test, column_name = 'strcol', use_levels = TRUE)
 	df_expected <- readRDS('./data/add_dummy_columns_use_levels.Rds')
 	expect_true(all(df_actual == df_expected))
+	# use custom levels in variable
+	df_test <- data.frame(strcol = factor(c("A", "A", "B", "F", "C", "G", "C", "D", "E", "F"), levels = c('G', 'F', 'E', 'D', 'C', 'B', 'A')))
+	df_actual <- add_dummy_columns(data_frame = df_test, column_name = 'strcol', custom_levels = c('F', 'G', 'E', 'D', 'C', 'B', 'A'))
+	df_expected <- readRDS('./data/add_dummy_columns_custom_levels.Rds')
+	expect_true(all(df_actual == df_expected))
 })

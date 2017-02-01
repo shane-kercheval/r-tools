@@ -242,6 +242,7 @@ add_dummy_columns <- function(data_frame, column_name, sort_levels=FALSE)
 - `sort_levels` TRUE indicates that the order of columns should depend on `sort` method of levels.
 - `use_levels` TRUE indicates that the order of the columns should depend on the levels of the column (requires a factor variable).
 	- the last level will be the variable left out.
+- `custom_levels` allows you to specify custom ordering of levels by passing in a character vector
 
 ```R
 add_matrix_totals <- function(contingency_table)

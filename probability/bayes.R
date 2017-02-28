@@ -1,3 +1,5 @@
+source('../general/model_measurements.R', chdir=TRUE)
+
 # estimate the probability of hypothesis (h) given evidence (e) p_h_given_e
 # P(E)=P(E|H)*P(H)  +  P(E|not H)*P(not H)|
 bayes_simple <- function(p_e, p_h, p_e_given_h)

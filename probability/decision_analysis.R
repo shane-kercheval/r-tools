@@ -1,3 +1,5 @@
+source('../general/model_measurements.R', chdir=TRUE)
+
 expected_value <- function(probs=NULL, n_occur=NULL, benefits)
 {
 	if(is.null(probs))

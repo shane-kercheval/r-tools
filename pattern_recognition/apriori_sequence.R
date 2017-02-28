@@ -1,3 +1,8 @@
+library(arules)
+library(arulesSequences)
+library(stringr)
+source('./apriori.R', chdir=TRUE)
+
 #######################################################################################################################################
 # conducts an apriori sequence analysis
 # returns `sequencerules (attr(,"package") "arulesSequences")` object

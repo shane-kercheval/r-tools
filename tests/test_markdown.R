@@ -1,6 +1,6 @@
 library('testthat')
 library('readr')
-source('../tools.R', chdir=TRUE)
+source('../output/markdown.R', chdir=TRUE)
 
 #to run from command line, use:
 #library('testthat')
@@ -36,7 +36,7 @@ test_that("output: markdown", {
 	sink() # remove sink
 
 	test_file_text = read_file(markdown_file)
-	expect_that(nchar(test_file_text), equals(2731))
+	expect_that(nchar(test_file_text), equals(2724))
 })
 
 test_that("output: table_matrix", {

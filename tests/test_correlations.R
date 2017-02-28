@@ -1,4 +1,4 @@
-source('../tools.R', chdir=TRUE)
+source('../general/correlations.R', chdir=TRUE)
 library('testthat')
 library(reshape2) # melt
 

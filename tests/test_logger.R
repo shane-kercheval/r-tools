@@ -1,6 +1,6 @@
 library('testthat')
 library('readr')
-source('../tools.R', chdir=TRUE)
+source('../output/logger.R', chdir=TRUE)
 
 #to run from command line, use:
 #library('testthat')

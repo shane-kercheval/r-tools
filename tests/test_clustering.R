@@ -1,5 +1,5 @@
 library('testthat')
-source('../tools.R', chdir=TRUE)
+source('../clustering/clustering_methods.R', chdir=TRUE)
 
 #to run from command line, use:
 #test_file("test_clustering.R")
@@ -70,11 +70,11 @@ test_that("clustering: methods", {
 		file.remove(filename)
 	}))
 
-	save_hierarchical_dendogram(data_frame=worlddata_no_na, named_column='country')
+	hierarchical_dendogram(data_frame=worlddata_no_na, named_column='country')
 	expect_true(file.exists('./dendogram.png'))
 	file.remove('./dendogram.png')
 	
-	save_hierarchical_dendogram(data_frame=worlddata_no_na, named_column='country', ideal_cluster_size = 10)
+	hierarchical_dendogram(data_frame=worlddata_no_na, named_column='country', ideal_cluster_size = 10)
 	expect_true(file.exists('./dendogram.png'))
 	file.remove('./dendogram.png')
 

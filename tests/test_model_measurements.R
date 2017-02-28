@@ -1,6 +1,7 @@
 library('testthat')
 library('caret')
-source('../tools.R', chdir=TRUE)
+source('../general/model_measurements.R', chdir=TRUE)
+source('../probability/bayes.R', chdir=TRUE)
 
 #to run from command line, use:
 #library('testthat')

@@ -1,5 +1,5 @@
 library('testthat')
-source('../tools.R', chdir=TRUE)
+source('../general/basic_stats.R', chdir=TRUE)
 
 #to run from command line, use:
 #library('testthat')

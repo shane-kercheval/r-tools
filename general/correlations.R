@@ -1,3 +1,5 @@
+library(Hmisc)
+
 get_correlations <- function(data_frame, corr_threshold=0.7, p_value_threshold=0.1, type='pearson')
 {
 	numeric_columns = map_lgl(data_frame, is.numeric)

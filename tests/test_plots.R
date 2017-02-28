@@ -1,6 +1,6 @@
 library('testthat')
-source('../tools.R', chdir=TRUE)
-library(dplyr)
+source('../output/plots.R', chdir=TRUE)
+source('../probability/bayes.R', chdir=TRUE)
 
 #to run from command line, use:
 #library('testthat')

@@ -1,5 +1,5 @@
 library('testthat')
-source('../tools.R', chdir=TRUE)
+source('../probability/decision_analysis.R', chdir=TRUE)
 
 #to run from command line, use:
 #library('testthat')

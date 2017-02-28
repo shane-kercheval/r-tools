@@ -1,5 +1,5 @@
 library('testthat')
-source('../tools.R', chdir=TRUE)
+source('../general/utilities.R', chdir=TRUE)
 
 #to run from command line, use:
 #test_file("test_utilities.R")

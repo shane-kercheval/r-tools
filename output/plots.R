@@ -182,7 +182,7 @@ tree_diagram <- function (p_a, p_b_given_a, p_b_given_not_a, file_name = NULL)
 	}
 }
 
-gg_qq_plot <- function(data_vector)
+gg_qq_plot <- function(data_vector, data_name = 'sample')
 {
 	# QQ Plot (examine fit of normal distribution)
 	slope = diff(quantile(data_vector, c(0.25, 0.75))) / diff(qnorm(c(0.25, 0.75)))
@@ -191,5 +191,5 @@ gg_qq_plot <- function(data_vector)
 				geom_qq(alpha=0.3) +
 				geom_abline(aes(slope=slope, intercept = int), col='red') + 
 				coord_cartesian(xlim = c(-3, 3), ylim = c(-3, 3)) + 
-				labs(title = 'QQ Plot', subtitle = 'examines fit of a normal distribution'))
+				labs(title = 'QQ Plot', subtitle = paste('examines fit of a normal distribution vs.', data_name), x = data_name))
 }

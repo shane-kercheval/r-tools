@@ -1,4 +1,4 @@
-library(dplyr)
+library(tidyverse)
 
 line_plot_wide_data <- function(df_wide, title='line plot', x_label='x', y_label='count', x_factor_order=NULL, y_factor_order=NULL, stack=FALSE, save_file=NULL)
 {
@@ -189,5 +189,7 @@ gg_qq_plot <- function(data_vector)
 	int = quantile(data_vector, 0.25) - slope * qnorm(0.25)
 	return (ggplot(NULL, aes(sample=data_vector)) +
 				geom_qq(alpha=0.3) +
-				geom_abline(aes(slope=slope, intercept = int), col='red'))
+				geom_abline(aes(slope=slope, intercept = int), col='red') + 
+				coord_cartesian(xlim = c(-3, 3), ylim = c(-3, 3)) + 
+				labs(title = 'QQ Plot', subtitle = 'examines fit of a normal distribution'))
 }

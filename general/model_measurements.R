@@ -192,9 +192,9 @@ gain_lift_charts <- function(gl_table, round_by = 2)
 	zero_row = data.frame(percentile = 0, number_of_observations = 0, number_of_events = 0, cumulative_events = 0, percentage_of_events = 0, gain = 0, lift = 0)
 	gain_data <- rbind(zero_row, gl_table)
 	gain_data_long <- gather(gain_data %>% 
-							select(percentile, gain) %>% 
-							mutate(percentile = round(percentile * 10), gain_random = axis_sequence) %>% 
-							rename(gain_model = gain),
+							dplyr::select(percentile, gain) %>% 
+							dplyr::mutate(percentile = round(percentile * 10), gain_random = axis_sequence) %>% 
+							dplyr::rename(gain_model = gain),
 						key = gain_type, percent_of_events, -percentile)
 	gain_data_long$gain_type = factor(gain_data_long$gain_type, levels = rev(unique(gain_data_long$gain_type)))
 	gain_chart <- ggplot(data = gain_data_long, mapping = aes(x = percentile, y = percent_of_events, col = gain_type)) + 
@@ -207,9 +207,9 @@ gain_lift_charts <- function(gl_table, round_by = 2)
 		labs(caption = paste0("\ne.g., ", gain_20th_percentile, "% of the events are covered in the top 20% of data based on the model. \nIn the case of propensity to buy, we can say we can\nidentify and target ", gain_20th_percentile, "% of customers who are\nlikely to buy the product by just sending email to\n20% of total customers."))
 
 	lift_data_long <- gather(gl_table %>% 
-							select(percentile, lift) %>% 
-							mutate(percentile = round(percentile * 10), lift_random = rep(1, 10)) %>% 
-							rename(lift_model = lift),
+							dplyr::select(percentile, lift) %>% 
+							dplyr::mutate(percentile = round(percentile * 10), lift_random = rep(1, 10)) %>% 
+							dplyr::rename(lift_model = lift),
 						key = lift_type, lift, -percentile)
 	lift_data_long$lift_type = factor(lift_data_long$lift_type, levels = rev(unique(lift_data_long$lift_type)))
 	lift_chart <- ggplot(data = lift_data_long, mapping = aes(x = percentile, y = lift, col = lift_type)) + 

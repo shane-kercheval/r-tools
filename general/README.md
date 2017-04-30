@@ -263,6 +263,23 @@ Example Lift Chart:
 
 ![example_lift_chart.png](example_lift_chart.png)
 
+```R
+calibration_table <- function(actual_observations, predicted_probabilities, target_positive_class = 'positive')
+```
+- a calibration chart/plot/table "shows some measure of the observed probability of an event versus the predicted class probability." [Applied Predictive Modeling By Max Kuhn and Kjell Johnson, pg 249](http://appliedpredictivemodeling.com/)
+
+
+```R
+calibration_chart <- function(cal_table, round_by = 2)
+```
+- this function returns a ggplot objects showing a calibration chart based on [Applied Predictive Modeling By Max Kuhn and Kjell Johnson, pg 249](http://appliedpredictivemodeling.com/)
+- `cal_table` takes a dataframe returned by the `gain_lift_table()` function.
+
+
+Example Calibration Chart: 
+
+![example_calibration_chart.png](example_calibration_chart.png)
+
 ## modification.R
 
 ```R

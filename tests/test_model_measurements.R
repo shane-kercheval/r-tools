@@ -124,8 +124,8 @@ test_that("general: model_measurements", {
 	expect_equal(specificity(conf_list), 1 - false_positive_rate(conf_list))
 })
 
-test_that("df_gain_lift: model_measurements", {
-library(purrr)
+test_that("gain_lift_table: model_measurements", {
+	require(purrr)
 	actual_observations <- NULL
 	events <- c(2179, 1753, 396, 111, 110, 85, 67, 69, 49, 55)
 	walk(events, ~ {
@@ -150,4 +150,25 @@ library(purrr)
 
 	expect_true(file.exists('../general/example_gain_chart.png'))
 	expect_true(file.exists('../general/example_lift_chart.png'))
+})
+
+test_that("calibration_table: model_measurements", {
+	predicted_probabilities <- readRDS('./data/calibration_predicted_probabilities.RDS')
+	actual_observations <- readRDS('./data/calibration_actual_observations.RDS')
+
+	cal_table <- calibration_table(actual_observations = actual_observations, predicted_probabilities = predicted_probabilities, target_positive_class = 'yes')
+	#saveRDS(cal_table, file = './data/model_measurements_calibration_table.RDS')
+	expected_cal_table <- readRDS(file = './data/model_measurements_calibration_table.RDS')
+	expect_true(all.equal(cal_table, expected_cal_table))
+	
+	expect_equal(sum(cal_table$number_of_observations), 100)
+	expect_equal(sum(cal_table$number_of_events), 30)
+	
+	file.remove('../general/example_calibration_chart.png')
+	
+	cal_chart <- calibration_chart(cal_table = cal_table)
+	ggsave(filename = '../general/example_calibration_chart.png', plot = cal_chart)
+
+	expect_true(file.exists('../general/example_calibration_chart.png'))
+	
 })

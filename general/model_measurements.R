@@ -236,3 +236,56 @@ gain_lift_charts <- function(gl_table, round_by = 2)
 
 	return (list(gain_chart, lift_chart))
 }
+
+calibration_table <- function(actual_observations, predicted_probabilities, target_positive_class = 'positive')
+{
+	df_calibration <- data.frame(actual_observations = actual_observations, predicted_probabilities = predicted_probabilities) %>%
+		dplyr::mutate(bins = cut(predicted_probabilities, breaks = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), include.lowest = TRUE)) %>%
+		dplyr::arrange(desc(predicted_probabilities))
+
+	cal_table <- df_calibration %>%
+		dplyr::group_by(bins) %>%
+		dplyr::summarise(   number_of_observations = n(),
+							number_of_events = sum(actual_observations == target_positive_class),
+							percent_events_in_percentile = number_of_events / number_of_observations)
+
+	# make sure each percentile exists, levels will give all breaks, even if non-existed in actual data
+	bin_levels <- levels(cal_table$bins)
+	walk(bin_levels, ~ {
+		level <- .
+		if(!(level %in% cal_table$bins))
+		{
+			cal_table <<- rbind(cal_table, data.frame(  bins = factor(level, levels = levels(cal_table$bins), ordered = TRUE),
+														number_of_observations = 0,
+														number_of_events = 0,
+														percent_events_in_percentile = 0))	
+		}
+	})
+	cal_table <- cal_table %>% arrange(bins)
+	return(cal_table)
+}
+
+calibration_chart <- function(cal_table, round_by = 2)
+{
+	require(scales)
+	second_bin_observations <- cal_table[2, ]$number_of_observations
+	second_bin_events <- cal_table[2, ]$number_of_events
+
+	calibration_midpoints <- seq(from = 0.05, to = 0.95, by = 0.1)
+	cal_table_long <- cal_table %>%
+		dplyr::mutate(ideal_calibration = calibration_midpoints) %>%
+		dplyr::rename(model_calibration = percent_events_in_percentile) %>%
+		gather(calibration_type, calibration_value, -bins, -number_of_observations, -number_of_events) %>%
+		dplyr::mutate(calibration_type = factor(calibration_type))
+
+	cal_chart <- ggplot(data = cal_table_long, aes(x = bins, y = calibration_value, col = calibration_type, group = calibration_type)) +
+		geom_line(size = 0.8, alpha = 0.7) +
+		geom_point() +
+		scale_y_continuous(breaks = seq(from = 0, to = 1, by = 0.1)) +
+		geom_text(aes(label=ifelse(calibration_type == 'model_calibration', paste0(number_of_events, ' / ', number_of_observations), '')), hjust = 0.5, vjust = -0.7) +
+		theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+		ggtitle('Calibration Chart') + ylab('Percent of Events Found in Corresponding Bin') + xlab('Predited Probabilities') +
+		labs(caption = paste("\nShows the % of actual events found for each group of binned predicted probabilities.\nFor example, in the second bin (predicted probabilities range from > 0.1 to <= 0.2),\n out of the", second_bin_observations, "observations in that bin,", second_bin_events, "`actual` events are found.\nIf the points fall along the 45 degree line, the model has produced well-calibrated\nprobabilities."))
+
+	return (cal_chart)
+}

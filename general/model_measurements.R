@@ -185,22 +185,34 @@ gain_lift_table <- function(actual_observations, predicted_probabilities = NULL,
 # assumes number_of_bins is 10
 gain_lift_charts <- function(gl_table, round_by = 2)
 {
+	if(nrow(gl_table) != 10)
+	{
+		stop('`gain_lift_charts` only designed for 10 bins')
+	}
+	
 	axis_sequence <- seq(from = 0, to = 100, by = 10)
 	gain_20th_percentile <- round(gl_table[2, ]$gain, round_by)
 	lift_20th_percentile <- round(gl_table[2, ]$lift, round_by)
+	
+	prevalence <- sum(gl_table$number_of_events) / sum(gl_table$number_of_observations)
+	ideal_gain_line <- map_dbl(seq(from = 0.10, to =1.0, by = 0.10), ~ {
+		# how far are we from 0 to the prevalence?
+		return (min(. / prevalence, 1) * 100)
+	})
 	
 	zero_row = data.frame(percentile = 0, number_of_observations = 0, number_of_events = 0, cumulative_events = 0, percentage_of_events = 0, gain = 0, lift = 0)
 	gain_data <- rbind(zero_row, gl_table)
 	gain_data_long <- gather(gain_data %>% 
 							dplyr::select(percentile, gain) %>% 
-							dplyr::mutate(percentile = round(percentile * 10), gain_random = axis_sequence) %>% 
+							dplyr::mutate(percentile = round(percentile * 10), gain_random = axis_sequence, gain_perfect = c(0, ideal_gain_line)) %>% 
 							dplyr::rename(gain_model = gain),
 						key = gain_type, percent_of_events, -percentile)
+	gain_data_long <- rbind(data.frame(percentile = prevalence * 100, gain_type = 'gain_perfect', percent_of_events = 100), gain_data_long)
 	gain_data_long$gain_type = factor(gain_data_long$gain_type, levels = rev(unique(gain_data_long$gain_type)))
 	gain_chart <- ggplot(data = gain_data_long, mapping = aes(x = percentile, y = percent_of_events, col = gain_type)) + 
 		geom_line() +
 		geom_point() +
-		geom_text(aes(label=ifelse(percent_of_events > 1, as.character(round(percent_of_events, round_by)), '')), hjust = 0.5, vjust = -1) +
+		geom_text(aes(label=ifelse(percent_of_events > 1 & gain_type != 'gain_perfect', as.character(round(percent_of_events, round_by)), '')), hjust = 0.5, vjust = -1) +
 		scale_x_continuous(breaks = axis_sequence) +
 		scale_y_continuous(breaks = axis_sequence) +
 		ggtitle('Gain Chart') + ylab('% of Actual Events in Percentile') + xlab('Percentile (lower percentiles contain higher predicted probabilities)') +

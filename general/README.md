@@ -233,6 +233,36 @@ odds <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)
 logit <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)
 ```
 
+```R
+gain_lift_table <- function(actual_observations, predicted_probabilities = NULL, number_of_bins = 10, target_positive_class = 'positive')
+```
+- creates a gain/lift table based on http://www.listendata.com/2014/08/excel-template-gain-and-lift-charts.html
+	- if `predicted_probabilities` is not passed in, then `actual_observations` needs to be ordered by the corresponding predicted probabilities in descending order.
+
+- according to the [reference above](http://www.listendata.com/2014/08/excel-template-gain-and-lift-charts.html):
+
+> **Gain** at a given decile level is the ratio of cumulative number of targets (events) up to that decile to the total number of targets (events) in the entire data set.
+
+> Interpretation: % of targets (events) covered at a given decile level. For example,  80% of targets covered in top 20% of data based on model. In the case of propensity to buy model, we can say we can identify and target 80% of customers who are likely to buy the product by just sending email to 20% of total customers.
+
+> **Lift** measures how much better one can expect to do with the predictive model comparing without a model. It is the ratio of gain % to the random expectation % at a given decile level. The random expectation at the xth decile is x%.
+
+> Interpretation: The Cumumative Lift of 4.03 for top two deciles, means that when selecting 20% of the records based on the model, one can expect 4.03 times the total number of targets (events) found by randomly selecting 20%-of-file without a model.
+
+```R
+gain_lift_charts <- function(gain_lift_table, round_by = 2)
+```
+- this function returns a list of two ggplot objects, the first containing the `gain` chart, and the second contining the `lift` chart.
+- `gl_table` takes a dataframe returned by the `gain_lift_table()` function.
+
+Example Gain Chart: 
+
+![example_gain_chart.png](example_gain_chart.png)
+
+Example Lift Chart: 
+
+![example_lift_chart.png](example_lift_chart.png)
+
 ## modification.R
 
 ```R

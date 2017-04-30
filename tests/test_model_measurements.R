@@ -123,3 +123,29 @@ test_that("general: model_measurements", {
 	#specificity is 1-false_positive_rate
 	expect_equal(specificity(conf_list), 1 - false_positive_rate(conf_list))
 })
+
+test_that("df_gain_lift: model_measurements", {
+library(purrr)
+	actual_observations <- NULL
+	events <- c(2179, 1753, 396, 111, 110, 85, 67, 69, 49, 55)
+	walk(events, ~ {
+		temp_events <- rep('yes', .)
+		temp_events_no <- rep('no', 2500 - .)
+		actual_observations <<- c(actual_observations, temp_events, temp_events_no)
+	})
+
+	gl_table <- gain_lift_table(actual_observations = actual_observations, predicted_probabilities = NULL, number_of_bins = 10, target_positive_class = 'yes')
+	#saveRDS(gl_table, file = './data/model_measurements_gain_lift_table.RDS')
+	expected_gain_lift_table <- readRDS(file = './data/model_measurements_gain_lift_table.RDS')
+	expect_true(all.equal(gl_table, expected_gain_lift_table))
+	
+	file.remove('../general/example_gain_chart.png')
+	file.remove('../general/example_lift_chart.png')
+
+	gl_charts <- gain_lift_charts(gl_table = gl_table)
+	ggsave(filename = '../general/example_gain_chart.png', plot = gl_charts[[1]])
+	ggsave(filename = '../general/example_lift_chart.png', plot = gl_charts[[2]])
+
+	expect_true(file.exists('../general/example_gain_chart.png'))
+	expect_true(file.exists('../general/example_lift_chart.png'))
+})

@@ -1,3 +1,7 @@
+library(dplyr)
+library(tidyr)
+library(reshape2)
+
 confusion_list <- function(true_pos, true_neg, false_pos, false_neg)
 {
 	return (list(true_pos=true_pos, true_neg=true_neg, false_pos=false_pos, false_neg=false_neg, actual_pos = true_pos + false_neg, actual_neg = true_neg + false_pos, total=sum(true_pos, true_neg, false_pos, false_neg)))
@@ -143,4 +147,78 @@ odds <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)
 logit <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)
 {
 	return (log(odds(b=b, b1=b1, x1=x1, b2=b2, x2=x2, b3=b3, x3=x3, b4=b4, x4=x4, b5=b5, x5=x5)))
+}
+
+# if predicted_probabilities is not passed in, then actual_observations needs to be ordered by the corresponding predicted probabilities in desc order
+gain_lift_table <- function(actual_observations, predicted_probabilities = NULL, number_of_bins = 10, target_positive_class = 'positive')
+{
+	total_observations <- length(actual_observations)
+	total_events <- sum(actual_observations == target_positive_class)
+
+	df_gain_lift <- data.frame(actual_observations = actual_observations)
+	if(!is.null(predicted_probabilities))
+	{
+		df_gain_lift <- df_gain_lift %>%
+			mutate(predicted_probabilities = predicted_probabilities) %>%
+			arrange(desc(predicted_probabilities))
+	}
+
+	# it is assumed at this point the data is arranged descended by the corresponiding predicted probabilities
+	df_gain_lift <- df_gain_lift %>%
+		mutate(percentile = floor((row_number() - 1) / ceiling(total_observations/number_of_bins) + 1))
+
+	final_gain_lift_table <- df_gain_lift %>%
+		group_by(percentile) %>%
+		summarise(number_of_observations = n(),
+				  number_of_events = sum(actual_observations == target_positive_class),
+				  percentage_of_events = number_of_events / total_events) %>%
+		mutate(cumulative_observations = cumsum(number_of_observations),
+			   cumulative_events = cumsum(number_of_events),
+			   gain_score = percentage_of_events * 100,
+			   gain = cumsum(gain_score),
+			   lift = (gain / 100) / (cumulative_observations / total_observations)) %>%
+		dplyr::select(percentile, number_of_observations, number_of_events, cumulative_events, percentage_of_events, gain, lift)
+
+	return (final_gain_lift_table)
+}
+
+# assumes number_of_bins is 10
+gain_lift_charts <- function(gl_table, round_by = 2)
+{
+	axis_sequence <- seq(from = 0, to = 100, by = 10)
+	gain_20th_percentile <- round(gl_table[2, ]$gain, round_by)
+	lift_20th_percentile <- round(gl_table[2, ]$lift, round_by)
+	
+	zero_row = data.frame(percentile = 0, number_of_observations = 0, number_of_events = 0, cumulative_events = 0, percentage_of_events = 0, gain = 0, lift = 0)
+	gain_data <- rbind(zero_row, gl_table)
+	gain_data_long <- gather(gain_data %>% 
+							select(percentile, gain) %>% 
+							mutate(percentile = round(percentile * 10), gain_random = axis_sequence) %>% 
+							rename(gain_model = gain),
+						key = gain_type, percent_of_events, -percentile)
+	gain_data_long$gain_type = factor(gain_data_long$gain_type, levels = rev(unique(gain_data_long$gain_type)))
+	gain_chart <- ggplot(data = gain_data_long, mapping = aes(x = percentile, y = percent_of_events, col = gain_type)) + 
+		geom_line() +
+		geom_point() +
+		geom_text(aes(label=ifelse(percent_of_events > 1, as.character(round(percent_of_events, round_by)), '')), hjust = 0.5, vjust = -1) +
+		scale_x_continuous(breaks = axis_sequence) +
+		scale_y_continuous(breaks = axis_sequence) +
+		ggtitle('Gain Chart') + ylab('% of Actual Events in Percentile') + xlab('Percentile (lower percentiles contain higher predicted probabilities)') +
+		labs(caption = paste0("\ne.g., ", gain_20th_percentile, "% of the events are covered in the top 20% of data based on the model. \nIn the case of propensity to buy, we can say we can\nidentify and target ", gain_20th_percentile, "% of customers who are\nlikely to buy the product by just sending email to\n20% of total customers."))
+
+	lift_data_long <- gather(gl_table %>% 
+							select(percentile, lift) %>% 
+							mutate(percentile = round(percentile * 10), lift_random = rep(1, 10)) %>% 
+							rename(lift_model = lift),
+						key = lift_type, lift, -percentile)
+	lift_data_long$lift_type = factor(lift_data_long$lift_type, levels = rev(unique(lift_data_long$lift_type)))
+	lift_chart <- ggplot(data = lift_data_long, mapping = aes(x = percentile, y = lift, col = lift_type)) + 
+		geom_line() +
+		geom_point() +
+		geom_text(aes(label=ifelse(lift > 1, as.character(round(lift, round_by)), '')), hjust = 0, vjust = -0.5) +
+		scale_x_continuous(breaks = axis_sequence) +
+		ggtitle('Lift Chart') + ylab('Lift') + xlab('Percentile (lower percentiles contain higher predicted probabilities)') +
+		labs(caption = paste("(e.g.) The Cumulative Lift of", lift_20th_percentile, "for top 20% of model predictions, means that when\nselecting 20% of the records based on the model, one can expect", lift_20th_percentile, "times the\ntotal number of targets (events) found than by randomly selecting 20% without a model."))
+
+	return (list(gain_chart, lift_chart))
 }

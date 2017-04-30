@@ -139,6 +139,8 @@ library(purrr)
 	expected_gain_lift_table <- readRDS(file = './data/model_measurements_gain_lift_table.RDS')
 	expect_true(all.equal(gl_table, expected_gain_lift_table))
 	
+	expect_equal(sum(gl_table$percentage_of_events), 1) # table should account for 100% of events
+	
 	file.remove('../general/example_gain_chart.png')
 	file.remove('../general/example_lift_chart.png')
 

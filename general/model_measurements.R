@@ -165,10 +165,10 @@ gain_lift_table <- function(actual_observations, predicted_probabilities = NULL,
 
 	# it is assumed at this point the data is arranged descended by the corresponiding predicted probabilities
 	df_gain_lift <- df_gain_lift %>%
-		mutate(percentile = floor((row_number() - 1) / ceiling(total_observations/number_of_bins) + 1))
+		mutate(bin_number = floor((row_number() - 1) / ceiling(total_observations/number_of_bins) + 1))
 
 	final_gain_lift_table <- df_gain_lift %>%
-		group_by(percentile) %>%
+		group_by(bin_number) %>%
 		summarise(number_of_observations = n(),
 				  number_of_events = sum(actual_observations == target_positive_class),
 				  percentage_of_events = number_of_events / total_events) %>%
@@ -177,7 +177,7 @@ gain_lift_table <- function(actual_observations, predicted_probabilities = NULL,
 			   gain_score = percentage_of_events * 100,
 			   gain = cumsum(gain_score),
 			   lift = (gain / 100) / (cumulative_observations / total_observations)) %>%
-		dplyr::select(percentile, number_of_observations, number_of_events, cumulative_events, percentage_of_events, gain, lift)
+		dplyr::select(bin_number, number_of_observations, number_of_events, cumulative_events, percentage_of_events, gain, lift)
 
 	return (final_gain_lift_table)
 }
@@ -200,11 +200,12 @@ gain_lift_charts <- function(gl_table, round_by = 2)
 		return (min(. / prevalence, 1) * 100)
 	})
 	
-	zero_row = data.frame(percentile = 0, number_of_observations = 0, number_of_events = 0, cumulative_events = 0, percentage_of_events = 0, gain = 0, lift = 0)
+	zero_row = data.frame(bin_number = 0, number_of_observations = 0, number_of_events = 0, cumulative_events = 0, percentage_of_events = 0, gain = 0, lift = 0)
 	gain_data <- rbind(zero_row, gl_table)
 	gain_data_long <- gather(gain_data %>% 
-							dplyr::select(percentile, gain) %>% 
-							dplyr::mutate(percentile = round(percentile * 10), gain_random = axis_sequence, gain_perfect = c(0, ideal_gain_line)) %>% 
+							dplyr::select(bin_number, gain) %>% 
+							dplyr::mutate(bin_number = round(bin_number * 10), gain_random = axis_sequence, gain_perfect = c(0, ideal_gain_line)) %>%
+							dplyr::rename(percentile = bin_number) %>%
 							dplyr::rename(gain_model = gain),
 						key = gain_type, percent_of_events, -percentile)
 	gain_data_long <- rbind(data.frame(percentile = prevalence * 100, gain_type = 'gain_perfect', percent_of_events = 100), gain_data_long)
@@ -219,8 +220,9 @@ gain_lift_charts <- function(gl_table, round_by = 2)
 		labs(caption = paste0("\ne.g., ", gain_20th_percentile, "% of the events are covered in the top 20% of data based on the model. \nIn the case of propensity to buy, we can say we can\nidentify and target ", gain_20th_percentile, "% of customers who are\nlikely to buy the product by just sending email to\n20% of total customers."))
 
 	lift_data_long <- gather(gl_table %>% 
-							dplyr::select(percentile, lift) %>% 
-							dplyr::mutate(percentile = round(percentile * 10), lift_random = rep(1, 10)) %>% 
+							dplyr::select(bin_number, lift) %>% 
+							dplyr::mutate(bin_number = round(bin_number * 10), lift_random = rep(1, 10)) %>% 
+							dplyr::rename(percentile = bin_number) %>%
 							dplyr::rename(lift_model = lift),
 						key = lift_type, lift, -percentile)
 	lift_data_long$lift_type = factor(lift_data_long$lift_type, levels = rev(unique(lift_data_long$lift_type)))

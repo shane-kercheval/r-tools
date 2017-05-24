@@ -335,6 +335,7 @@ Example Expected Value Chart:
 ```R
 add_dummy_columns <- function(data_frame, column_name, sort_levels=FALSE)
 ```
+
 - takes a dataframe and for the specified (string) column `column_name`, creates x-1 dummy columns where x is the number of levels/factors of `column_name`
 - `sort_levels` TRUE indicates that the order of columns should depend on `sort` method of levels.
 - `use_levels` TRUE indicates that the order of the columns should depend on the levels of the column (requires a factor variable).
@@ -349,27 +350,32 @@ add_matrix_totals <- function(contingency_table)
 ```R
 get_scaled_dataset <- function(data_frame, named_column)
 ```
+
 - scales data to `z-scores` so they can be compared against each other (e.g. in clustering)
 - `named_column` is name of column that is row_identifier that tells the function to ignore that column for scaling
 
 ```R
 get_numeric_dataset <- function(data_frame, named_column=NULL)
 ```
+
 - returns the numeric columns, as well as the (optional) column `named_column` (most likely a row unique identifier)
 
 ```R
 get_logical_dataset <- function(data_frame, named_column=NULL)
 ```
+
 - returns the logical columns, as well as the (optional) column `named_column` (most likely a row unique identifier)
 
 ```R
 get_numeric_logical_dataset <- function(data_frame, named_column=NULL)
 ```
+
 - returns the numeric and logical columns, as well as the column `named_column` (most likely a row unique identifier)
 
 ```R
 normalize <- function(x)
 ```
+
 - min/max normalization that transforms `x` such that all of the values of `x` fall in a range between `0` and `1`
 - `x` is a numeric vector
 - WARNING: extreme values will make the data compress towards the center, consider `z-score standardization`
@@ -377,6 +383,7 @@ normalize <- function(x)
 ```R
 vector_match_regex <- function(the_vector, pattern_to_find, pattern_to_extract=NULL, substitue_find_with=NULL)
 ```
+
 - returns a list of matched items by regex as well as the corresponding indexes that match
 - can pass in a substitute string if the matched items from `pattern_to_find` should be substituted with a string
 - sometimes the `pattern_to_extract` will be different from the `pattern_to_find`, so set variables accordingly; if `pattern_to_extract` is not set, it will default to `pattern_to_find`
@@ -387,17 +394,20 @@ vector_match_regex <- function(the_vector, pattern_to_find, pattern_to_extract=N
 ```R
 calculate_outlier_thresholds <- function(vect)
 ```
+
 - calculates outlier thresholds based on Quantil 1,3 +- 1.5 IQR
 - returns a named vector with `lower` `upper` labels
 
 ```R
 remove_outliers <- function(vect)
 ```
+
 - changes any outliers in vector `vect` to NA, based on `calculate_outlier_thresholds` function
 
 ```R
 which_outliers <- function(vect)
 ```
+
 - returns the indexes of outliers from a vector `vect`, based on `calculate_outlier_thresholds` function
 
 ## utlities
@@ -405,17 +415,20 @@ which_outliers <- function(vect)
 ```R
 stopif <- function(condition, message, call=FALSE)
 ```
+
 - calls base `stop` function if `condition` is true with `message`
 - `call` is passed into `call.` variable of base `stop` function
 
 ```R
 is.nullNaEmpty <- function(...)
 ```
+
 - tests each element in `...` (which can be vector, list, single element, or combination) for NULL, NA, or Empty (i.e. ==\'\')
 
 ```R
 lazy_load <- function(path, object, create_data, dataset_function)
 ```
+
 - this method is used for creating/caching large datasets via manipulation methods (e.g. dplyr), that take a substantial amount of time to run
 - the method either creates the dataset from scratch (via `dataset_function` function), loads the stored dataset from an .Rda file, or returns the existing dataset if it is already populated.
 - `path` is path to Rda file

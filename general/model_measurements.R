@@ -1,3 +1,4 @@
+source('../probability/decision_analysis.R', chdir=TRUE)
 library(dplyr)
 library(tidyr)
 library(reshape2)
@@ -78,23 +79,48 @@ expected_value_confusion <- function(true_pos, true_neg, false_pos, false_neg, t
 							benefits=c(tp_cost_benefit, tn_cost_benefit, fp_cost_benefit, fn_cost_benefit)))
 }
 
+expected_value_confusion_matrix <- function(confusion_matrix, gain_cost_matrix)
+{
+	total_observations <- sum(confusion_matrix)
+	confusion_matrix_percentages <- confusion_matrix / total_observations
+	expected_value_matrix <- confusion_matrix_percentages * gain_cost_matrix
+	expected_profit <- sum(expected_value_matrix)
+
+	return (expected_profit)
+}
+
+expected_value_with_priors_confusion_matrix <- function(confusion_matrix, gain_cost_matrix, class_prior_positive_rate)
+{
+	conf_list <- confusion_list_from_confusion(confusion_matrix)
+
+	sens <- sensitivity(conf_list)
+	spec <- specificity(conf_list)
+	fp_rate <- false_positive_rate(conf_list)
+	fn_rate <- false_negative_rate(conf_list)
+
+	expected_profit_with_priors <- (class_prior_positive_rate * ((sens * gain_true_positive) + (fn_rate * gain_false_negative))) + 
+									((1 - class_prior_positive_rate) * ((spec * gain_true_negative) + (fp_rate * gain_false_positive)))
+	return (expected_profit_with_priors)
+}
+
+
 quality_of_model <- function(conf_list)
 {
 	return (data.frame(
-		"kappa" = kappa(conf_list),
-		"accuracy" = accuracy(conf_list),
-		"error_rate" = error_rate(conf_list),
-		"sensitivity" = sensitivity(conf_list),
-		"specificity" = specificity(conf_list),
-		"false_positive_rate" = false_positive_rate(conf_list),
-		"false_negative_rate" = false_negative_rate(conf_list),
-		"positive_predictive_value" = positive_predictive_value(conf_list),
-		"negative_predictive_value" = negative_predictive_value(conf_list),
-		"recall" = recall(conf_list),
-		"prevalence" = prevalence(conf_list),
+		'kappa' = kappa(conf_list),
+		'accuracy' = accuracy(conf_list),
+		'error_rate' = error_rate(conf_list),
+		'sensitivity' = sensitivity(conf_list),
+		'specificity' = specificity(conf_list),
+		'false_positive_rate' = false_positive_rate(conf_list),
+		'false_negative_rate' = false_negative_rate(conf_list),
+		'positive_predictive_value' = positive_predictive_value(conf_list),
+		'negative_predictive_value' = negative_predictive_value(conf_list),
+		'recall' = recall(conf_list),
+		'prevalence' = prevalence(conf_list),
 		'actual_pos_prob' = conf_list$actual_pos / conf_list$total,
 		'actual_neg_prob' = conf_list$actual_neg / conf_list$total,
-		"total_observations" = conf_list$total
+		'total_observations' = conf_list$total
 		))
 }
 
@@ -289,3 +315,18 @@ calibration_chart <- function(cal_table, round_by = 2)
 
 	return (cal_chart)
 }
+
+# same value as expected-value
+expected_value_conditional <- function(o_tp, o_tn, o_fp, o_fn, b_tp, b_tn, b_fp, b_fn)
+{
+	conf_list = confusion_list(true_pos=o_tp, true_neg=o_tn, false_pos=o_fp, false_neg=o_fn)
+	qom = quality_of_model(conf_list)
+
+	# this equation corresponds to equation in Data Science for Business (Provost, Fawcett, kindle loc 4424)
+	# sensitivity == TRUE POSITIVE RATE
+	# specificity == TRUE NEGATIVE RATE
+	return ((qom$actual_pos_prob * (qom$sensitivity * b_tp + qom$false_negative_rate * b_fn)) +
+			(qom$actual_neg_prob * (qom$specificity * b_tn + qom$false_positive_rate * b_fp)))
+
+}
+

@@ -1,4 +1,4 @@
-source('../general/model_measurements.R', chdir=TRUE)
+library('FinCal')
 
 expected_value <- function(probs=NULL, n_occur=NULL, benefits)
 {
@@ -15,20 +15,6 @@ expected_value <- function(probs=NULL, n_occur=NULL, benefits)
 		stop("`probs` don't add up to 1 (not within 4 decimal places)")
 	}
 	return (sum(probs * benefits))
-}
-
-# same value as expected-value
-expected_value_conditional <- function(o_tp, o_tn, o_fp, o_fn, b_tp, b_tn, b_fp, b_fn)
-{
-	conf_list = confusion_list(true_pos=o_tp, true_neg=o_tn, false_pos=o_fp, false_neg=o_fn)
-	qom = quality_of_model(conf_list)
-
-	# this equation corresponds to equation in Data Science for Business (Provost, Fawcett, kindle loc 4424)
-	# sensitivity == TRUE POSITIVE RATE
-	# specificity == TRUE NEGATIVE RATE
-	return ((qom$actual_pos_prob * (qom$sensitivity * b_tp + qom$false_negative_rate * b_fn)) +
-			(qom$actual_neg_prob * (qom$specificity * b_tn + qom$false_positive_rate * b_fp)))
-
 }
 
 monthly_churn_to_annual <- function(monthly_churn_rate)
@@ -62,7 +48,6 @@ retention_to_lifespan <- function(retention_rate)
 	return (1 / (1 - retention_rate))
 }
 
-library('FinCal')
 customer_lifetime_value <- function(retention_rate_monthly=NULL, retention_rate_annual=NULL,
 	avg_monthly_customer_revenue=NULL, avg_annual_customer_revenue=NULL, contribution_margin_ratio,
 	acquisition_conversion_rates_per_stage=NULL, acquisition_conversion_rate=NULL, cost_per_event=NULL, cost_of_customer_acquisition=NULL,

@@ -268,7 +268,6 @@ calibration_table <- function(actual_observations, predicted_probabilities, targ
 ```
 - a calibration chart/plot/table "shows some measure of the observed probability of an event versus the predicted class probability." [Applied Predictive Modeling By Max Kuhn and Kjell Johnson, pg 249](http://appliedpredictivemodeling.com/)
 
-
 ```R
 calibration_chart <- function(cal_table, round_by = 2)
 ```
@@ -279,6 +278,18 @@ calibration_chart <- function(cal_table, round_by = 2)
 Example Calibration Chart: 
 
 ![example_calibration_chart.png](example_calibration_chart.png)
+
+```R
+expected_value_confusion_matrix <- function(confusion_matrix, gain_cost_matrix)
+```
+
+- multiplies the cell probabilities (i.e. false positive occurance rate (`FP / total observations`); different from traiditional false positive rate) against the expected value of a each confusion outcome for an 'expected value'
+
+```R
+expected_value_with_priors_confusion_matrix <- function(confusion_matrix, gain_cost_matrix, class_prior_positive_rate)
+```
+
+- uses basic rule of probability that `p(x, y) = p(y) * p(x | y)` which we can use to introduce the conept of `class priors`. 
 
 ## modification.R
 

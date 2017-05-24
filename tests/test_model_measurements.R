@@ -172,3 +172,41 @@ test_that("calibration_table: model_measurements", {
 	expect_true(file.exists('../general/example_calibration_chart.png'))
 	
 })
+
+test_that('expected_value: expected_value_confusion_matrix, expected_value_with_priors_confusion_matrix', {
+	# example from pg 196 of Data Science for Business. NOTE!!! because they round the TP/TN/FP/FN rates before they use them in the calculations, I get a different (i.e. the correct) answer, but I varified if I use the rounded values then I get the same answer they did.
+	average_profit <- 200 - 100
+	average_cost <- 1
+	gain_true_positive <- average_profit - average_cost # positive is gain
+	gain_true_negative <- 0
+	gain_false_positive <- -average_cost # negative is cost
+	gain_false_negative <- 0
+	gain_cost_matrix <- matrix(c(gain_true_negative, gain_false_positive, gain_false_negative, gain_true_positive), nrow = 2, byrow = TRUE, dimnames = list(c('Actual Negative', 'Actual Positive'), c('Predicted Negative', 'Predicted Positive')))
+	confusion_matrix <- matrix(c(42, 7, 5, 56), nrow = 2, byrow = TRUE, dimnames = list(c('Actual Negative', 'Actual Positive'), c('Predicted Negative', 'Predicted Positive')))
+
+	expected_profit <- expected_value_confusion_matrix(confusion_matrix = confusion_matrix, gain_cost_matrix = gain_cost_matrix)
+	expected_profit_with_priors <- expected_value_with_priors_confusion_matrix(confusion_matrix = confusion_matrix, gain_cost_matrix = gain_cost_matrix, class_prior_positive_rate = 0.55)
+	expect_equal(round(expected_profit, 5), 50.33636)
+	expect_equal(expected_profit_with_priors, 49.9226)
+})
+
+test_that("expected_value_chart: model_measurements", {
+	list_predictions_actuals <- readRDS('./data/predictions_actuals.RDS')
+	predicted_probabilities_positive <- list_predictions_actuals[[1]] # predicted probabilities (of positive outcome)
+	actual_outcomes <- list_predictions_actuals[[2]]
+	
+	threshold <- 0.5
+	predictions_outcomes <- predicted_probabilities_positive > 0.5
+	conf_list <- confusion_list_from_confusion(table(actual_outcomes, predictions_outcomes))
+	
+	average_profit <- 5
+	average_cost <- 2
+	gain_true_positive <- average_profit - average_cost # positive is gain
+	gain_true_negative <- 0
+	gain_false_positive <- -average_cost # negative is cost
+	gain_false_negative <- -(average_profit - average_cost) # more than likely, opportunity cost, but still should be counted (opportunity cost of not making the profit, but had we labed as a positive, we would have also incurred the average_cost (e.g. of mailing the letter, etc.))
+	costs_gains <- matrix(c(gain_true_negative, gain_false_positive, gain_false_negative, gain_true_positive), nrow = 2, byrow = TRUE, dimnames = list(c('Actual Negative', 'Actual Positive'), c('Predicted Negative', 'Predicted Positive')))
+	costs_gains
+	
+	
+})

@@ -91,6 +91,11 @@ expected_value_confusion_matrix <- function(confusion_matrix, gain_cost_matrix)
 
 expected_value_with_priors_confusion_matrix <- function(confusion_matrix, gain_cost_matrix, class_prior_positive_rate)
 {
+	gain_true_positive <- gain_cost_matrix[2, 2]
+	gain_true_negative <- gain_cost_matrix[1, 1]
+	gain_false_positive <- gain_cost_matrix[1, 2]
+	gain_false_negative <- gain_cost_matrix[2, 1]
+
 	conf_list <- confusion_list_from_confusion(confusion_matrix)
 
 	sens <- sensitivity(conf_list)
@@ -330,3 +335,27 @@ expected_value_conditional <- function(o_tp, o_tn, o_fp, o_fn, b_tp, b_tn, b_fp,
 
 }
 
+expected_value_chart <- function(predicted_probabilities_positive, actual_outcomes, gain_cost_matrix)
+{
+	actual_outcomes <- factor(actual_outcomes, levels = c(FALSE, TRUE)) # need to force levels in case all outcomes and/or predictions are of one class (then table() doesn't have 2x2 dimensions)
+	class_probability_cutoffs <- seq(from = 0.01, to = 0.99, by = 0.01)
+
+	expected_values <- map_dbl(class_probability_cutoffs, ~ {
+		class_probability_cutoff <- .
+		predictions_outcomes <- predicted_probabilities_positive > class_probability_cutoff
+		predictions_outcomes <- factor(predictions_outcomes, levels = c(FALSE, TRUE))
+		expected_value <- expected_value_confusion_matrix(confusion_matrix = table(actual_outcomes, predictions_outcomes), gain_cost_matrix = gain_cost_matrix)
+		
+		return(expected_value)
+	})
+
+	cutoff_value_of_max_expected_value <-min(class_probability_cutoffs[which(expected_values == max(expected_values))])
+	max_expected_value_dot_color <- 'blue'
+	
+	return (ggplot(data = data.frame(class_probability_cutoffs = class_probability_cutoffs, expected_values = expected_values), mapping = aes(x = class_probability_cutoffs, y = expected_values)) +
+			geom_point(size = ifelse(expected_values == max(expected_values), 2, 0), color = ifelse(expected_values == max(expected_values), max_expected_value_dot_color, 'gray'), alpha = 0.7) +
+			geom_line(color = ifelse(expected_values <= 0, 'red', 'black')) +
+			scale_x_continuous(breaks = seq(from = 0, to = 1, by = 0.05)) + theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
+			labs(title = 'Expected Value for Ranges of Probability Cutoff Points', y = 'Expected Value', x = 'Class Probability Cutoffs',
+				caption = paste0('Shows the `expected value` for each `cutoff` point for predicted class probabilities.\nExpected value is maximized at the cutoff point of `', cutoff_value_of_max_expected_value,'` (', max_expected_value_dot_color, ' dot(s); more possible)\nwith an expected value of `', max(expected_values),'`.\nRed sections of line highlight cuttoff values that produce negative expected values.')))
+}

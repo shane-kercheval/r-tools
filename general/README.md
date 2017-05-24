@@ -1,11 +1,13 @@
 # General Helper Functions
 
 ## basic_stats.R
+
 - general stats helper functions
 
 ```R
 create_percentile_matrix <- function(list_of_datasets, row_names, percentiles=c(0, 0.025, 0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95, 0.975, 1), round_by=1)
 ```
+
 - note that if some data has subsets (e.g. comparing all users to a subset of users) for the subset data, you only want to pass in the
 - subset (as opposed to relying on NA data). The reason is that, for example, the '% data above/below outlier threshold' needs to know
 - the total lenght of only the subset, in order to accurately calculate
@@ -13,6 +15,7 @@ create_percentile_matrix <- function(list_of_datasets, row_names, percentiles=c(
 ```R
 tabulate_logical <- function(logical_data_frame)
 ```
+
 - takes a dataframe that contains logical columns and returns a dataframe that contains percent information for each
 
 ```R
@@ -25,6 +28,7 @@ explore_numeric <- function(numeric_vector)
 ```R
 get_correlations <- function(data_frame, corr_threshold=0.7, p_value_threshold=0.1, type='pearson')
 ```
+
 - takes a data-frame, subsets the numeric columns, and returns a matrix of correlations with `NA`s where
 	- absolute value of correlation value is <= `corr_threshold`
 	- corresponding p_value is <= `p_value_threshold`
@@ -36,6 +40,7 @@ get_correlations <- function(data_frame, corr_threshold=0.7, p_value_threshold=0
 ```R
 plot_correlations <- function(data_frame)
 ```
+
 - plots correlations on x/y axis using colors/sizes to visualize
 - example:
 
@@ -46,22 +51,26 @@ plot_correlations <- function(data_frame)
 ```R
 add_date_columns <- function(data_frame, date_column)
 ```
+
 - takes a dataframe with date column and adds a column for `year`, `month`, `week number`, `weekday`, `day of year`, and `day of month`
 - `date_column` is string name of date column
 
 ## model_measurements.R
+
 - provides a list of functions that help assess the quality of various models
 	- e.g. https://en.wikipedia.org/wiki/Sensitivity_and_specificity
 
 ```R
 confusion_list <- function(true_pos, true_neg, false_pos, false_neg)
 ```
+
 - wrapper for `confusion matrix` (but matrix in R is a specific type, so I use 'list')
 - `conf_list` is list returned by `confusion_list` function
 
 ```R
 confusion_list_from_confusion <- function(confusion_matrix)
 ```
+
 - takes a confusion matrix (`confusion_matrix`) with predictions as columns and actuals as rows (negatives first, positives second) and returns a `conf_list` list (from `confusion_list` function)
 - confusion matrix in following format
 
@@ -77,11 +86,11 @@ confusion_list_from_confusion <- function(confusion_matrix)
 ```R
 sensitivity <- function(conf_list)
 ```
+
 - a.k.a `true positive rate`
 - measures the proportion of positive examples that were correctly classified
 - number of positives predicted correctly (true positives) out of total number of positives
 - `conf_list` is list returned by `confusion_list` function
-
 
 > NOTE:
 >
@@ -115,6 +124,7 @@ sensitivity <- function(conf_list)
 ```R
 specificity <- function(conf_list)
 ```
+
 - a.k.a `true negative rate`
 - number of negatives predicted correctly (true negatives) out of total number of negatives
 - `conf_list` is list returned by `confusion_list` function
@@ -122,18 +132,21 @@ specificity <- function(conf_list)
 ```R
 false_negative_rate <- function(conf_list)
 ```
+
 - number of negatives predicted that were actually positive, out of total number of positives
 - `conf_list` is list returned by `confusion_list` function
 
 ```R
 false_positive_rate <- function(conf_list)
 ```
+
 - number of positives predicted that were actually negative out of total number of negatives
 - `conf_list` is list returned by `confusion_list` function
 
 ```R
 accuracy <- function(conf_list)
 ```
+
 - sometimes called the `success rate`
 - number of correct predictions out of total number of observations
 - `conf_list` is list returned by `confusion_list` function
@@ -141,6 +154,7 @@ accuracy <- function(conf_list)
 ```R
 error_rate <- function(conf_list)
 ```
+
 - the error rate is `1 - accuracy`
 - number of incorrect predictions out of total number of observations
 - however, because not all errors are treated the same (e.g. false negative for cancer detection is worse than false positive), this number shouldn't be looked at alone.
@@ -149,6 +163,7 @@ error_rate <- function(conf_list)
 ```R
 kappa <- function(conf_list)
 ```
+
 - `kappa` statistic adjusts accuracy by accounting for the possibility of a correct prediction by chance alone.
 	- this is especially important for datasets with a severe class imbalance, because a classifier can obtain high accuracy simply by always guessing the most frequent class.
 - common interpretation:
@@ -162,6 +177,7 @@ kappa <- function(conf_list)
 ```R
 positive_predictive_value <- function(conf_list)
 ```
+
 - number of positives predicted correctly out of total number positive _predictions_
 - in other words, when model predicts the positive class, how often is it correct?
 - actually, same as posterior probability of Bayes Rule `P(D|T)`
@@ -172,6 +188,7 @@ positive_predictive_value <- function(conf_list)
 ```R
 negative_predictive_value <- function(conf_list)
 ```
+
 - number of negatives predicted correctly out of total number of negative _predictions_
 - in other words, when model predicts the negative class, how often is it correct?
 - `conf_list` is list returned by `confusion_list` function
@@ -179,6 +196,7 @@ negative_predictive_value <- function(conf_list)
 ```R
 recall <- function(conf_list)
 ```
+
 - same as `sensitivity`
 - slightly different interpretation.
 - a model with high recall captures a large portion of the positive examples, meaning that it has wide breadth.
@@ -186,6 +204,7 @@ recall <- function(conf_list)
 ```R
 prevalence <- function(conf_list)
 ```
+
 - actual positives out of total population.
 	- e.g. prevalence of a disease
 	- same as `actual positive probability`
@@ -193,6 +212,7 @@ prevalence <- function(conf_list)
 ```R
 quality_of_model <- function(conf_list)
 ```
+
 - `conf_list` is list returned by `confusion_list` function
 - returns a dataframe that contains the following columns
 	- `kappa`
@@ -213,6 +233,7 @@ quality_of_model <- function(conf_list)
 ```R
 visualize_quality_of_model <- function(conf_list)
 ```
+
 - takes a `conf_list` and returns a `ggplot` of various measurements from `quality_of_model` data.frame
 
 ![../readme/quality_of_model_plot.png](../readme/quality_of_model_plot.png)
@@ -236,6 +257,7 @@ logit <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)
 ```R
 gain_lift_table <- function(actual_observations, predicted_probabilities = NULL, number_of_bins = 10, target_positive_class = 'positive')
 ```
+
 - creates a gain/lift table based on http://www.listendata.com/2014/08/excel-template-gain-and-lift-charts.html
 	- if `predicted_probabilities` is not passed in, then `actual_observations` needs to be ordered by the corresponding predicted probabilities in descending order.
 
@@ -252,6 +274,7 @@ gain_lift_table <- function(actual_observations, predicted_probabilities = NULL,
 ```R
 gain_lift_charts <- function(gain_lift_table, round_by = 2)
 ```
+
 - this function returns a list of two ggplot objects, the first containing the `gain` chart, and the second contining the `lift` chart.
 - `gl_table` takes a dataframe returned by the `gain_lift_table()` function.
 
@@ -266,12 +289,14 @@ Example Lift Chart:
 ```R
 calibration_table <- function(actual_observations, predicted_probabilities, target_positive_class = 'positive')
 ```
+
 - a calibration chart/plot/table "shows some measure of the observed probability of an event versus the predicted class probability." [Applied Predictive Modeling By Max Kuhn and Kjell Johnson, pg 249](http://appliedpredictivemodeling.com/)
 
 ```R
 calibration_chart <- function(cal_table, round_by = 2)
 ```
-- this function returns a ggplot objects showing a calibration chart based on [Applied Predictive Modeling By Max Kuhn and Kjell Johnson, pg 249](http://appliedpredictivemodeling.com/)
+
+- this function returns a ggplot object showing a calibration chart based on [Applied Predictive Modeling By Max Kuhn and Kjell Johnson, pg 249](http://appliedpredictivemodeling.com/)
 - `cal_table` takes a dataframe returned by the `gain_lift_table()` function.
 
 
@@ -290,6 +315,20 @@ expected_value_with_priors_confusion_matrix <- function(confusion_matrix, gain_c
 ```
 
 - uses basic rule of probability that `p(x, y) = p(y) * p(x | y)` which we can use to introduce the conept of `class priors`. 
+
+```R
+expected_value_chart <- function(predicted_probabilities_positive, actual_outcomes, gain_cost_matrix)
+```
+
+- this function returns a ggplot object showing `expected value` for each `cutoff` point for the predicted class probabilities (positive class)
+- `predicted_probabilities_positive` is a vector of probabilities
+- `actual_outcomes` is a vector of logicals, `TRUE` for positive classes and `FALSE` for negative classes.
+- `gain_cost_matrix` follows the same structure as `confusion_list_from_confusion` function above 
+
+
+Example Expected Value Chart: 
+
+![example_expected_value_chart.png](example_expected_value_chart.png)
 
 ## modification.R
 

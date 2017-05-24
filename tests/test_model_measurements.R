@@ -197,7 +197,7 @@ test_that("expected_value_chart: model_measurements", {
 	
 	threshold <- 0.5
 	predictions_outcomes <- predicted_probabilities_positive > 0.5
-	conf_list <- confusion_list_from_confusion(table(actual_outcomes, predictions_outcomes))
+	#conf_list <- confusion_list_from_confusion(table(actual_outcomes, predictions_outcomes))
 	
 	average_profit <- 5
 	average_cost <- 2
@@ -205,8 +205,17 @@ test_that("expected_value_chart: model_measurements", {
 	gain_true_negative <- 0
 	gain_false_positive <- -average_cost # negative is cost
 	gain_false_negative <- -(average_profit - average_cost) # more than likely, opportunity cost, but still should be counted (opportunity cost of not making the profit, but had we labed as a positive, we would have also incurred the average_cost (e.g. of mailing the letter, etc.))
-	costs_gains <- matrix(c(gain_true_negative, gain_false_positive, gain_false_negative, gain_true_positive), nrow = 2, byrow = TRUE, dimnames = list(c('Actual Negative', 'Actual Positive'), c('Predicted Negative', 'Predicted Positive')))
-	costs_gains
+	gain_cost_matrix <- matrix(c(gain_true_negative, gain_false_positive, gain_false_negative, gain_true_positive), nrow = 2, byrow = TRUE, dimnames = list(c('Actual Negative', 'Actual Positive'), c('Predicted Negative', 'Predicted Positive')))
 	
+	# table(actual_outcomes, predictions_outcomes)
+	# gain_cost_matrix
 	
+	expected_value <- expected_value_confusion_matrix(confusion_matrix = table(actual_outcomes, predictions_outcomes), gain_cost_matrix = gain_cost_matrix)
+	expect_equal(expected_value, -0.08)
+	source('../general/model_measurements.R', chdir=TRUE)
+	expected_value_plot <- expected_value_chart(predicted_probabilities_positive = predicted_probabilities_positive, actual_outcomes = actual_outcomes, gain_cost_matrix = gain_cost_matrix)
+	expected_value_plot
+	file.remove('../general/example_expected_value_chart.png')
+	ggsave(filename = '../general/example_expected_value_chart.png', plot = expected_value_plot)
+	expect_true(file.exists('../general/example_expected_value_chart.png'))
 })

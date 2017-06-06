@@ -248,7 +248,7 @@ gain_lift_charts <- function(gl_table, round_by = 2)
 		scale_x_continuous(breaks = axis_sequence) +
 		scale_y_continuous(breaks = axis_sequence) +
 		ggtitle('Gain Chart') + ylab('% of Actual Events in Percentile') + xlab('Percentile (lower percentiles contain higher predicted probabilities)') +
-		labs(caption = paste0("\ne.g., ", gain_20th_percentile, "% of the events are covered in the top 20% of data based on the model. \nIn the case of propensity to buy, we can say we can\nidentify and target ", gain_20th_percentile, "% of customers who are\nlikely to buy the product by just sending email to\n20% of total customers."))
+		labs(caption = paste0("\ne.g., ", gain_20th_percentile, "% of the events are covered in the top 20% of data based on the model. \nIn the case of propensity to buy, we can say we can\nidentify and target ", gain_20th_percentile, "% of customers who are\nlikely to buy the product by targeting\n20% of total customers."))
 
 	lift_data_long <- gather(gl_table %>% 
 							dplyr::select(bin_number, lift) %>% 

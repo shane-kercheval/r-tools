@@ -359,3 +359,30 @@ expected_value_chart <- function(predicted_probabilities_positive, actual_outcom
 			labs(title = 'Expected Value for Ranges of Probability Cutoff Points', y = 'Expected Value', x = 'Class Probability Cutoffs',
 				caption = paste0('Shows the `expected value` for each `cutoff` point for predicted class probabilities.\nExpected value is maximized at the cutoff point of `', cutoff_value_of_max_expected_value,'` (', max_expected_value_dot_color, ' dot(s); more possible)\nwith an expected value of `', max(expected_values),'`.\nRed sections of line highlight cuttoff values that produce negative expected values.')))
 }
+
+# class_to_predictor_ratio_threshold validates n/p >= class_to_predictor_ratio_threshold (number of rows to number of predictors ratio is >= x)
+# class_to_predictor_ratio_threshold validates n(per class)/p >= x
+check_data <- function(dataset, sample_to_predictor_ratio_threshold = NULL, class_to_predictor_ratio_threshold = NULL, class_names = NULL)
+{
+	if(!is.null(sample_to_predictor_ratio_threshold)) {
+		number_of_samples <- nrow(dataset)
+		number_of_predictors <- ncol(dataset) - 1 # account for target variable
+		sample_to_predictor_ratio <- number_of_samples / number_of_predictors
+
+		stopifnot(sample_to_predictor_ratio >= sample_to_predictor_ratio_threshold)
+	}
+
+	if(!is.null(class_to_predictor_ratio_threshold) || !is.null(class_names)) { # if either is not null, then both should be not null
+		
+		stopifnot(!is.null(class_to_predictor_ratio_threshold) && !is.null(class_names)) 
+
+		walk(class_names, ~ {
+			class_name <- .
+			number_of_class_samples <- nrow(dataset %>% filter(target == class_name))
+			number_of_predictors <- ncol(dataset) - 1 # account for target variable
+			class_samples_to_predictor_ratio <- number_of_class_samples / number_of_predictors
+
+			stopifnot(class_samples_to_predictor_ratio >= class_to_predictor_ratio_threshold)
+		})
+	}
+}

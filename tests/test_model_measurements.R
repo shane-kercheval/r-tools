@@ -1,5 +1,6 @@
 library('testthat')
 library('caret')
+library(purrr)
 source('../general/model_measurements.R', chdir=TRUE)
 source('../probability/bayes.R', chdir=TRUE)
 
@@ -218,4 +219,82 @@ test_that("expected_value_chart: model_measurements", {
 	file.remove('../general/example_expected_value_chart.png')
 	ggsave(filename = '../general/example_expected_value_chart.png', plot = expected_value_plot)
 	expect_true(file.exists('../general/example_expected_value_chart.png'))
+})
+
+
+test_that("model_measurements: check_data", {
+
+	number_of_predictors <- 10
+	number_of_rows <- 100
+	dataset <- expand.grid(paste0('var', seq(from = 1, to = number_of_predictors, by = 1)),
+					seq(from = 1, to = number_of_rows/number_of_predictors, by =1),
+					stringsAsFactors = FALSE) %>%
+			mutate(target = as.character(seq(from = 1, to = number_of_rows, by =1))) %>%
+			spread(Var1, Var2)
+
+	# no error
+	check_data(dataset = dataset, sample_to_predictor_ratio_threshold = 10, class_to_predictor_ratio_threshold = NULL, class_names = NULL)
+
+	# adding an extra predictor, so that the sample to predictor ratio decreases
+	expected_error = tryCatch(
+		check_data(dataset = dataset %>% mutate(extra_predictor = 1:nrow(dataset)), sample_to_predictor_ratio_threshold = 10, class_to_predictor_ratio_threshold = NULL, class_names = NULL),
+		error=function(e) e)
+	expect_true(inherits(expected_error, 'error'))
+	expect_that(expected_error$message, equals('sample_to_predictor_ratio >= sample_to_predictor_ratio_threshold is not TRUE'))
+	
+	# removing a sample, so that the sample to predictor ratio decreases
+	expected_error = tryCatch(
+		check_data(dataset = dataset[-1,], sample_to_predictor_ratio_threshold = 10, class_to_predictor_ratio_threshold = NULL, class_names = NULL),
+		error=function(e) e)
+	expect_true(inherits(expected_error, 'error'))
+	expect_that(expected_error$message, equals('sample_to_predictor_ratio >= sample_to_predictor_ratio_threshold is not TRUE'))
+	
+	# no error - even though we removed a sample, we lowered the threshold
+	check_data(dataset = dataset[-1,], sample_to_predictor_ratio_threshold = 9, class_to_predictor_ratio_threshold = NULL, class_names = NULL)
+
+	# check ratio of samples for each class
+	target_yes <- 'yes'
+	target_no <- 'no'
+	classification_dataset <- dataset %>% mutate(target = c(as.character(rep(target_yes, times = 20)), as.character(rep(target_no, times = 80))))
+	
+	check_data(dataset = classification_dataset, sample_to_predictor_ratio_threshold = 10, class_to_predictor_ratio_threshold = 2, class_names = c(target_yes, target_no))
+	check_data(dataset = classification_dataset, class_to_predictor_ratio_threshold = 2, class_names = c(target_yes, target_no))
+	
+	# increased the sample to predictor threshold, make sure it still works
+	expected_error = tryCatch(
+		check_data(dataset = classification_dataset, sample_to_predictor_ratio_threshold = 11, class_to_predictor_ratio_threshold = 2, class_names = c(target_yes, target_no)),
+		error=function(e) e)
+	expect_true(inherits(expected_error, 'error'))
+	expect_that(expected_error$message, equals('sample_to_predictor_ratio >= sample_to_predictor_ratio_threshold is not TRUE'))
+
+	# added a predictor, lower the class sample to prediction ratio
+	expected_error = tryCatch(
+		check_data(dataset = classification_dataset %>% mutate(extra_predictor = 1:nrow(dataset)), sample_to_predictor_ratio_threshold = NULL, class_to_predictor_ratio_threshold = 2, class_names = c(target_yes, target_no)),
+		error=function(e) e)
+	expect_true(inherits(expected_error, 'error'))
+	expect_that(expected_error$message, equals('class_samples_to_predictor_ratio >= class_to_predictor_ratio_threshold is not TRUE'))
+
+	# removed a sample from the smaller class, lower the class sample to prediction ratio
+	expected_error = tryCatch(
+		check_data(dataset = classification_dataset[-1, ], sample_to_predictor_ratio_threshold = NULL, class_to_predictor_ratio_threshold = 2, class_names = c(target_yes, target_no)),
+		error=function(e) e)
+	expect_true(inherits(expected_error, 'error'))
+	expect_that(expected_error$message, equals('class_samples_to_predictor_ratio >= class_to_predictor_ratio_threshold is not TRUE'))
+
+	# but now remove a sample from the class that already has enough samples, so no error expected
+	check_data(dataset = classification_dataset[-100, ], sample_to_predictor_ratio_threshold = NULL, class_to_predictor_ratio_threshold = 2, class_names = c(target_yes, target_no))
+
+	# remove one of the required parameters
+	expected_error = tryCatch(
+		check_data(dataset = classification_dataset[-1, ], sample_to_predictor_ratio_threshold = NULL, class_to_predictor_ratio_threshold = NULL, class_names = c(target_yes, target_no)),
+		error=function(e) e)
+	expect_true(inherits(expected_error, 'error'))
+	expect_that(expected_error$message, equals('!is.null(class_to_predictor_ratio_threshold) && !is.null(class_names) is not TRUE'))
+	
+	# remove one of the required parameters
+	expected_error = tryCatch(
+		check_data(dataset = classification_dataset[-1, ], sample_to_predictor_ratio_threshold = NULL, class_to_predictor_ratio_threshold = 2, class_names = NULL),
+		error=function(e) e)
+	expect_true(inherits(expected_error, 'error'))
+	expect_that(expected_error$message, equals('!is.null(class_to_predictor_ratio_threshold) && !is.null(class_names) is not TRUE'))
 })

@@ -330,6 +330,18 @@ Example Expected Value Chart:
 
 ![example_expected_value_chart.png](example_expected_value_chart.png)
 
+```R
+check_data <- function(dataset, sample_to_predictor_ratio_threshold = NULL, class_to_predictor_ratio_threshold = NULL, class_names = NULL)
+```
+
+- checks the `dataset` for the following conditions
+	- the dataset should have a `target` column, representing the prediction/dependent variable.
+- `sample_to_predictor_ratio_threshold` ratio representing the minimum amount of sample-to-predictors to allow.
+	- for example, if the ratio is set to `10`, and there are `5` predictors, there needs to be at least `50` rows/samples
+- `class_to_predictor_ratio_threshold` ratio representing the minimum amount of sample-to-predictors, PER CLASS, to allow.
+	- for example, if the ratio is set to `10`, and there are `5` predictors, there needs to be at least `50` rows/samples in each class.
+- `class_names` should be a vector of the class names in the `dataset` `target` variable. 
+
 ## modification.R
 
 ```R

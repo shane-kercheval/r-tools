@@ -196,7 +196,7 @@ gain_lift_table <- function(actual_observations, predicted_probabilities = NULL,
 
 	# it is assumed at this point the data is arranged descended by the corresponiding predicted probabilities
 	df_gain_lift <- df_gain_lift %>%
-		mutate(bin_number = floor((row_number() - 1) / ceiling(total_observations/number_of_bins) + 1))
+		dplyr::mutate(bin_number = floor((row_number() - 1) / ceiling(total_observations/number_of_bins) + 1))
 
 	final_gain_lift_table <- df_gain_lift %>%
 		group_by(bin_number) %>%

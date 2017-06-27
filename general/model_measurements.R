@@ -199,11 +199,11 @@ gain_lift_table <- function(actual_observations, predicted_probabilities = NULL,
 		dplyr::mutate(bin_number = floor((row_number() - 1) / ceiling(total_observations/number_of_bins) + 1))
 
 	final_gain_lift_table <- df_gain_lift %>%
-		group_by(bin_number) %>%
-		summarise(number_of_observations = n(),
+		dplyr::group_by(bin_number) %>%
+		dplyr::summarise(number_of_observations = n(),
 				  number_of_events = sum(actual_observations == target_positive_class),
 				  percentage_of_events = number_of_events / total_events) %>%
-		mutate(cumulative_observations = cumsum(number_of_observations),
+		dplyr::mutate(cumulative_observations = cumsum(number_of_observations),
 			   cumulative_events = cumsum(number_of_events),
 			   gain_score = percentage_of_events * 100,
 			   gain = cumsum(gain_score),

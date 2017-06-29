@@ -24,14 +24,14 @@ apriori_sequence_analysis <- function(apriori_dataset, support=0.5, confidence=0
 # transforms a dataframe that contains one event per row into a apriori (sequence) dataset
 # takes a dataframe that has A) an id column (e.g. customer id) B) an event column (e.g. page url/path, signup event, paid event)
 # and C) if data needs to be ordered, an order column
-# order_by should be a string of the column name that needs to be (secondarily) ordered (e.g. datetime of event).
-# 	if order_by is not null, the data will be ordered by 1) `id_column_name` then 2) `order_by`
-# *IF `order_by` IS NOT SET, THE DATASET SHOULD ALREADY BE ORDERED BY ID COLUMN AND ORDER OF EVENT SEQUENCE (E.G. datetime)
+# column_to_order_by should be a string of the column name that needs to be (secondarily) ordered (e.g. datetime of event).
+# 	if column_to_order_by is not null, the data will be ordered by 1) `id_column_name` then 2) `column_to_order_by`
+# *IF `column_to_order_by` IS NOT SET, THE DATASET SHOULD ALREADY BE ORDERED BY ID COLUMN AND ORDER OF EVENT SEQUENCE (E.G. datetime)
 #######################################################################################################################################
-single_event_sequence_dataset <- function(dataset, id_column_name, order_by=NULL)
+single_event_sequence_dataset <- function(dataset, id_column_name, column_to_order_by=NULL)
 {
-	dataset = helper_order(dataset=dataset, id_column_name=id_column_name, order_by=order_by)
-	apriori_dataset = helper_add_sequenced_data(dataset=dataset, id_column_name=id_column_name, order_by=order_by)
+	dataset = helper_order(dataset=dataset, id_column_name=id_column_name, column_to_order_by=column_to_order_by)
+	apriori_dataset = helper_add_sequenced_data(dataset=dataset, id_column_name=id_column_name, column_to_order_by=column_to_order_by)
 	apriori_dataset = as.data.frame(sapply(apriori_dataset[c('sequenceID', 'eventID', 'SIZE', 'items')],as.factor))
 
 	return (apriori_dataset)
@@ -85,14 +85,14 @@ subset_sequence <- function(rules_sequential_df, lhs_regex=NULL, rhs_regex=NULL)
 #######################################################################################################################################
 # helper method to add sequence data to dataset. Expects an ordered dataset
 #######################################################################################################################################
-helper_add_sequenced_data <- function(dataset, id_column_name, order_by)
+helper_add_sequenced_data <- function(dataset, id_column_name, column_to_order_by)
 {
 	apriori_dataset = dataset
 	apriori_dataset$sequenceID = as.numeric(factor(apriori_dataset[, id_column_name]))
 	apriori_dataset$eventID = ave(apriori_dataset$sequenceID, apriori_dataset$sequenceID, FUN = seq_along)
 	apriori_dataset$SIZE = 1
 	names(apriori_dataset)[names(apriori_dataset) == 'event'] <- 'items'
-	#	apriori_dataset = helper_order(dataset=apriori_dataset, id_column_name=id_column_name, order_by=order_by)
+	#	apriori_dataset = helper_order(dataset=apriori_dataset, id_column_name=id_column_name, column_to_order_by=column_to_order_by)
 
 	return (apriori_dataset)
 }

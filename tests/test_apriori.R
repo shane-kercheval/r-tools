@@ -8,7 +8,7 @@ source('../pattern_recognition/apriori_sequence.R', chdir=TRUE)
 test_that("pattern_recognition: apriori-helper_order", {
 	# test that we are ordering data correctly
 	unordered_data = read.csv('./data/apriori_sequence_dataset_start.csv')
-	ordered_data = helper_order(dataset=unordered_data, id_column_name='customer_id', order_by='event_sequence')
+	ordered_data = helper_order(dataset=unordered_data, id_column_name='customer_id', column_to_order_by='event_sequence')
 	comparison_data = read.csv('./data/apriori_sequence_dataset_end.csv')
 	expect_true(all(ordered_data == comparison_data))
 })
@@ -16,8 +16,8 @@ test_that("pattern_recognition: apriori-helper_order", {
 test_that("pattern_recognition: single_event_sequence_dataset", {
 	# test that we are ordering data correctly
 	unordered_data = read.csv('./data/apriori_sequence_dataset_start.csv')
-	ordered_data = helper_order(dataset=unordered_data, id_column_name='customer_id', order_by='event_sequence')
-	sequenced_dataset = helper_add_sequenced_data(dataset=ordered_data, id_column_name='customer_id', order_by='event_sequence')
+	ordered_data = helper_order(dataset=unordered_data, id_column_name='customer_id', column_to_order_by='event_sequence')
+	sequenced_dataset = helper_add_sequenced_data(dataset=ordered_data, id_column_name='customer_id', column_to_order_by='event_sequence')
 
 	#check that sequenced_dataset matches columns from ordered_data for shared/old columns
 	expect_true(all(sequenced_dataset$customer_id == ordered_data$customer_id))
@@ -30,7 +30,7 @@ test_that("pattern_recognition: single_event_sequence_dataset", {
 	expect_true(all(sequenced_dataset$SIZE == 1))
 
 	# main test
-	apriori_dataset = single_event_sequence_dataset(dataset=unordered_data, id_column_name='customer_id', order_by='event_sequence')
+	apriori_dataset = single_event_sequence_dataset(dataset=unordered_data, id_column_name='customer_id', column_to_order_by='event_sequence')
 	expect_true(all(colnames(apriori_dataset) == c('sequenceID', 'eventID', 'SIZE', 'items')))
 
 	expect_true(all(apriori_dataset$sequenceID == ordered_data$customer_id))
@@ -45,7 +45,7 @@ test_that("pattern_recognition: apriori_sequence_analysis", {
 	unordered_data = read.csv('./data/apriori_sequence_dataset_start.csv')
 
 	# apriori functions
-	apriori_dataset = single_event_sequence_dataset(dataset=unordered_data, id_column_name='customer_id', order_by='event_sequence')
+	apriori_dataset = single_event_sequence_dataset(dataset=unordered_data, id_column_name='customer_id', column_to_order_by='event_sequence')
 	rules = apriori_sequence_analysis(apriori_dataset=apriori_dataset, support=0.55)
 	expect_false(file.exists('input_file.csv')) # this is the temp file created by the `apriori_sequence_analysis` function
 	# summary of sequential rules

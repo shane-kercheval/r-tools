@@ -11,7 +11,7 @@ source('./apriori.R', chdir=TRUE)
 apriori_sequence_analysis <- function(apriori_dataset, support=0.5, confidence=0.5)
 {
 	# need to write out to a csv so we can use `read_baskets` function
-	write.table(apriori_dataset, file='input_file.csv', sep=",", quote=FALSE, col.names=FALSE, row.names=FALSE, append=FALSE)
+	write.table(apriori_dataset, file = 'input_file.csv', sep = ",", quote=FALSE, col.names=FALSE, row.names=FALSE, append = FALSE)
 	basket_dataset <- read_baskets(con = 'input_file.csv', sep = ',', info = c('sequenceID','eventID','SIZE'))
 	file.remove('input_file.csv')
 
@@ -30,9 +30,10 @@ apriori_sequence_analysis <- function(apriori_dataset, support=0.5, confidence=0
 #######################################################################################################################################
 single_event_sequence_dataset <- function(dataset, id_column_name, column_to_order_by=NULL)
 {
-	dataset = helper_order(dataset=dataset, id_column_name=id_column_name, column_to_order_by=column_to_order_by)
-	apriori_dataset = helper_add_sequenced_data(dataset=dataset, id_column_name=id_column_name, column_to_order_by=column_to_order_by)
-	apriori_dataset = as.data.frame(sapply(apriori_dataset[c('sequenceID', 'eventID', 'SIZE', 'items')],as.factor))
+	dataset <- data.frame(dataset) # need to do this so that subsetting by column name is consistent (i.e. gives vector, not data.frame/list)
+	dataset <- helper_order(dataset=dataset, id_column_name=id_column_name, column_to_order_by=column_to_order_by)
+	apriori_dataset <- helper_add_sequenced_data(dataset=dataset, id_column_name=id_column_name, column_to_order_by=column_to_order_by)
+	apriori_dataset <- as.data.frame(sapply(apriori_dataset[c('sequenceID', 'eventID', 'SIZE', 'items')],as.factor))
 
 	return (apriori_dataset)
 }
@@ -44,15 +45,15 @@ as_dataframe <- function(rules_sequential, sort=TRUE, sort_by='lift')
 {
 	if(sort)
 	{
-		rules_sequential = sort(rules_sequential, by = sort_by)
+		rules_sequential <- sort(rules_sequential, by = sort_by)
 	}
 
-	rules_sequential_df = as(rules_sequential, 'data.frame')
+	rules_sequential_df <- as(rules_sequential, 'data.frame')
 
-	rule_groups = as.data.frame(str_match(rules_sequential_df$rule, '(.*) => (.*)'))
+	rule_groups <- as.data.frame(str_match(rules_sequential_df$rule, '(.*) => (.*)'))
 
-	rules_sequential_df$lhs = rule_groups$V2
-	rules_sequential_df$rhs = rule_groups$V3
+	rules_sequential_df$lhs <- rule_groups$V2
+	rules_sequential_df$rhs <- rule_groups$V3
 
 
 	return (rules_sequential_df[c('rule', 'lhs', 'rhs', 'support', 'confidence', 'lift')]) # return custom order of dataframe
@@ -63,19 +64,19 @@ as_dataframe <- function(rules_sequential, sort=TRUE, sort_by='lift')
 #######################################################################################################################################
 subset_sequence <- function(rules_sequential_df, lhs_regex=NULL, rhs_regex=NULL)
 {
-	rules_subset = NULL
+	rules_subset <- NULL
 
 	if (!is.null(lhs_regex) && !is.null(rhs_regex)) # if lhs/rhs both not null (otherwise only one of them should be)
 	{
-		rules_subset = subset(rules_sequential_df, grepl(lhs_regex, rules_sequential_df$lhs) | grepl(rhs_regex, rules_sequential_df$rhs))
+		rules_subset <- subset(rules_sequential_df, grepl(lhs_regex, rules_sequential_df$lhs) | grepl(rhs_regex, rules_sequential_df$rhs))
 	}
 	else if (!is.null(lhs_regex))
 	{
-		rules_subset = subset(rules_sequential_df, grepl(lhs_regex, rules_sequential_df$lhs))
+		rules_subset <- subset(rules_sequential_df, grepl(lhs_regex, rules_sequential_df$lhs))
 	}
 	else if (!is.null(rhs_regex))
 	{
-		rules_subset = subset(rules_sequential_df, grepl(rhs_regex, rules_sequential_df$rhs))
+		rules_subset <- subset(rules_sequential_df, grepl(rhs_regex, rules_sequential_df$rhs))
 	}
 	# else return NULL
 
@@ -87,10 +88,10 @@ subset_sequence <- function(rules_sequential_df, lhs_regex=NULL, rhs_regex=NULL)
 #######################################################################################################################################
 helper_add_sequenced_data <- function(dataset, id_column_name, column_to_order_by)
 {
-	apriori_dataset = dataset
-	apriori_dataset$sequenceID = as.numeric(factor(apriori_dataset[, id_column_name]))
-	apriori_dataset$eventID = ave(apriori_dataset$sequenceID, apriori_dataset$sequenceID, FUN = seq_along)
-	apriori_dataset$SIZE = 1
+	apriori_dataset <- dataset
+	apriori_dataset$sequenceID <- as.numeric(factor(apriori_dataset[, id_column_name]))
+	apriori_dataset$eventID <- ave(apriori_dataset$sequenceID, apriori_dataset$sequenceID, FUN = seq_along)
+	apriori_dataset$SIZE <- 1
 	names(apriori_dataset)[names(apriori_dataset) == 'event'] <- 'items'
 	#	apriori_dataset = helper_order(dataset=apriori_dataset, id_column_name=id_column_name, column_to_order_by=column_to_order_by)
 

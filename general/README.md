@@ -389,8 +389,13 @@ normalize <- function(x)
 ```
 
 - min/max normalization that transforms `x` such that all of the values of `x` fall in a range between `0` and `1`
-- `x` is a numeric vector
-- WARNING: extreme values will make the data compress towards the center, consider `z-score standardization`
+
+```R
+create_many_to_many_group_id <- function(m_2_m_relationship_df, column_A, column_B)
+```
+
+- takes a dataframe (`m_2_m_relationship_df`) that has many-to-many relationships (e.g. website_visitors to website signups/emails (e.g. can have multiple computers and multiple emails used ont he same website)), and creates a 'group id' that can be used to combine data.
+- `column_A` and `column_B` are the names of the columns in `m_2_m_relationship_df` that contain the many-to-many relationships
 
 ```R
 vector_match_regex <- function(the_vector, pattern_to_find, pattern_to_extract=NULL, substitue_find_with=NULL)

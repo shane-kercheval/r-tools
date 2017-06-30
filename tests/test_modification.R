@@ -1,3 +1,4 @@
+library(tidyverse)
 library('testthat')
 source('../general/modification.R', chdir=TRUE)
 
@@ -163,4 +164,40 @@ test_that("modification: add_dummy_columns", {
 	df_actual <- add_dummy_columns(data_frame = df_test, column_name = 'strcol', custom_levels = c('F', 'G', 'E', 'D', 'C', 'B', 'A'))
 	df_expected <- readRDS('./data/add_dummy_columns_custom_levels.Rds')
 	expect_true(all(df_actual == df_expected))
+})
+
+test_that("modification: create_many_to_many_group_id", {
+
+	relationship_df <- tribble(
+		~colA, ~colB,
+		'a1',   'b1',
+		'a1',   'b4',
+		'a2',   'b2',
+		'a2',   'b3',
+		'a3',   'b3',
+		'a4',   'b1',
+		'a4',   'b5',
+		'a5',   'b6',
+		'a6',   'b6',
+		'a7',   'b7')
+	
+	relationship_with_group_df <- create_many_to_many_group_id(m_2_m_relationship_df = relationship_df[sample(1:nrow(relationship_df)),], column_A = colA, column_B = colB)
+	
+	expect_true(all(map_lgl(unique(relationship_df$colA), ~ {
+		column_a_value <- .
+		return (length(unique((relationship_with_group_df %>% filter(colA == column_a_value))$group_id)) == 1)
+	})))
+	
+	expect_true(all(map_lgl(unique(relationship_df$colB), ~ {
+		column_b_value <- .
+		return (length(unique((relationship_with_group_df %>% filter(colB == column_b_value))$group_id)) == 1)
+	})))
+	
+	expect_true(all(map2_lgl(c('a1', 'a2', 'a5'), c('a4', 'a3', 'a6'), ~ unique((relationship_with_group_df %>% filter(colA == .x))$group_id) == unique((relationship_with_group_df %>% filter(colA == .y))$group_id))))
+	expect_true(all(map2_lgl(c('b1', 'b2', 'b1'), c('b4', 'b3', 'b5'), ~ unique((relationship_with_group_df %>% filter(colB == .x))$group_id) == unique((relationship_with_group_df %>% filter(colB == .y))$group_id))))
+	
+	expect_true(sum(unique((relationship_with_group_df %>% filter(colA == 'a7'))$group_id) == relationship_with_group_df$group_id) == 1) # make sure it is only found once
+	expect_true(sum(unique((relationship_with_group_df %>% filter(colB == 'b7'))$group_id) == relationship_with_group_df$group_id) == 1) # make sure it is only found once
+	
+	expect_true(length(unique(relationship_with_group_df$group_id)) == 4) # 4 distinct groups
 })

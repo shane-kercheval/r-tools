@@ -92,3 +92,53 @@ add_dummy_columns <- function(data_frame, column_name, sort_levels=FALSE, use_le
 
 	return(data_frame)
 }
+
+create_many_to_many_group_id <- function(m_2_m_relationship_df, column_A, column_B) {
+	
+	m_2_m_relationship_df <- as.data.frame(m_2_m_relationship_df)
+	
+	# column_A_values <- m_2_m_relationship_df$colA
+	# column_B_values <- m_2_m_relationship_df$colB
+	
+	column_A_values <- eval(substitute(column_A), m_2_m_relationship_df)
+	column_B_values <- eval(substitute(column_B), m_2_m_relationship_df)
+	
+	unique_column_a <- as.list(unique(column_A_values))
+	unique_column_b <- as.list(unique(column_B_values))
+
+	# column_a_name <- "colA"
+	# column_b_name <- "colB"
+	
+	column_a_name <- as.character(substitute(column_A))
+	column_b_name <- as.character(substitute(column_B))
+
+	for(index_a in 1:length(unique_column_a)) {
+
+		#index_a <- 4
+		local_a <- unique_column_a[[index_a]][1]
+
+		index_of_all_a <- which(m_2_m_relationship_df[, column_a_name] == local_a)
+		
+		related_bs <- m_2_m_relationship_df[index_of_all_a, column_b_name]
+		
+		global_indexes_b <- which(map_chr(unique_column_b, ~ .[1]) %in% related_bs)
+		
+		b_group_numbers <- map_dbl(unique_column_b[global_indexes_b], ~ as.numeric(.[2]))
+		
+		group_min <- min(c(index_a, b_group_numbers), na.rm = TRUE)
+		
+		unique_column_a[[index_a]][2] <- group_min
+		
+		for(index_b in global_indexes_b) {
+
+			#index_b <- 1
+			unique_column_b[[index_b]][2] <- group_min
+		}
+	}
+
+	column_A_df <- data.frame(A = map_chr(unique_column_a, ~ .[1]), group_id = map_chr(unique_column_a, ~ .[2]), stringsAsFactors = FALSE)
+	names(column_A_df) <- c(column_a_name, 'group_id')
+	
+	return( left_join(m_2_m_relationship_df, column_A_df, by = column_a_name))
+}
+

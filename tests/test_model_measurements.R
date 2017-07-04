@@ -213,7 +213,7 @@ test_that("expected_value_chart: model_measurements", {
 	
 	expected_value <- expected_value_confusion_matrix(confusion_matrix = table(actual_outcomes, predictions_outcomes), gain_cost_matrix = gain_cost_matrix)
 	expect_equal(expected_value, -0.08)
-	source('../general/model_measurements.R', chdir=TRUE)
+
 	expected_value_plot <- expected_value_chart(predicted_probabilities_positive = predicted_probabilities_positive, actual_outcomes = actual_outcomes, gain_cost_matrix = gain_cost_matrix)
 	expected_value_plot
 	file.remove('../general/example_expected_value_chart.png')

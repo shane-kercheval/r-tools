@@ -340,6 +340,11 @@ expected_value_chart <- function(predicted_probabilities_positive, actual_outcom
 	actual_outcomes <- factor(actual_outcomes, levels = c(FALSE, TRUE)) # need to force levels in case all outcomes and/or predictions are of one class (then table() doesn't have 2x2 dimensions)
 	class_probability_cutoffs <- seq(from = 0.01, to = 0.99, by = 0.01)
 
+	gain_true_positive <- round(gain_cost_matrix[2, 2], 2)
+	gain_true_negative <- round(gain_cost_matrix[1, 1], 2)
+	gain_false_positive <- round(gain_cost_matrix[1, 2], 2)
+	gain_false_negative <- round(gain_cost_matrix[2, 1], 2)
+
 	expected_values <- map_dbl(class_probability_cutoffs, ~ {
 		class_probability_cutoff <- .
 		predictions_outcomes <- predicted_probabilities_positive > class_probability_cutoff
@@ -356,8 +361,14 @@ expected_value_chart <- function(predicted_probabilities_positive, actual_outcom
 			geom_point(size = ifelse(expected_values == max(expected_values), 2, 0), color = ifelse(expected_values == max(expected_values), max_expected_value_dot_color, 'gray'), alpha = 0.7) +
 			geom_line(color = ifelse(expected_values <= 0, 'red', 'black')) +
 			scale_x_continuous(breaks = seq(from = 0, to = 1, by = 0.05)) + theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
-			labs(title = 'Expected Value for Ranges of Probability Cutoff Points', y = 'Expected Value', x = 'Class Probability Cutoffs',
-				caption = paste0('Shows the `expected value` for each `cutoff` point for predicted class probabilities.\nExpected value is maximized at the cutoff point of `', cutoff_value_of_max_expected_value,'` (', max_expected_value_dot_color, ' dot(s); more possible)\nwith an expected value of `', max(expected_values),'`.\nRed sections of line highlight cuttoff values that produce negative expected values.')))
+			labs(	title = 'Expected Value for a given Cost Matrix & Range of Probability Cutoff Points',
+					subtitle = paste0(	'(Cost Matrix: TP= ', gain_true_positive, ', ',
+										'TN = ', gain_true_negative, ', ',
+										'FP = ', gain_false_positive, ', ',
+										'FN = ', gain_false_negative, ')'),
+					y = 'Expected Value',
+					x = 'Class Probability Cutoffs',
+					caption = paste0('Shows the `expected value` for each `cutoff` point for predicted class probabilities.\nExpected value is maximized at the cutoff point of `', cutoff_value_of_max_expected_value,'` (', max_expected_value_dot_color, ' dot(s); more possible)\nwith an expected value of `', max(expected_values),'`.\nRed sections of line highlight cuttoff values that produce negative expected values.')))
 }
 
 # class_to_predictor_ratio_threshold validates n/p >= class_to_predictor_ratio_threshold (number of rows to number of predictors ratio is >= x)

@@ -129,9 +129,15 @@ quality_of_model <- function(conf_list)
 		))
 }
 
-visualize_quality_of_model <- function(conf_list)
+visualize_quality_of_model <- function(conf_list, chart_title = NULL)
 {
-	model_quality = quality_of_model(conf_list)
+
+	if(is.null(chart_title)) {
+
+		chart_title <- 'Quality of Model'
+	}
+
+	model_quality <- quality_of_model(conf_list)
 
 	df_quality = melt(model_quality %>% dplyr::select(-recall, -actual_pos_prob, -total_observations), id.vars=NULL)
 	df_quality$value = round(df_quality$value, 3)
@@ -153,12 +159,13 @@ visualize_quality_of_model <- function(conf_list)
 	df_quality$category[df_quality$variable == 'false_positive_rate'] = 'incorrect'
 	df_quality$category[df_quality$variable == 'false_negative_rate'] = 'incorrect'
 
-	p = ggplot(data = df_quality, aes(x=variable, y=value)) + geom_boxplot() + coord_cartesian(ylim = c(0, 1)) +
+	quality_chart <- ggplot(data = df_quality, aes(x=variable, y=value)) + geom_boxplot() + coord_cartesian(ylim = c(0, 1)) +
 			facet_grid( ~ category, scales='free') +
 			geom_text(aes(label = value), size = 3, vjust=-1) +
-			theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))
+			theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1)) +
+			labs(title = chart_title)
 
-	return (p)
+	return (quality_chart)
 }
 
 logistics_regression_coefficients <- function(b, b1, x1, b2=0, x2=0, b3=0, x3=0, b4=0, x4=0, b5=0, x5=0)

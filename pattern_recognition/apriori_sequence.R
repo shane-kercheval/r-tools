@@ -1,3 +1,4 @@
+library(dplyr)
 library(arules)
 library(arulesSequences)
 library(stringr)
@@ -28,55 +29,61 @@ apriori_sequence_analysis <- function(apriori_dataset, support=0.5, confidence=0
 # 	if column_to_order_by is not null, the data will be ordered by 1) `id_column_name` then 2) `column_to_order_by`
 # *IF `column_to_order_by` IS NOT SET, THE DATASET SHOULD ALREADY BE ORDERED BY ID COLUMN AND ORDER OF EVENT SEQUENCE (E.G. datetime)
 #######################################################################################################################################
-single_event_sequence_dataset <- function(dataset, id_column_name, column_to_order_by=NULL)
+single_event_sequence_dataset <- function(dataset, id_column_name, column_to_order_by = NULL)
 {
 	dataset <- data.frame(dataset) # need to do this so that subsetting by column name is consistent (i.e. gives vector, not data.frame/list)
-	dataset <- helper_order(dataset=dataset, id_column_name=id_column_name, column_to_order_by=column_to_order_by)
-	apriori_dataset <- helper_add_sequenced_data(dataset=dataset, id_column_name=id_column_name, column_to_order_by=column_to_order_by)
+	dataset <- helper_order(dataset = dataset, id_column_name = id_column_name, column_to_order_by = column_to_order_by)
+	apriori_dataset <- helper_add_sequenced_data(dataset = dataset, id_column_name = id_column_name, column_to_order_by = column_to_order_by)
 	apriori_dataset <- as.data.frame(sapply(apriori_dataset[c('sequenceID', 'eventID', 'SIZE', 'items')],as.factor))
 
 	return (apriori_dataset)
 }
 
 #######################################################################################################################################
-# converts `rules_sequential` object to dataframe, adding `left hand side` (`lhs`) and `right hand side` (`rhs`) columns
+# converts `rules_sequential` object to dataframe, adding `antecedent` and `consequent` columns
 #######################################################################################################################################
-as_dataframe <- function(rules_sequential, sort=TRUE, sort_by='lift')
+as_dataframe <- function(rules_sequential, sort = TRUE, sort_by = 'lift', number_of_unique_ids = NULL)
 {
-	if(sort)
-	{
-		rules_sequential <- sort(rules_sequential, by = sort_by)
-	}
-
 	rules_sequential_df <- as(rules_sequential, 'data.frame')
 
 	rule_groups <- as.data.frame(str_match(rules_sequential_df$rule, '(.*) => (.*)'))
+	names(rule_groups) <- c('rule', 'antecedent', 'consequent')
 
-	rules_sequential_df$lhs <- rule_groups$V2
-	rules_sequential_df$rhs <- rule_groups$V3
+	rules_sequential_df <- inner_join(rules_sequential_df, rule_groups, by = 'rule') %>%
+		dplyr::mutate(number_of_terms = str_count(string = antecedent, pattern = ',') + 1) %>%
+		dplyr::select(rule, antecedent, consequent, support, confidence, lift, number_of_terms)
 
+	if(sort) {
 
-	return (rules_sequential_df[c('rule', 'lhs', 'rhs', 'support', 'confidence', 'lift')]) # return custom order of dataframe
+		rules_sequential_df <- rules_sequential_df %>% dplyr::arrange_(paste0("desc(", sort_by, ")"))
+	}
+	
+	if(!is.null(number_of_unique_ids)) {
+
+		rules_sequential_df <- rules_sequential_df %>% dplyr::mutate(number_of_ids_having_rule = number_of_unique_ids * support)
+	}
+
+	return (rules_sequential_df)
 }
 
 #######################################################################################################################################
-# takes a dataframe returned by `as_dataframe` function and returns subset of dataframe that matches regex expressions for lhs and/or rhs
+# takes a dataframe returned by `as_dataframe` function and returns subset of dataframe that matches regex expressions for antecedent and/or consequent
 #######################################################################################################################################
-subset_sequence <- function(rules_sequential_df, lhs_regex=NULL, rhs_regex=NULL)
+subset_sequence <- function(rules_sequential_df, antecedent_regex=NULL, consequent_regex=NULL)
 {
 	rules_subset <- NULL
 
-	if (!is.null(lhs_regex) && !is.null(rhs_regex)) # if lhs/rhs both not null (otherwise only one of them should be)
+	if (!is.null(antecedent_regex) && !is.null(consequent_regex)) # if antecedent/consequent both not null (otherwise only one of them should be)
 	{
-		rules_subset <- subset(rules_sequential_df, grepl(lhs_regex, rules_sequential_df$lhs) | grepl(rhs_regex, rules_sequential_df$rhs))
+		rules_subset <- subset(rules_sequential_df, grepl(antecedent_regex, rules_sequential_df$antecedent) | grepl(consequent_regex, rules_sequential_df$consequent))
 	}
-	else if (!is.null(lhs_regex))
+	else if (!is.null(antecedent_regex))
 	{
-		rules_subset <- subset(rules_sequential_df, grepl(lhs_regex, rules_sequential_df$lhs))
+		rules_subset <- subset(rules_sequential_df, grepl(antecedent_regex, rules_sequential_df$antecedent))
 	}
-	else if (!is.null(rhs_regex))
+	else if (!is.null(consequent_regex))
 	{
-		rules_subset <- subset(rules_sequential_df, grepl(rhs_regex, rules_sequential_df$rhs))
+		rules_subset <- subset(rules_sequential_df, grepl(consequent_regex, rules_sequential_df$consequent))
 	}
 	# else return NULL
 

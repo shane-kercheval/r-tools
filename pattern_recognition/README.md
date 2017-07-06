@@ -29,12 +29,16 @@ single_event_sequence_dataset <- function(dataset, id_column_name, column_to_ord
 ```R
 as_dataframe <- function(rules_sequential, sort=TRUE, sort_by='lift')
 ```
-- converts `sequencerules` object to dataframe, adding `left hand side` (`lhs`) and `right hand side` (`rhs`) columns
+- converts `sequencerules` object to dataframe, adding columns: 
+	- `antecedent` (traditionally 'left-hand side')
+	- `consequent` (traditionally 'right-hand side')
+	- `number_of_terms` (number of terms for the antecedent)
+	- `number_of_ids_having_rule` (number of unique ids (e.g. customers) that are associated with (i.e. have done) a particular rule)
 
 ```R
-subset_sequence <- function(rules_sequential_df, lhs_regex=NULL, rhs_regex=NULL)
+subset_sequence <- function(rules_sequential_df, antecedent_regex=NULL, consequent_regex=NULL)
 ```
-- takes a dataframe returned by `as_dataframe` function and returns subset of dataframe that matches regex expressions for lhs and/or rhs
+- takes a dataframe returned by `as_dataframe` function and returns subset of dataframe that matches regex expressions for antecedent and/or consequent
 
 ```R
 helper_add_sequenced_data <- function(dataset, id_column_name, column_to_order_by)

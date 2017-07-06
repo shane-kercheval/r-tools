@@ -1,4 +1,4 @@
-"rule","lhs","rhs","support","confidence","lift"
-"<{a}> => <{c}>","<{a}>","<{c}>",1,1,1
-"<{a},{b}> => <{c}>","<{a},{b}>","<{c}>",0.75,1,1
-"<{a}> => <{b}>","<{a}>","<{b}>",0.75,0.75,0.75
+"rule","antecedent","consequent","support","confidence","lift","number_of_terms","number_of_ids_having_rule"
+"<{a}> => <{c}>","<{a}>","<{c}>",1,1,1,1,4
+"<{a},{b}> => <{c}>","<{a},{b}>","<{c}>",0.75,1,1,2,3
+"<{a}> => <{b}>","<{a}>","<{b}>",0.75,0.75,0.75,1,3

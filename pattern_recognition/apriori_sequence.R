@@ -42,11 +42,18 @@ single_event_sequence_dataset <- function(dataset, id_column_name, column_to_ord
 #######################################################################################################################################
 # converts `rules_sequential` object to dataframe, adding `antecedent` and `consequent` columns
 #######################################################################################################################################
-as_dataframe <- function(rules_sequential, sort = TRUE, sort_by = 'lift', number_of_unique_ids = NULL)
+as_dataframe <- function(rules_sequential, sort = TRUE, sort_by = 'lift', number_of_unique_ids = NULL, is_rules_non_sequential = FALSE)
 {
 	rules_sequential_df <- as(rules_sequential, 'data.frame')
+	
+	if(is_rules_non_sequential) {
 
-	rule_groups <- as.data.frame(str_match(rules_sequential_df$rule, '(.*) => (.*)'))
+		rules_sequential_df <- rules_sequential_df %>% dplyr::rename(rule = rules)
+	}	
+	
+	rules_sequential_df <- rules_sequential_df %>% mutate(rule = as.character(rule))
+	
+	rule_groups <- as.data.frame(str_match(rules_sequential_df$rule, '(.*) => (.*)'), stringsAsFactors = FALSE)
 	names(rule_groups) <- c('rule', 'antecedent', 'consequent')
 
 	rules_sequential_df <- inner_join(rules_sequential_df, rule_groups, by = 'rule') %>%

@@ -42,7 +42,7 @@ single_event_sequence_dataset <- function(dataset, id_column_name, column_to_ord
 #######################################################################################################################################
 # converts `rules_sequential` object to dataframe, adding `antecedent` and `consequent` columns
 #######################################################################################################################################
-as_dataframe <- function(rules_sequential, sort = TRUE, sort_by = 'lift', number_of_unique_ids = NULL, is_rules_non_sequential = FALSE)
+as_dataframe <- function(rules_sequential, sort = TRUE, sort_by = 'lift', number_of_unique_ids = NULL, is_rules_non_sequential = FALSE, round_to = NULL)
 {
 	rules_sequential_df <- as(rules_sequential, 'data.frame')
 	
@@ -68,6 +68,13 @@ as_dataframe <- function(rules_sequential, sort = TRUE, sort_by = 'lift', number
 	if(!is.null(number_of_unique_ids)) {
 
 		rules_sequential_df <- rules_sequential_df %>% dplyr::mutate(number_of_ids_having_rule = number_of_unique_ids * support)
+	}
+
+	if(!is.null(round_to)) {
+		rules_sequential_df <- rules_sequential_df %>%
+									dplyr::mutate(	support = round(support, round_to),
+													lift = round(lift, round_to),
+													confidence = round(confidence, round_to))
 	}
 
 	return (rules_sequential_df)

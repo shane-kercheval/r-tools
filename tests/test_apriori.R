@@ -94,6 +94,12 @@ test_that("pattern_recognition: apriori_sequence_analysis", {
 	expect_true(all(rules_df$number_of_terms == comparison_data$number_of_terms))
 	expect_true(all(rules_df$number_of_ids_having_rule == comparison_data$number_of_ids_having_rule))
 	
+	local_round_to <- 1
+	rules_df = as_dataframe(rules, number_of_unique_ids = length(unique(unordered_data$customer_id)), round_to = local_round_to) # custom method
+	expect_true(all(rules_df$support == round(comparison_data$support, local_round_to)))
+	expect_true(all(rules_df$confidence == round(comparison_data$confidence, local_round_to)))
+	expect_true(all(rules_df$lift == round(comparison_data$lift, local_round_to)))
+	
 	sink()
 })
 

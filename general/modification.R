@@ -100,8 +100,8 @@ create_many_to_many_group_id <- function(m_2_m_relationship_df, column_A, column
 	# column_A_values <- m_2_m_relationship_df$colA
 	# column_B_values <- m_2_m_relationship_df$colB
 	
-	column_A_values <- eval(substitute(column_A), m_2_m_relationship_df)
-	column_B_values <- eval(substitute(column_B), m_2_m_relationship_df)
+	column_A_values <- eval(substitute(column_A), m_2_m_relationship_df) # allows column_A to be a non-string argument
+	column_B_values <- eval(substitute(column_B), m_2_m_relationship_df) # allows column_B to be a non-string argument
 	
 	unique_column_a <- as.list(unique(column_A_values))
 	unique_column_b <- as.list(unique(column_B_values))
@@ -114,31 +114,24 @@ create_many_to_many_group_id <- function(m_2_m_relationship_df, column_A, column
 
 	for(index_a in 1:length(unique_column_a)) {
 
-		#index_a <- 4
-		local_a <- unique_column_a[[index_a]][1]
-
-		index_of_all_a <- which(m_2_m_relationship_df[, column_a_name] == local_a)
+		local_a <- unique_column_a[[index_a]][1] # get the unique column a value for the current index
+		index_of_all_a <- which(m_2_m_relationship_df[, column_a_name] == local_a) # get all indexes in the original dataframe that the value appaers in
+		related_bs <- m_2_m_relationship_df[index_of_all_a, column_b_name] # of those indexes, get the related b values
+		global_indexes_b <- which(map_chr(unique_column_b, ~ .[1]) %in% related_bs) # get the indexes of the b values
+		b_group_numbers <- map_dbl(unique_column_b[global_indexes_b], ~ as.numeric(.[2])) # get the group id values for each associated b
+		group_min <- min(c(index_a, b_group_numbers), na.rm = TRUE) # out the A and B group ids, choose the minimum and assign all records that new minimum value
 		
-		related_bs <- m_2_m_relationship_df[index_of_all_a, column_b_name]
-		
-		global_indexes_b <- which(map_chr(unique_column_b, ~ .[1]) %in% related_bs)
-		
-		b_group_numbers <- map_dbl(unique_column_b[global_indexes_b], ~ as.numeric(.[2]))
-		
-		group_min <- min(c(index_a, b_group_numbers), na.rm = TRUE)
-		
+		# update `A` and all `B`s with the minimum group id found 
 		unique_column_a[[index_a]][2] <- group_min
 		
 		for(index_b in global_indexes_b) {
 
-			#index_b <- 1
 			unique_column_b[[index_b]][2] <- group_min
 		}
 	}
 
 	column_A_df <- data.frame(A = map_chr(unique_column_a, ~ .[1]), group_id = map_chr(unique_column_a, ~ .[2]), stringsAsFactors = FALSE)
 	names(column_A_df) <- c(column_a_name, 'group_id')
-	
+
 	return( left_join(m_2_m_relationship_df, column_A_df, by = column_a_name))
 }
-

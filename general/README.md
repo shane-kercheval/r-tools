@@ -39,13 +39,13 @@ get_cohorted_crs <- function(lifecycle_data, cohort_type_func = custom_iso_week,
 cohort_cumulative_cr_plot <- function(cohort_df, title, y_label, x_label = 'Number of days after initial download (of seed project)', caption = '') {
 ```
 
-![example_cohort_cumulative_cr_plot.png](../readme/example_cohort_cumulative_cr_plot.png)
+![example_cohort_cumulative_cr_plot.png](./example_cohort_cumulative_cr_plot.png)
 
 ```R
 cumulative_cr_snapshot_plot <- function(cohort_df, snapshot_ages = c(1, 7, 30), age_label = 'days', duration_label, event_label, initial_event) {
 ```
 
-![example_cumulative_cr_snapshot_plot.png](../readme/example_cumulative_cr_snapshot_plot.png)
+![example_cumulative_cr_snapshot_plot.png](./example_cumulative_cr_snapshot_plot.png)
 
 ## correlations.R
 

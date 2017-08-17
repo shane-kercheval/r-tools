@@ -5,6 +5,8 @@ source('../general/cohort_conversion_rates.R', chdir=TRUE)
 #library('testthat')
 # test_file("test_cohort_conversion_rates.R")
 
+simulated_current_date_time <- '2017-08-16 19:03:06'
+
 test_that("cohort_conversion_rates: main", {
 	################
 	# LOAD DATA - COHORT BASED ON WEEK (EVOLUTION IN DAYS)
@@ -16,7 +18,7 @@ test_that("cohort_conversion_rates: main", {
 										age_units = 'days',
 										units_in_age = 1,
 										age_limit = 30,
-										cutoff_date_time = ymd_hms('2017-08-16 19:03:06'))
+										cutoff_date_time = ymd_hms(simulated_current_date_time))
 	
 	################
 	# VALIDATE
@@ -30,13 +32,15 @@ test_that("cohort_conversion_rates: main", {
 	expected_data_first_day_conversions <- simulated_data %>%
 		mutate(cohort = create_cohort(date_vector = date_initial, cohort_type_func = custom_iso_week)) %>%
 		group_by(cohort) %>%
-		summarise(conversion_rate = sum(difftime(date_converted, date_initial, units = 'days') <= 1, na.rm = TRUE) / n())
+		summarise(conversion_rate = sum(difftime(date_converted, date_initial, units = 'days') <= 1, na.rm = TRUE) / n()) %>%
+		filter(cohort != create_cohort(date_vector = ymd_hms(simulated_current_date_time), custom_iso_week))
 	expect_true(all(cohorted_crs %>% filter(cohort_age == 1) %>% select(-cohort_age) == expected_data_first_day_conversions))
 
 	expected_data_second_day_conversions <- simulated_data %>%
 		mutate(cohort = create_cohort(date_vector = date_initial, cohort_type_func = custom_iso_week)) %>%
 		group_by(cohort) %>%
-		summarise(conversion_rate = sum(difftime(date_converted, date_initial, units = 'days') <= 2, na.rm = TRUE) / n())
+		summarise(conversion_rate = sum(difftime(date_converted, date_initial, units = 'days') <= 2, na.rm = TRUE) / n()) %>%
+		filter(cohort != create_cohort(date_vector = ymd_hms(simulated_current_date_time), custom_iso_week))
 	expect_true(all(cohorted_crs %>% filter(cohort_age == 2) %>% select(-cohort_age) == expected_data_second_day_conversions))
 
 	################
@@ -48,7 +52,7 @@ test_that("cohort_conversion_rates: main", {
 										age_units = 'weeks',
 										units_in_age = 1,
 										age_limit = NULL,
-										cutoff_date_time = ymd_hms('2017-08-16 19:03:06'))
+										cutoff_date_time = ymd_hms(simulated_current_date_time))
 
 	#expected_data <- cohorted_crs
 	#saveRDS(expected_data, file = './data/expected_data_cohorted_crs_weeks.RDS')
@@ -59,7 +63,8 @@ test_that("cohort_conversion_rates: main", {
 	expected_data_first_day_conversions <- simulated_data %>%
 		mutate(cohort = create_cohort(date_vector = date_initial, cohort_type_func = custom_iso_week)) %>%
 		group_by(cohort) %>%
-		summarise(conversion_rate = sum(difftime(date_converted, date_initial, units = 'weeks') <= 1, na.rm = TRUE) / n())
+		summarise(conversion_rate = sum(difftime(date_converted, date_initial, units = 'weeks') <= 1, na.rm = TRUE) / n()) %>%
+		filter(cohort != create_cohort(date_vector = ymd_hms(simulated_current_date_time), custom_iso_week))
 
 	expect_true(all(cohorted_crs %>% filter(cohort_age == 1) %>% select(-cohort_age) ==
 					expected_data_first_day_conversions %>% filter(!(cohort %in% c('2017-32', '2017-33')))))
@@ -67,7 +72,8 @@ test_that("cohort_conversion_rates: main", {
 	expected_data_second_day_conversions <- simulated_data %>%
 		mutate(cohort = create_cohort(date_vector = date_initial, cohort_type_func = custom_iso_week)) %>%
 		group_by(cohort) %>%
-		summarise(conversion_rate = sum(difftime(date_converted, date_initial, units = 'weeks') <= 2, na.rm = TRUE) / n())
+		summarise(conversion_rate = sum(difftime(date_converted, date_initial, units = 'weeks') <= 2, na.rm = TRUE) / n()) %>%
+		filter(cohort != create_cohort(date_vector = ymd_hms(simulated_current_date_time), custom_iso_week))
 	expect_true(all(cohorted_crs %>% filter(cohort_age == 2) %>% select(-cohort_age) == 
 					expected_data_second_day_conversions %>% filter(!(cohort %in% c('2017-31',
 																					'2017-32',
@@ -81,13 +87,13 @@ test_that("cohort_conversion_rates: main", {
 											age_units = 'days',
 											units_in_age = 7,
 											age_limit = NULL,
-											cutoff_date_time = ymd_hms('2017-08-16 19:03:06'))
+											cutoff_date_time = ymd_hms(simulated_current_date_time))
 	cohorted_crs_weekly <- get_cohorted_crs(lifecycle_data = simulated_data,
 											cohort_type_func = custom_iso_week,
 											age_units = 'weeks',
 											units_in_age = 1,
 											age_limit = NULL,
-											cutoff_date_time = ymd_hms('2017-08-16 19:03:06'))
+											cutoff_date_time = ymd_hms(simulated_current_date_time))
 	expect_true(all(cohorted_crs_daily == cohorted_crs_weekly %>% mutate(cohort_age = cohort_age * 7)))
 
 })
@@ -100,7 +106,7 @@ test_that("cohort_conversion_rates: plots", {
 										age_units = 'days',
 										units_in_age = 1,
 										age_limit = 30,
-										cutoff_date_time = ymd_hms('2017-08-16 19:03:06'))
+										cutoff_date_time = ymd_hms(simulated_current_date_time))
 
 	################
 	# EVOLUTION

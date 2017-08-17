@@ -37,8 +37,11 @@ get_cohorted_crs <- function(lifecycle_data,
 							 age_limit = NULL,
 							 cutoff_date_time = Sys.time()) {
 
+	latest_cohort <- create_cohort(date_vector = cutoff_date_time, cohort_type_func = cohort_type_func)
+
 	lifecycle_cohorts <- lifecycle_data %>% # creates the 'cohort' field based on the function passed in
-		mutate(cohort = create_cohort(date_vector = date_initial, cohort_type_func = cohort_type_func))
+		mutate(cohort = create_cohort(date_vector = date_initial, cohort_type_func = cohort_type_func)) %>%
+		filter(cohort != latest_cohort)
 
 	unique_cohorts <- sort(unique(lifecycle_cohorts$cohort))
 
@@ -61,21 +64,21 @@ get_cohorted_crs <- function(lifecycle_data,
 		# so we look at all the observations that were created in week X. Regardless if they create the observation on a Monday, or a Friday, see how many of those observations converted within 7 days, 14 days, etc.
 
 		stopifnot(length(unique(current_cohort$cohort)) == 1) # all these values should match
-	
-		# the max age that should be considered is the 'youngest' of the current cohort population..
-		# For example, the current cohort is from last week. And today is Tuesday, and there were observations
-		# that had eventB (for the first time) on Sunday, those observations have only had (e.g.) 2
-		# days to do EventB, so that's the maximum age we can go to. Any age beyond that means we haven't
-		# given the cohort a chance for everyone to convert within that that timeframe. If the age was 7,
-		# for example, the observations that had eventB on Sunday would not have had 7 days to do the conversion.
-		# similarly, There are observations in a cohort that did eventA at 11:59PM and observations
-		# in the next cohort that did eventA at 12:00AM, so while they are in different cohorts, the two
-		# cohorts will have similar limitations in some situations
-		max_age = min(floor(as.numeric(difftime(cutoff_date_time, current_cohort$date_initial, units = age_units))))
+
+		# in order for a cohort to be considered for a certain age, everyone in the cohort (or who will be in the cohort)
+		# needs be at least that old.
+		# So, 1) we will never consider the current cohort, because future people/observations who enter the cohort by definition haven't had time to be considered for any age we are looking at
+		# 2), for the rest of the cohorts (that aren't expanding), we need the YOUNGEST person/observation, and need to make sure they are "old enough"
+
+
+		# get the last person's age (i.e. when they entered the cohort via date_initial; age is relative to cutoff_date_time which is defaulted to 'today')
+		# we want to round DOWN; so if they are 13.9 units 'old' then we will say they are 13 units old (i.e. age of 13 is valid to consider them)
+		youngest_observation_age <-  floor(as.numeric(difftime(cutoff_date_time, max(current_cohort$date_initial), units = age_units)))
+		# now if the age to be considered <= to the youngest_observation_age (i.e. we know everyone in the cohort is at least X units old), then we consider that age
 		for(cohort_age in 1:age_limit) {
 			cohort_age <- cohort_age * units_in_age
 
-			if(cohort_age > max_age) { 
+			if(cohort_age > youngest_observation_age) { 
 				break
 			}
 			
@@ -96,17 +99,9 @@ cohort_cumulative_cr_plot <- function(	cohort_df,
 										y_label,
 										x_label = 'Number of days after EventA',
 										caption = '',
-										cohort_indexes_to_label = NULL, 
-										remove_current_cohort = TRUE) {
+										cohort_indexes_to_label = NULL) {
 
 	unique_cohorts <- sort(unique(cohort_df$cohort))
-
-	if(remove_current_cohort) {
-
-		cohort_df <- cohort_df %>% filter(cohort != unique_cohorts[length(unique_cohorts)]) # get the last unique cohort (relies on sort), and remove any instance of that cohort
-		unique_cohorts <- sort(unique(cohort_df$cohort))
-	}
-
 	# the inner join selects all the rows from cohort_df that have the max age i.e. latest cummulative CR
 	final_cohorts <- inner_join(cohort_df,
 								cohort_df %>%
@@ -144,16 +139,8 @@ cumulative_cr_snapshot_plot <- function(cohort_df,
 										conversion_event_label,
 										age_label = 'days',
 										snapshot_ages = c(1, 7, 30),
-										highlight_cohort_labels = NULL,
-										remove_current_cohort = TRUE) {
+										highlight_cohort_labels = NULL) {
 	
-	unique_cohorts <- sort(unique(cohort_df$cohort))
-
-	if(remove_current_cohort) {
-
-		cohort_df <- cohort_df %>% filter(cohort != unique_cohorts[length(unique_cohorts)]) # get the last unique cohort (relies on sort), and remove any instance of that cohort
-	}
-
 	age_labels = paste(snapshot_ages, age_label)
 	
 	snapshot_corhot_data <- cohort_df %>%

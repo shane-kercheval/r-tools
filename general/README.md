@@ -23,6 +23,30 @@ explore_numeric <- function(numeric_vector)
 ```
 - takes a numeric vector and prints out basic/exploratory stats
 
+## cohort_conversion_rates.R
+
+```R
+get_cohorted_crs <- function(lifecycle_data, cohort_type_func = custom_iso_week, age_units = 'days', units_in_age = 7, age_limit = NULL, cutoff_date_time = Sys.time()) {
+```
+
+- `lifecycle_data`: unique observations that have a `date_initial` that is the start of the time period of the first event (e.g. observation creation date) and a `date_converted` field wich is a date
+- `cohort_type_func` is a function that defines the index of the cohort, which will be converted to a cohort in the form of 'YYYY-index'
+- `age_units` is how to measure the evolution over time, valid values could be 'hours', days', 'weeks', 'months'
+- `units_in_age`: the number of days for each age index.. e.g. if you want to measure/map the lifetime of the cohort in weeks, the value would be 7 (default), or every 4 weeks (28 days)
+- `cutoff_date_time` is usually the day you run the analysis, but is settable mostly for testing purposes.
+
+```R
+cohort_cumulative_cr_plot <- function(cohort_df, title, y_label, x_label = 'Number of days after initial download (of seed project)', caption = '') {
+```
+
+![example_cohort_cumulative_cr_plot.png](../readme/example_cohort_cumulative_cr_plot.png)
+
+```R
+cumulative_cr_snapshot_plot <- function(cohort_df, snapshot_ages = c(1, 7, 30), age_label = 'days', duration_label, event_label, initial_event) {
+```
+
+![example_cumulative_cr_snapshot_plot.png](../readme/example_cumulative_cr_snapshot_plot.png)
+
 ## correlations.R
 
 ```R

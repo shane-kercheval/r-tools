@@ -26,24 +26,32 @@ explore_numeric <- function(numeric_vector)
 ## cohort_conversion_rates.R
 
 ```R
-get_cohorted_crs <- function(lifecycle_data, cohort_type_func = custom_iso_week, age_units = 'days', units_in_age = 7, age_limit = NULL, cutoff_date_time = Sys.time()) {
+get_cohorted_crs <- function(lifecycle_data, cohort_type_func = custom_iso_week, age_units = 'weeks', units_in_age = 1, age_limit = NULL, cutoff_date_time = Sys.time())
 ```
 
-- `lifecycle_data`: unique observations that have a `date_initial` that is the start of the time period of the first event (e.g. observation creation date) and a `date_converted` field wich is a date
+- `lifecycle_data`: unique observations that have a 
+	- `date_initial` column, which is the start of the time period of the first event (e.g. observation creation date); and a
+		- this field must not have any missing values (i.e. the dataframe should represent the entire population of observations that did eventA)
+	- `date_converted` field wich is a date representing when the observation converted (or NA for no conversion)
 - `cohort_type_func` is a function that defines the index of the cohort, which will be converted to a cohort in the form of 'YYYY-index'
 - `age_units` is how to measure the evolution over time, valid values could be 'hours', days', 'weeks', 'months'
 - `units_in_age`: the number of days for each age index.. e.g. if you want to measure/map the lifetime of the cohort in weeks, the value would be 7 (default), or every 4 weeks (28 days)
 - `cutoff_date_time` is usually the day you run the analysis, but is settable mostly for testing purposes.
+- default values will provide cohort evolutions in weeks, the evolution length will be equal to the number of cohorts (because the number of cohorts (in weeks) will be the same thing as measured from the first cohort to the current date/time)
 
 ```R
-cohort_cumulative_cr_plot <- function(cohort_df, title, y_label, x_label = 'Number of days after initial download (of seed project)', caption = '') {
+cohort_cumulative_cr_plot <- function(cohort_df, title, y_label, x_label = 'Number of days after EventA', caption = '', cohort_indexes_to_label = NULL, remove_current_cohort = TRUE)
 ```
+
+- `cohort_df` is a dataframe returned from `get_cohorted_crs()` and must have columns `cohort`, `cohort_age`, and `cummulative_cr`
 
 ![example_cohort_cumulative_cr_plot.png](./example_cohort_cumulative_cr_plot.png)
 
 ```R
-cumulative_cr_snapshot_plot <- function(cohort_df, snapshot_ages = c(1, 7, 30), age_label = 'days', duration_label, event_label, initial_event) {
+cumulative_cr_snapshot_plot <- function(cohort_df, initial_event, age_label = 'days', snapshot_ages = c(1, 7, 30), highlight_cohort_labels = NULL, remove_current_cohort = TRUE)
 ```
+
+- `cohort_df` is a dataframe returned from `get_cohorted_crs()` and must have columns `cohort`, `cohort_age`, and `cummulative_cr`
 
 ![example_cumulative_cr_snapshot_plot.png](./example_cumulative_cr_snapshot_plot.png)
 

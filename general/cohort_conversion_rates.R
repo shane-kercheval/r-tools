@@ -15,9 +15,29 @@ create_cohort <- function(date_vector, cohort_type_func) {
 	return (map_chr(date_vector, ~ paste0(year(.),'-', str_pad(cohort_type_func(.), 2, side = 'left', pad = '0')))) # this will work for weeks/months
 }
 
-get_cohorted_crs <- function(lifecycle_data, cohort_type_func = custom_iso_week, age_units = 'days', units_in_age = 7, age_limit = NULL, cutoff_date_time = Sys.time()) {
+calculate_evolution_rate_of_change <- function(cohort_df) {
+	cohort_rate_of_change <- full_join(	data.frame(	cohort = sort(unique(cohort_df$cohort)),
+													cohort_age = 0,
+													cummulative_cr = 0),
+										cohort_df,
+										by = c('cohort', 'cohort_age', 'cummulative_cr')) %>%
+		arrange(cohort, cohort_age) %>%
+		mutate(previous_cr = lag(cummulative_cr), change = cummulative_cr - previous_cr) %>%
+		select(cohort, cohort_age, change) %>%
+		rename(cummulative_cr = change) %>%
+		filter(cohort_age != 0)
 
-	lifecycle_cohorts <- lifecycle_data %>%
+	return (cohort_rate_of_change)
+}
+
+get_cohorted_crs <- function(lifecycle_data,
+							 cohort_type_func = custom_iso_week,
+							 age_units = 'weeks',
+							 units_in_age = 1,
+							 age_limit = NULL,
+							 cutoff_date_time = Sys.time()) {
+
+	lifecycle_cohorts <- lifecycle_data %>% # creates the 'cohort' field based on the function passed in
 		mutate(cohort = create_cohort(date_vector = date_initial, cohort_type_func = cohort_type_func))
 
 	unique_cohorts <- sort(unique(lifecycle_cohorts$cohort))
@@ -42,12 +62,15 @@ get_cohorted_crs <- function(lifecycle_data, cohort_type_func = custom_iso_week,
 
 		stopifnot(length(unique(current_cohort$cohort)) == 1) # all these values should match
 	
-		# the max age that should be considered is 'youngest' of the current cohort population..
+		# the max age that should be considered is the 'youngest' of the current cohort population..
 		# For example, the current cohort is from last week. And today is Tuesday, and there were observations
-		# that eventB (for the first time) on Sunday, those observations have only had (e.g.) 2
+		# that had eventB (for the first time) on Sunday, those observations have only had (e.g.) 2
 		# days to do EventB, so that's the maximum age we can go to. Any age beyond that means we haven't
 		# given the cohort a chance for everyone to convert within that that timeframe. If the age was 7,
-		# for example, the observations that had eventB on Sunday would not have had 7 days to do the conversion. 
+		# for example, the observations that had eventB on Sunday would not have had 7 days to do the conversion.
+		# similarly, There are observations in a cohort that did eventA at 11:59PM and observations
+		# in the next cohort that did eventA at 12:00AM, so while they are in different cohorts, the two
+		# cohorts will have similar limitations in some situations
 		max_age = min(floor(as.numeric(difftime(cutoff_date_time, current_cohort$date_initial, units = age_units))))
 		for(cohort_age in 1:age_limit) {
 			cohort_age <- cohort_age * units_in_age
@@ -68,14 +91,26 @@ get_cohorted_crs <- function(lifecycle_data, cohort_type_func = custom_iso_week,
 	return (cohort_conversion_rates_df)
 }
 
-cohort_cumulative_cr_plot <- function(cohort_df, title, y_label, x_label = 'Number of days after EventA', caption = '') {
+cohort_cumulative_cr_plot <- function(	cohort_df,
+										title,
+										y_label,
+										x_label = 'Number of days after EventA',
+										caption = '',
+										cohort_indexes_to_label = NULL, 
+										remove_current_cohort = TRUE) {
+
+	unique_cohorts <- sort(unique(cohort_df$cohort))
+
+	if(remove_current_cohort) {
+
+		cohort_df <- cohort_df %>% filter(cohort != unique_cohorts[length(unique_cohorts)]) # get the last unique cohort (relies on sort), and remove any instance of that cohort
+	}
+
 	# the inner join selects all the rows from cohort_df that have the max age i.e. latest cummulative CR
 	final_cohorts <- inner_join(cohort_df,
 								cohort_df %>%
 									group_by(cohort) %>%
 									summarise(cohort_age = max(cohort_age)), by = c('cohort', 'cohort_age'))
-
-	unique_cohorts <- sort(unique(cohort_df$cohort))
 
 	graph_attributes <- data.frame(	cohort = unique_cohorts,
 									alpha = seq(from = 0.5, to = 1, 
@@ -83,27 +118,41 @@ cohort_cumulative_cr_plot <- function(cohort_df, title, y_label, x_label = 'Numb
 
 	cohort_df <- inner_join(cohort_df, graph_attributes, by = 'cohort')
 
-	y_min_max <- c(	floor(min(cohort_df$y_value) / 0.025) * 0.025,
-					ceiling(max(cohort_df$y_value) / 0.025) * 0.025)
-	cr_plot <- ggplot(data = cohort_df, aes(x = cohort_age, y = y_value, col = cohort, group = cohort)) +
+	y_ticks <- 0.025
+	y_min_max <- c(	floor(min(cohort_df$cummulative_cr) / y_ticks) * y_ticks, # round down to the nearest 2.5%
+					ceiling(max(cohort_df$cummulative_cr) / y_ticks) * y_ticks) # round up to the nearest 2.5%
+	cr_plot <- ggplot(data = cohort_df, aes(x = cohort_age, y = cummulative_cr, col = cohort, group = cohort)) +
 		geom_line(aes(alpha = alpha), size = 1.0) +
 		coord_cartesian(ylim = y_min_max) +
-		scale_y_continuous(breaks = seq(from = y_min_max[1], to = y_min_max[2], by = 0.025), labels = scales::percent) +
-		geom_label(data =  subset(final_cohorts, cohort_age < 10 | cohort == '2017-01' | cohort == '2017-25' | cohort == '2017-18'), aes(label = cohort),
+		scale_y_continuous(breaks = seq(from = y_min_max[1], to = y_min_max[2], by = y_ticks), labels = scales::percent) +
+		geom_label(data =  subset(final_cohorts, cohort_age < 10 | cohort %in% cohort_indexes_to_label),
+				   aes(label = cohort),
 				   nudge_x = 1.1, alpha = 1, na.rm = TRUE) +
-		#geom_text(	data = subset(final_cohorts, cohort_age < 10),
-		#			aes(x = cohort_age, y = y_value, label = cohort, vjust = 0.3, hjust = -0.1)) + #, check_overlap = TRUE) + 
 		scale_x_continuous(breaks = seq(from = 1, to = max(final_cohorts$cohort_age), by = 1)) +
 		labs(	title = title,
 				x = x_label,
 				y = y_label,
-				caption = caption) + guides(alpha = FALSE)
+				caption = caption) +
+		guides(alpha = FALSE)
 
 	return (cr_plot)
 }
 
-cumulative_cr_snapshot_plot <- function(cohort_df, snapshot_ages = c(1, 7, 30), age_label = 'days', event_label, initial_event, highlight_cohort_labels = NULL) {
+cumulative_cr_snapshot_plot <- function(cohort_df,
+										initial_event,
+										conversion_event_label,
+										age_label = 'days',
+										snapshot_ages = c(1, 7, 30),
+										highlight_cohort_labels = NULL,
+										remove_current_cohort = TRUE) {
 	
+	unique_cohorts <- sort(unique(cohort_df$cohort))
+
+	if(remove_current_cohort) {
+
+		cohort_df <- cohort_df %>% filter(cohort != unique_cohorts[length(unique_cohorts)]) # get the last unique cohort (relies on sort), and remove any instance of that cohort
+	}
+
 	age_labels = paste(snapshot_ages, age_label)
 	
 	snapshot_corhot_data <- cohort_df %>%
@@ -116,7 +165,9 @@ cumulative_cr_snapshot_plot <- function(cohort_df, snapshot_ages = c(1, 7, 30), 
 	cohort_labels <- NULL
 	if(!is.null(highlight_cohort_labels)) {
 
-		cohort_labels <- ifelse(sort(unique(snapshot_corhot_data$cohort)) %in% highlight_cohort_labels, 'red', 'black')
+		cohort_labels <- ifelse(sort(unique(snapshot_corhot_data$cohort)) %in% highlight_cohort_labels, 
+								'red',
+								'black')
 	}
 	
 	snapshot_plot <- ggplot(data = snapshot_corhot_data, aes(x = cohort, y = cummulative_cr, group = cohort_age, colour = cohort_age)) +
@@ -124,9 +175,9 @@ cumulative_cr_snapshot_plot <- function(cohort_df, snapshot_ages = c(1, 7, 30), 
 		coord_cartesian(ylim = y_min_max) +
 		scale_y_continuous(breaks = seq(from = y_min_max[1], to = y_min_max[2], by = 0.025), labels = scales::percent) +
 		theme(axis.text.x = element_text(angle = 60, hjust = 1, colour = cohort_labels)) +
-		labs(	title = paste('Snapshot of Evolution of ', event_label, 'After X', age_label,'from', initial_event),
-				y = '% conversion rate (for each cohort)',
+		labs(	title = paste('Snapshot of Evolution of ', conversion_event_label, 'After X', age_label, 'from', initial_event),
 				x = paste0('Cohort (i.e week of ', initial_event, ')'),
+				y = '% conversion rate (for each cohort)',
 				colour = 'Snapshot',
 				caption = paste('\nThis graph shows a snapshot of the conversion rate after the first x', age_label, 'of one cohort\ncompared to the conversion rate after x', age_label, 'of another cohort.\nSo, we can accurately compare an older group of observations to a younger group.'))
 	return (snapshot_plot)	

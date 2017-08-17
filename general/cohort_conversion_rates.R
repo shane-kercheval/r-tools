@@ -104,6 +104,7 @@ cohort_cumulative_cr_plot <- function(	cohort_df,
 	if(remove_current_cohort) {
 
 		cohort_df <- cohort_df %>% filter(cohort != unique_cohorts[length(unique_cohorts)]) # get the last unique cohort (relies on sort), and remove any instance of that cohort
+		unique_cohorts <- sort(unique(cohort_df$cohort))
 	}
 
 	# the inner join selects all the rows from cohort_df that have the max age i.e. latest cummulative CR
@@ -125,7 +126,7 @@ cohort_cumulative_cr_plot <- function(	cohort_df,
 		geom_line(aes(alpha = alpha), size = 1.0) +
 		coord_cartesian(ylim = y_min_max) +
 		scale_y_continuous(breaks = seq(from = y_min_max[1], to = y_min_max[2], by = y_ticks), labels = scales::percent) +
-		geom_label(data =  subset(final_cohorts, cohort_age < 10 | cohort %in% cohort_indexes_to_label),
+		geom_label(data =  subset(final_cohorts, cohort %in% tail(unique_cohorts, 2) | cohort %in% cohort_indexes_to_label),
 				   aes(label = cohort),
 				   nudge_x = 1.1, alpha = 1, na.rm = TRUE) +
 		scale_x_continuous(breaks = seq(from = 1, to = max(final_cohorts$cohort_age), by = 1)) +

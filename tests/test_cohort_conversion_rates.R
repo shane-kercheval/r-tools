@@ -119,7 +119,7 @@ test_that("cohort_conversion_rates: plots", {
 								title = 'Evolution of EventA to EventB Convertsion Rate Over Time (Days)',
 								y_label = 'Cummulative conversion rate for cohort',
 								caption = '\nShows evolution of each cohort over time (x-axis, days).\nOlder cohorts have more transparent lines.')
-	ggsave(filename = test_file)
+	ggsave(filename = test_file, height = 8, width = 14, units = c('in'))
 	expect_true(file.exists(test_file))
 
 	################
@@ -130,7 +130,7 @@ test_that("cohort_conversion_rates: plots", {
 	cumulative_cr_snapshot_plot(cohort_df = cohorted_crs,
 								initial_event = 'Initial EventA',
 								conversion_event_label = 'EventB CR')
-	ggsave(filename = test_file)
+	ggsave(filename = test_file, height = 8, width = 14, units = c('in'))
 	file.exists(test_file)
 
 	################
@@ -148,6 +148,6 @@ test_that("cohort_conversion_rates: plots", {
 	cohort_cumulative_cr_plot(	cohort_df = cohort_rate_of_change,
 								title = 'Rate of Capture - CR (Days)',
 								y_label = 'Incremental % captured (Difference in CR between days)')
-	ggsave(filename = test_file)
+	ggsave(filename = test_file, height = 8, width = 14, units = c('in'))
 	file.exists(test_file)	
 })

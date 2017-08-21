@@ -1,3 +1,4 @@
+library(stringr)
 library(lubridate)
 library(tidyverse)
 library(ggplot2)
@@ -137,6 +138,7 @@ cohort_cumulative_cr_plot <- function(	cohort_df,
 cumulative_cr_snapshot_plot <- function(cohort_df,
 										initial_event,
 										conversion_event_label,
+										subtitle = NULL,
 										age_label = 'days',
 										snapshot_ages = c(1, 7, 30),
 										highlight_cohort_labels = NULL) {
@@ -164,6 +166,7 @@ cumulative_cr_snapshot_plot <- function(cohort_df,
 		scale_y_continuous(breaks = seq(from = y_min_max[1], to = y_min_max[2], by = 0.025), labels = scales::percent) +
 		theme(axis.text.x = element_text(angle = 60, hjust = 1, colour = cohort_labels)) +
 		labs(	title = paste('Snapshot of Evolution of ', conversion_event_label, 'After X', age_label, 'from', initial_event),
+				subtitle = subtitle,
 				x = paste0('Cohort (i.e week of ', initial_event, ')'),
 				y = '% conversion rate (for each cohort)',
 				colour = 'Snapshot',

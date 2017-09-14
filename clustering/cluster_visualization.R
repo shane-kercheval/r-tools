@@ -1,7 +1,8 @@
 library(fpc)
 library(RColorBrewer)
 library(reshape2)
-library(ggplot2)
+library(tidyr)
+
 
 cluster_heatmap <- function(results_df, start_stop=1)
 {
@@ -9,16 +10,16 @@ cluster_heatmap <- function(results_df, start_stop=1)
  	heatmap_colors <- c(rev(brewer.pal(n = 9,name = 'Blues')[2:7]), brewer.pal(n = 9,name = 'Reds')[2:7])
 
 	results_df$cluster_name <- 1:nrow(results_df)
-	results_df_melted <- melt(results_df, id.vars = 'cluster_name', measure.vars = colnames(results_df[-c(ncol(results_df))]))
-	results_df_melted$means <- cut(results_df_melted$value, breaks = heatmap_breaks)
-	
-	heatmap <- ggplot(data=results_df_melted, aes(x = variable, y = factor(cluster_name, levels = rev(unique(cluster_name))))) + 
+	results_df_long <- results_df %>% gather(variable, value, -cluster_name, - cluster_size)
+	results_df_long$means <- cut(results_df_long$value, breaks = heatmap_breaks)
+
+	heatmap <- ggplot(data=results_df_long, aes(x = factor(variable, levels = unique(variable)), y = factor(cluster_size, levels = sort(unique(cluster_size))))) +
 		geom_tile(aes(fill = means), colour = "white") +
 		theme(axis.text.x = element_text(angle = 60, hjust = 1)) + 
 		scale_fill_manual(values = heatmap_colors, drop = FALSE) + # drop=FALSE so that scale shows every value, even if not in dataset
 		labs(title = 'Segmentation Visualization',
 			 subtitle = paste(max(results_df$cluster_name), 'Segments'),
-			 y = 'Segment Number',
+			 y = 'Cluster Size (i.e. number of instances/samples)',
 			 x = 'Variable',
 			 caption = paste0(
 			 "\nEach row represents a segment. Each column represents a variable to segment by.",
@@ -41,6 +42,7 @@ save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='')
 
 	temp <- lapply(kmeans_results, FUN=function(kmeans_result){
 		results_df <- as.data.frame(kmeans_result$centers)
+		results_df$cluster_size <- kmeans_result$size
 		heatmap_plot <- cluster_heatmap(results_df = results_df)
 		ggsave(filename=sprintf("./%s/kmeans%s_%s_clusters_%s.png", folder, subscript, length(kmeans_result$size), Sys.Date()), plot = heatmap_plot)
 	})
@@ -54,9 +56,11 @@ save_hierarchical_heatmaps <- function(hierarchical_results, folder='', subscrip
 	}
 
 	heatmaps <- lapply(hierarchical_results, FUN=function(hierarchical_result){
+		
 		results_df <- as.data.frame(lapply(hierarchical_result, colMeans))
 		results_df <- as.data.frame(t(results_df)) # t (transpose) results in a matrix, convert back to df
 		results_df$cluster_name <- 1:nrow(results_df)
+		results_df$cluster_size <- map_dbl(hierarchical_result, ~ nrow(.))
 		heatmap_plot <- cluster_heatmap(results_df = results_df)
 		if(save_file)
 		{

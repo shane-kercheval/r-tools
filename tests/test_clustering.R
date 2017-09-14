@@ -1,4 +1,5 @@
 library('testthat')
+library(purrr)
 source('../clustering/clustering_methods.R', chdir=TRUE)
 
 #to run from command line, use:
@@ -56,6 +57,9 @@ test_that("clustering: methods", {
 	invisible(walk(kmeans_vector, ~{
 		filename = sprintf('kmeans_%s_clusters_%s.png', ., Sys.Date())
 		expect_true(file.exists(filename))
+		if(. == 5) {
+			file.copy(from = filename, to = '../readme/kmeans_5_clusters.png', overwrite = TRUE)
+		}
 		file.remove(filename)
 	}))
 

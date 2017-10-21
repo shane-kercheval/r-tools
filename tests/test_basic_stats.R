@@ -1,4 +1,5 @@
 library('testthat')
+library(purrr)
 source('../general/basic_stats.R', chdir=TRUE)
 
 #to run from command line, use:

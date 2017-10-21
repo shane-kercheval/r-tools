@@ -75,7 +75,7 @@ test_that("general: model_measurements", {
 	file_name = '../readme/quality_of_model_plot.png'
 	file.remove(file_name)
 	quality_plot = visualize_quality_of_model(conf_list)
-	ggsave(plot=quality_plot, filename=file_name)
+	ggsave(plot=quality_plot, filename=file_name, width = 9, height = 6, units = c('in'))
 	expect_true(file.exists(file_name))
 
 	model_total_observations = model_total_actual_pos + model_total_actual_neg
@@ -146,8 +146,8 @@ test_that("gain_lift_table: model_measurements", {
 	file.remove('../general/example_lift_chart.png')
 
 	gl_charts <- gain_lift_charts(gl_table = gl_table)
-	ggsave(filename = '../general/example_gain_chart.png', plot = gl_charts[[1]])
-	ggsave(filename = '../general/example_lift_chart.png', plot = gl_charts[[2]])
+	ggsave(filename = '../general/example_gain_chart.png', plot = gl_charts[[1]], width = 9, height = 6, units = c('in'))
+	ggsave(filename = '../general/example_lift_chart.png', plot = gl_charts[[2]], width = 9, height = 6, units = c('in'))
 
 	expect_true(file.exists('../general/example_gain_chart.png'))
 	expect_true(file.exists('../general/example_lift_chart.png'))
@@ -168,7 +168,7 @@ test_that("calibration_table: model_measurements", {
 	file.remove('../general/example_calibration_chart.png')
 	
 	cal_chart <- calibration_chart(cal_table = cal_table)
-	ggsave(filename = '../general/example_calibration_chart.png', plot = cal_chart)
+	ggsave(filename = '../general/example_calibration_chart.png', plot = cal_chart, width = 9, height = 6, units = c('in'))
 
 	expect_true(file.exists('../general/example_calibration_chart.png'))
 	
@@ -217,7 +217,7 @@ test_that("expected_value_chart: model_measurements", {
 	expected_value_plot <- expected_value_chart(predicted_probabilities_positive = predicted_probabilities_positive, actual_outcomes = actual_outcomes, gain_cost_matrix = gain_cost_matrix)
 	expected_value_plot
 	file.remove('../general/example_expected_value_chart.png')
-	ggsave(filename = '../general/example_expected_value_chart.png', plot = expected_value_plot)
+	ggsave(filename = '../general/example_expected_value_chart.png', plot = expected_value_plot, width = 9, height = 6, units = c('in'))
 	expect_true(file.exists('../general/example_expected_value_chart.png'))
 })
 

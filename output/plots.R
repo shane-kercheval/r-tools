@@ -187,7 +187,7 @@ gg_qq_plot <- function(data_vector, data_name = 'sample')
 	# QQ Plot (examine fit of normal distribution)
 	slope = diff(quantile(data_vector, c(0.25, 0.75))) / diff(qnorm(c(0.25, 0.75)))
 	int = quantile(data_vector, 0.25) - slope * qnorm(0.25)
-	return (ggplot(NULL, aes(sample=data_vector)) +
+	return (ggplot(data = NULL, aes(sample=data_vector)) +
 				geom_qq(alpha=0.3) +
 				geom_abline(aes(slope=slope, intercept = int), col='red') + 
 				coord_cartesian(xlim = c(-3, 3), ylim = c(-3, 3)) + 

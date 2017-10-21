@@ -13,7 +13,7 @@ Example of heatmap, which shows scaled (z-score) clustering averages:
 ![Heatmaps](../readme/kmeans_5_clusters.png)
 
 ```R
-save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='')
+save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='', height = 7, width = 10, units = c('in'))
 ```
 - helper method to save all the cluster results to heatmaps from `kmeans_cluster_analysis`
 - takes `kmeans_results` (list returned by `kmeans_cluster_analysis` function) and, for each kmeans result, creates and saves a heatmap to `folder` in the form of `./%1/kmeans%2_%3_clusters_%4.png`, where
@@ -23,7 +23,8 @@ save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='')
   - `%4` == date/time
 
 ```R
-save_hierarchical_heatmaps <- function(hierarchical_results, folder, subscript='')
+save_hierarchical_heatmaps <- function(hierarchical_results, folder='', subscript='', save_file=FALSE,
+										height = 7, width = 10, units = c('in'))
 ```
 - same as `save_kmeans_heatmaps` above
 

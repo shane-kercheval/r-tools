@@ -63,7 +63,7 @@ test_that('output: plot: heat_map', {
 	expect_false(is.null(heat_map))
 	expect_false(file.exists(file_name))
 
-	heat_map = heat_map_wide_data(df_wide, , y_factor_order=ordered_factor, save_file=file_name)
+	heat_map = heat_map_wide_data(df_wide, y_factor_order=ordered_factor, save_file=file_name)
 	expect_false(is.null(heat_map))
 	expect_true(file.exists(file_name))
 })
@@ -98,7 +98,7 @@ test_that('output: plot: gg_qq_plot', {
 	}
 
 	data = c(0.015, 0.028, 0.177, 0.121, 0.102, 0.107, 0.019, 0.066, 0.058, 0.111)
-	ggsave(filename= file_name, gg_qq_plot(data = data))
+	ggsave(filename = file_name, gg_qq_plot(data_vector = data))
 
 	expect_true(file.exists(file_name))
 })

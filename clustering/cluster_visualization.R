@@ -2,6 +2,7 @@ library(fpc)
 library(RColorBrewer)
 library(reshape2)
 library(tidyr)
+library(ggplot2)
 
 
 cluster_heatmap <- function(results_df, start_stop=1)
@@ -33,7 +34,7 @@ cluster_heatmap <- function(results_df, start_stop=1)
 	return (heatmap)
 }
 
-save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='')
+save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='', height = 7, width = 10, units = c('in'))
 {
 	if(subscript != '')
 	{
@@ -44,11 +45,16 @@ save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='')
 		results_df <- as.data.frame(kmeans_result$centers)
 		results_df$cluster_size <- kmeans_result$size
 		heatmap_plot <- cluster_heatmap(results_df = results_df)
-		ggsave(filename=sprintf("./%s/kmeans%s_%s_clusters_%s.png", folder, subscript, length(kmeans_result$size), Sys.Date()), plot = heatmap_plot)
+		ggsave(	filename = sprintf("./%s/kmeans%s_%s_clusters_%s.png", folder, subscript, length(kmeans_result$size), Sys.Date()),
+				plot = heatmap_plot,
+				height = height,
+				width = width,
+				units = units)
 	})
 }
 
-save_hierarchical_heatmaps <- function(hierarchical_results, folder='', subscript='', save_file=FALSE)
+save_hierarchical_heatmaps <- function(hierarchical_results, folder='', subscript='', save_file=FALSE,
+										height = 7, width = 10, units = c('in'))
 {
 	if(subscript != '')
 	{
@@ -64,7 +70,11 @@ save_hierarchical_heatmaps <- function(hierarchical_results, folder='', subscrip
 		heatmap_plot <- cluster_heatmap(results_df = results_df)
 		if(save_file)
 		{
-			ggsave(filename=sprintf("./%s/hierarchical%s_%s_clusters_%s.png", folder, subscript, length(hierarchical_result), Sys.Date()), plot = heatmap_plot)
+			ggsave(	filename = sprintf("./%s/hierarchical%s_%s_clusters_%s.png", folder, subscript, length(hierarchical_result), Sys.Date()),
+					plot = heatmap_plot,
+					height = height,
+					width = width,
+					units = units)
 		}
 
 		return(heatmap_plot)

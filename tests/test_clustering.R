@@ -1,6 +1,6 @@
 library('testthat')
 library(purrr)
-source('../clustering/clustering_methods.R', chdir=TRUE)
+source('../machine_learning_wrappers/clustering_methods.R', chdir=TRUE)
 
 #to run from command line, use:
 #test_file("test_clustering.R")

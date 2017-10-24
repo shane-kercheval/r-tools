@@ -1,7 +1,13 @@
 source('../general/modification.R', chdir = TRUE)
 source('cluster_visualization.R', chdir = TRUE)
 
-hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters = 5, plus_minus = 3, seed_num = 123)
+hierarchical_cluster_analysis <- function(	data_frame,
+											merge_column,
+											num_clusters = 5,
+											plus_minus = 3,
+											seed_num = 123,
+											method = 'ward.D',
+											use_correlation_distince = FALSE)
 {
 	# can't a allow duplicate values with this implementation because there should be a column that represents a unique id
 	if(any(duplicated(data_frame)))
@@ -20,8 +26,15 @@ hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters
 
 	hierarchical_results <- lapply(clusters_to_analyze, FUN = function(x) {
 
-		distances <- dist(dataset_scaled, method = "euclidean")
-		clusters <- hclust(distances, method = "ward.D")
+		if(use_correlation_distince) {
+
+			distances <- as.dist(1-cor(t(dataset_scaled))) # 1-Correlation is the dissimilarity
+
+		} else {
+
+			distances <- dist(dataset_scaled, method = "euclidean")
+		}
+		clusters <- hclust(distances, method = method)
 
 		clusterGroups <- cutree(clusters, k = x)
 		cluster_splits <- split(dataset_scaled, clusterGroups)
@@ -31,7 +44,12 @@ hierarchical_cluster_analysis <- function(data_frame, merge_column, num_clusters
 	return (hierarchical_results)
 }
 
-hierarchical_merge_cluster_data <- function(original_data_frame, merge_column, num_clusters = 5, plus_minus = 3)
+hierarchical_merge_cluster_data <- function(original_data_frame,
+											merge_column,
+											num_clusters = 5,
+											plus_minus = 3,
+											method = 'ward.D',
+											use_correlation_distince = FALSE)
 {
 	if(any(duplicated(original_data_frame)))
 	{
@@ -49,8 +67,15 @@ hierarchical_merge_cluster_data <- function(original_data_frame, merge_column, n
 
 	hierarchical_results <- lapply(clusters_to_analyze, FUN = function(x) {
 
-		distances <- dist(dataset_scaled, method = "euclidean")
-		clusters <- hclust(distances, method = "ward.D")
+		if(use_correlation_distince) {
+
+			distances <- as.dist(1-cor(t(dataset_scaled))) # 1-Correlation is the dissimilarity
+
+		} else {
+
+			distances <- dist(dataset_scaled, method = "euclidean")
+		}
+		clusters <- hclust(distances, method = method)
 
 		clusterGroups <- cutree(clusters, k = x)
 		#cluster_splits = split(dataset_scaled, clusterGroups)

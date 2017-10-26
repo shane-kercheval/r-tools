@@ -11,7 +11,8 @@ c5.0_cost_tuning <- function(	training_data,
 								seed = 1,
 								criteria_weights = c(	kappa = 2,
 														sensitivity = 1,
-														positive_predictive_value = 1)) {
+														positive_predictive_value = 1),
+								tree_file_name = NULL) {
 	
 
 	
@@ -142,6 +143,13 @@ c5.0_cost_tuning <- function(	training_data,
 						training_data$target_variable,
 						costs = c50_error_cost,
 						control=c50_control)
+
+	if(!is.null(tree_file_name)) {
+
+		png(filename = tree_file_name, width = 2000, height = 2000)
+		plot(c50_model_info$final_model)
+		dev.off()
+	}
 
 	c50_cost_used <- c50_model$costMatrix[target_negative_class, target_positive_class]
 

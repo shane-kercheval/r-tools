@@ -99,8 +99,13 @@ cohort_cumulative_cr_plot <- function(	cohort_df,
 										title,
 										y_label,
 										x_label = 'Number of days after EventA',
+										subtitle = '',
 										caption = '',
-										cohort_indexes_to_label = NULL) {
+										cohort_indexes_to_label = NULL,
+										y_floor = NULL,
+										y_ticks = 0.025,
+										date_label_alpha = 0.20,
+										include_date_label = TRUE) {
 
 	unique_cohorts <- sort(unique(cohort_df$cohort))
 	# the inner join selects all the rows from cohort_df that have the max age i.e. latest cummulative CR
@@ -115,22 +120,34 @@ cohort_cumulative_cr_plot <- function(	cohort_df,
 
 	cohort_df <- inner_join(cohort_df, graph_attributes, by = 'cohort')
 
-	y_ticks <- 0.025
-	y_min_max <- c(	floor(min(cohort_df$cummulative_cr) / y_ticks) * y_ticks, # round down to the nearest 2.5%
+	if(is.null(y_floor)) {
+		y_floor <- floor(min(cohort_df$cummulative_cr) / y_ticks) * y_ticks
+	}
+
+	y_min_max <- c(	y_floor, # round down to the nearest 2.5%
 					ceiling(max(cohort_df$cummulative_cr) / y_ticks) * y_ticks) # round up to the nearest 2.5%
+
+	date_label <- NULL
+	if(include_date_label) {
+		date_label <- geom_label(data =  subset(final_cohorts, cohort %in% tail(unique_cohorts, 2) | cohort %in% cohort_indexes_to_label),
+						aes(label = cohort),
+						nudge_x = 1.1, alpha = date_label_alpha, na.rm = TRUE)
+	}
+
 	cr_plot <- ggplot(data = cohort_df, aes(x = cohort_age, y = cummulative_cr, col = cohort, group = cohort)) +
 		geom_line(aes(alpha = alpha), size = 1.0) +
+		geom_point(aes(alpha = alpha), size = 1.0) +
 		coord_cartesian(ylim = y_min_max) +
-		scale_y_continuous(breaks = seq(from = y_min_max[1], to = y_min_max[2], by = y_ticks), labels = scales::percent) +
-		geom_label(data =  subset(final_cohorts, cohort %in% tail(unique_cohorts, 2) | cohort %in% cohort_indexes_to_label),
-				   aes(label = cohort),
-				   nudge_x = 1.1, alpha = 1, na.rm = TRUE) +
+		scale_y_continuous(breaks = seq(from = 0, to = 1, by = y_ticks), labels = scales::percent) +
+		date_label +
 		scale_x_continuous(breaks = seq(from = 1, to = max(final_cohorts$cohort_age), by = 1)) +
 		labs(	title = title,
+				subtitle = subtitle,
 				x = x_label,
 				y = y_label,
 				caption = caption) +
-		guides(alpha = FALSE)
+		guides(alpha = FALSE) + 
+		theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 	return (cr_plot)
 }
@@ -141,17 +158,23 @@ cumulative_cr_snapshot_plot <- function(cohort_df,
 										subtitle = NULL,
 										age_label = 'days',
 										snapshot_ages = c(1, 7, 30),
-										highlight_cohort_labels = NULL) {
+										highlight_cohort_labels = NULL,
+										y_floor = NULL,
+										y_ticks = 0.025) {
 	
 	age_labels = paste(snapshot_ages, age_label)
 	
 	snapshot_corhot_data <- cohort_df %>%
 		filter(cohort_age %in% snapshot_ages) %>%
 		mutate(cohort_age = factor(cohort_age, labels = age_labels))
+	
+	if(is.null(y_floor)) {
+		y_floor <- floor(min(cohort_df$cummulative_cr) / y_ticks) * y_ticks
+	}
 
-	y_min_max <- c(	floor(min(snapshot_corhot_data$cummulative_cr) / 0.05) * 0.05,
-					ceiling(max(snapshot_corhot_data$cummulative_cr) / 0.05) * 0.05)
-
+	y_min_max <- c(	y_floor, # round down to the nearest 2.5%
+					ceiling(max(cohort_df$cummulative_cr) / y_ticks) * y_ticks) # round up to the nearest 2.5%
+	
 	cohort_labels <- NULL
 	if(!is.null(highlight_cohort_labels)) {
 
@@ -160,16 +183,28 @@ cumulative_cr_snapshot_plot <- function(cohort_df,
 								'black')
 	}
 	
-	snapshot_plot <- ggplot(data = snapshot_corhot_data, aes(x = cohort, y = cummulative_cr, group = cohort_age, colour = cohort_age)) +
+	snapshot_plot <- ggplot(data = snapshot_corhot_data, aes(	x = cohort,
+																y = cummulative_cr,
+																group = cohort_age,
+																colour = cohort_age)) +
 		geom_line() + geom_point() + geom_smooth(method = 'loess', se = FALSE) +
 		coord_cartesian(ylim = y_min_max) +
-		scale_y_continuous(breaks = seq(from = y_min_max[1], to = y_min_max[2], by = 0.025), labels = scales::percent) +
+		scale_y_continuous(breaks = seq(from = 0, to = 1, by = y_ticks), labels = scales::percent) +
 		theme(axis.text.x = element_text(angle = 60, hjust = 1, colour = cohort_labels)) +
-		labs(	title = paste('Snapshot of Evolution of ', conversion_event_label, 'After X', age_label, 'from', initial_event),
+		labs(	title = paste(	'Snapshot of Evolution of',
+								conversion_event_label,
+								'After X',
+								age_label,
+								'from',
+								initial_event),
 				subtitle = subtitle,
 				x = paste0('Cohort (i.e week of ', initial_event, ')'),
 				y = '% conversion rate (for each cohort)',
 				colour = 'Snapshot',
-				caption = paste('\nThis graph shows a snapshot of the conversion rate after the first x', age_label, 'of one cohort\ncompared to the conversion rate after x', age_label, 'of another cohort.\nSo, we can accurately compare an older group of observations to a younger group.'))
+				caption = paste('\nThis graph shows a snapshot of the conversion rate after the first x',
+								age_label,
+								'of one cohort\ncompared to the conversion rate after x',
+								age_label,
+								'of another cohort.\nSo, we can accurately compare an older group of observations to a younger group.'))
 	return (snapshot_plot)	
 }

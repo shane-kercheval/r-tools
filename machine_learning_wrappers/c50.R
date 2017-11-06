@@ -147,7 +147,7 @@ c5.0_cost_tuning <- function(	training_data,
 	if(!is.null(tree_file_name)) {
 
 		png(filename = tree_file_name, width = 2000, height = 2000)
-		plot(c50_model_info$final_model)
+		plot(c50_model)
 		dev.off()
 	}
 

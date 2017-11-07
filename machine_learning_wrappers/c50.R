@@ -146,6 +146,10 @@ c5.0_cost_tuning <- function(	training_data,
 
 	if(!is.null(tree_file_name)) {
 
+		# https://stackoverflow.com/questions/31738045/in-r-error-in-is-data-framedata-object-not-found-c5-0-plot/37197335#37197335
+		c50_model$call$x <- training_data %>% dplyr::select(-target_variable)
+		c50_model$call$y <- training_data$target_variable
+
 		png(filename = tree_file_name, width = 2000, height = 2000)
 		plot(c50_model)
 		dev.off()

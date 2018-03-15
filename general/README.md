@@ -111,6 +111,13 @@ confusion_list_from_confusion <- function(confusion_matrix)
 | Actual Negative  | True Negative      | False Positive     |
 | Actual Positive  | False Negative     | True Positive      |
 
+For example:
+
+```
+confusion_matrix <- table(actual=predictions$actual, predictions=predictions$predicted)
+conf_list <- confusion_list_from_confusion(confusion_matrix)
+```
+
 - a `positive` can be thought of as a `detection`, while a `negative` is a `non-detection`
 	- e.g. logistic regression predicting (detecting) fraud. A positive would be a predicted or actual fraud occurance. So a `false positive` would be a case when we *predict* a positive (i.e. fraud), but the *actual* case was not fraud.
 - `confusion_matrix` can be constructed with `table(actuals, predictions)`

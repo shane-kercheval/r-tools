@@ -13,9 +13,6 @@ c5.0_cost_tuning <- function(	training_data,
 														sensitivity = 1,
 														positive_predictive_value = 1),
 								tree_file_name = NULL) {
-	
-
-	
 	training_data <- training_data %>%
 		dplyr::mutate(target_variable = factor(target_variable,
 											   levels = c(target_negative_class, target_positive_class))) # expect the `negative` is the first level

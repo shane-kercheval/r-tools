@@ -2,6 +2,7 @@ library(stringr)
 library(lubridate)
 library(tidyverse)
 library(ggplot2)
+library(scales)
 
 custom_iso_week <- function(date) {
 	if(isoweek(date) == 52 & month(date) == 1) { # isoweek seems to classify some initial days of the year as week 52 which is fucked up; if this is the case, we will return 1; this might cause the first week to an oversized sample (it is putting more samples into the next week that it would have classified as week 1)
@@ -160,7 +161,8 @@ cumulative_cr_snapshot_plot <- function(cohort_df,
 										snapshot_ages = c(1, 7, 30),
 										highlight_cohort_labels = NULL,
 										y_floor = NULL,
-										y_ticks = 0.025) {
+										y_ticks = 0.025,
+										display_values=FALSE) {
 	
 	age_labels = paste(snapshot_ages, age_label)
 	
@@ -206,5 +208,9 @@ cumulative_cr_snapshot_plot <- function(cohort_df,
 								'of one cohort\ncompared to the conversion rate after x',
 								age_label,
 								'of another cohort.\nSo, we can accurately compare an older group of observations to a younger group.'))
+	if(display_values) {
+		snapshot_plot <- snapshot_plot + geom_text(aes(label=percent(cummulative_cr)), vjust=-.5)
+	}
+
 	return (snapshot_plot)	
 }

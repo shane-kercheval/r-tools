@@ -134,6 +134,18 @@ test_that("cohort_conversion_rates: plots", {
 	file.exists(test_file)
 
 	################
+	# SNAPSHOT - with values
+	################
+	test_file <- '../general/example_cumulative_cr_snapshot_plot_values.png'
+	file.remove(test_file)
+	cumulative_cr_snapshot_plot(cohort_df = cohorted_crs,
+								initial_event = 'Initial EventA',
+								conversion_event_label = 'EventB CR',
+								display_values=TRUE)
+	ggsave(filename = test_file, height = 8, width = 14, units = c('in'))
+	file.exists(test_file)
+
+	################
 	# RATE OF CHANGE
 	################
 	test_file <- '../general/example_cumulative_cr_snapshot_plot_rate.png'

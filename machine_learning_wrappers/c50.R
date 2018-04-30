@@ -13,9 +13,6 @@ c5.0_cost_tuning <- function(	training_data,
 														sensitivity = 1,
 														positive_predictive_value = 1),
 								tree_file_name = NULL) {
-	
-
-	
 	training_data <- training_data %>%
 		dplyr::mutate(target_variable = factor(target_variable,
 											   levels = c(target_negative_class, target_positive_class))) # expect the `negative` is the first level
@@ -153,6 +150,10 @@ c5.0_cost_tuning <- function(	training_data,
 		png(filename = tree_file_name, width = 2000, height = 2000)
 		plot(c50_model)
 		dev.off()
+
+		# need to return to this state because calling Summary() on c50_model hangs during knitr
+		c50_model$call$x <- NULL
+		c50_model$call$y <- NULL
 	}
 
 	c50_cost_used <- c50_model$costMatrix[target_negative_class, target_positive_class]

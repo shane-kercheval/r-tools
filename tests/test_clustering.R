@@ -3,7 +3,7 @@ library(purrr)
 source('../machine_learning_wrappers/clustering_methods.R', chdir=TRUE)
 
 #to run from command line, use:
-#test_file("test_clustering.R")
+#g
 
 test_that("clustering: methods", {
 	
@@ -50,6 +50,9 @@ test_that("clustering: methods", {
 	bss_tss_vector = kmeans_BSS_TSS(kmeans_results)
 	expect_that(bss_tss_vector[4], equals(bss_tss))
 	final_kmeans = kmeans_merge_cluster_data(kmeans_results=kmeans_results, original_data_frame=worlddata_no_na, merge_column='country')
+	final_kmeans2 = kmeans_merge_cluster_data2(kmeans_results=kmeans_results, any_dataframe=worlddata_no_na, merge_column='country', num_clusters = 5, plus_minus = 3)
+	stopifnot(all(final_kmeans == final_kmeans2))
+
 	expect_that(nrow(worlddata_no_na), equals(nrow(final_kmeans)))
 	expect_false(any(is.na(final_kmeans)))
 	save_kmeans_heatmaps(kmeans_results, folder='.')

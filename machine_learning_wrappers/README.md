@@ -127,6 +127,13 @@ kmeans_merge_cluster_data <- function(kmeans_results, original_data_frame, merge
 - merge_column is the column that represents the unique row identifier
 
 ```R
+kmeans_merge_cluster_data2 <- function(kmeans_results, any_dataframe, merge_column, num_clusters, plus_minus)
+```
+
+- takes a `kmeans_results` (list returned by `kmeans_cluster_analysis` function) and merges clusters with `any_dataframe`
+- merge_column is the column that represents the unique row identifier
+
+```R
 kmeans_BSS_TSS <- function(kmeans_results)
 ```
 

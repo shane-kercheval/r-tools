@@ -133,6 +133,19 @@ kmeans_merge_cluster_data <- function(kmeans_results, original_data_frame, merge
 	return (final)
 }
 
+kmeans_merge_cluster_data2 <- function(kmeans_results, any_dataframe, merge_column, num_clusters, plus_minus)
+{
+	clusters_to_analyze <- seq(from = num_clusters - plus_minus, to = num_clusters+plus_minus, by = 1)
+	cluster_data_frame <- as.data.frame(sapply(kmeans_results, FUN = function(x) {return (x$cluster)}))
+	cluster_column_names <- sapply(clusters_to_analyze, FUN = function(x) {return (sprintf('cluster_%s', x))})
+	colnames(cluster_data_frame) <- cluster_column_names
+	cluster_data_frame[, merge_column] <- any_dataframe[, merge_column]
+	
+	final <- merge(any_dataframe, cluster_data_frame, by = merge_column, all.x = TRUE)
+	
+	return (final)
+}
+
 kmeans_BSS_TSS <- function(kmeans_results)
 {
 	bss_tss_ratios <- sapply(kmeans_results, FUN = function(x) {

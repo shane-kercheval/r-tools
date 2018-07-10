@@ -3,7 +3,7 @@ library(purrr)
 source('../machine_learning_wrappers/clustering_methods.R', chdir=TRUE)
 
 #to run from command line, use:
-#g
+# test_file("test_clustering.R")
 
 test_that("clustering: methods", {
 	
@@ -55,6 +55,7 @@ test_that("clustering: methods", {
 
 	expect_that(nrow(worlddata_no_na), equals(nrow(final_kmeans)))
 	expect_false(any(is.na(final_kmeans)))
+	
 	save_kmeans_heatmaps(kmeans_results, folder='.')
 	kmeans_vector = c(2,3,4,5,6,7,8)
 	invisible(walk(kmeans_vector, ~{

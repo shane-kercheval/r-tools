@@ -3,14 +3,24 @@ library(RColorBrewer)
 library(reshape2)
 library(tidyr)
 library(ggplot2)
-
+library(dplyr)
 
 cluster_heatmap <- function(results_df, start_stop=1)
 {
 	heatmap_breaks <- c(-Inf, seq(from = (-1 * start_stop), to = start_stop, by = (start_stop/5)), Inf)
  	heatmap_colors <- c(rev(brewer.pal(n = 9,name = 'Blues')[2:7]), brewer.pal(n = 9,name = 'Reds')[2:7])
 
-	results_df$cluster_name <- 1:nrow(results_df)
+ 	results_df <- results_df %>%
+ 		arrange(desc(cluster_size))
+ 	
+ 	results_df$cluster_name <- 1:nrow(results_df)
+	
+ 	# duplicated sizes will mess up the graph because the axis expects unique values
+	if(any(duplicated(results_df$cluster_size))) {
+		unique_names <- paste(results_df$cluster_name, '-', results_df$cluster_size)
+		results_df$cluster_size <- factor(unique_names, levels = rev(unique_names))
+	}
+
 	results_df_long <- results_df %>% gather(variable, value, -cluster_name, - cluster_size)
 	results_df_long$means <- cut(results_df_long$value, breaks = heatmap_breaks)
 
@@ -44,6 +54,7 @@ save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='', height = 
 	temp <- lapply(kmeans_results, FUN=function(kmeans_result){
 		results_df <- as.data.frame(kmeans_result$centers)
 		results_df$cluster_size <- kmeans_result$size
+		
 		heatmap_plot <- cluster_heatmap(results_df = results_df)
 		ggsave(	filename = sprintf("./%s/kmeans%s_%s_clusters_%s.png", folder, subscript, length(kmeans_result$size), Sys.Date()),
 				plot = heatmap_plot,

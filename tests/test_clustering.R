@@ -67,6 +67,17 @@ test_that("clustering: methods", {
 		file.remove(filename)
 	}))
 
+	save_kmeans_heatmaps(kmeans_results, merged_data=final_kmeans2 %>% select(-country), folder='.', means_size = 2)
+	kmeans_vector = c(2,3,4,5,6,7,8)
+	invisible(walk(kmeans_vector, ~{
+		filename = sprintf('kmeans_%s_clusters_%s.png', ., Sys.Date())
+		expect_true(file.exists(filename))
+		if(. == 5) {
+			file.copy(from = filename, to = '../readme/kmeans_5_clusters_means.png', overwrite = TRUE)
+		}
+		file.remove(filename)
+	}))
+
 	hierarchical_results = hierarchical_cluster_analysis(data_frame=worlddata_no_na, merge_column='country')
 	final_hierarchical = hierarchical_merge_cluster_data(original_data_frame=worlddata_no_na, merge_column='country')
 	expect_that(nrow(worlddata_no_na), equals(nrow(final_hierarchical)))

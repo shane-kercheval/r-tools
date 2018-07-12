@@ -29,17 +29,19 @@ Collection of methods to assist in performing/analyzing clustering techniques.
 ### Visualization
 
 ```R
-cluster_heatmap <- function(results_df, start_stop=1)
+cluster_heatmap <- function(results_df, start_stop=1, merged_data=NULL, means_size = 3)
 ```
 
 - takes a dataframe (`results_df` returned by an `xxx_cluster_analysis` function) with each cluster as row and all cluster variables as columns, cells representing cluster/variable means (or medians,etc.)
 - `start_stop` is absolute number of min/max scale (z-score) value
+- `merged_data` takes a dataframe of the original data along with the associated clusters (e.g. obtained from `kmeans_merge_cluster_data`), without the identifier column, and includes the original means in the heatmap
+- `means_size` text size of the means if `merged_data` is supplied
 
 Example of heatmap, which shows scaled (z-score) clustering averages:
 ![Heatmaps](../readme/kmeans_5_clusters.png)
 
 ```R
-save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='')
+save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='', merged_data=NULL, means_size = 3)
 ```
 
 - helper method to save all the cluster results to heatmaps from `kmeans_cluster_analysis`
@@ -48,6 +50,8 @@ save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='')
   - `%2` == `subscript`
   - `%3` == # of clusters
   - `%4` == date/time
+- `merged_data` takes a dataframe of the original data along with the associated clusters (e.g. obtained from `kmeans_merge_cluster_data`), without the identifier column, and includes the original means in the heatmap
+- `means_size` text size of the means if `merged_data` is supplied
 
 ```R
 save_hierarchical_heatmaps <- function(hierarchical_results, folder, subscript='')

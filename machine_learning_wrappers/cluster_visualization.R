@@ -5,14 +5,14 @@ library(tidyr)
 library(ggplot2)
 library(dplyr)
 
-cluster_heatmap <- function(results_df, start_stop=1)
+cluster_heatmap <- function(results_df, start_stop=1, original_means=NULL, means_size=3)
 {
+	
 	heatmap_breaks <- c(-Inf, seq(from = (-1 * start_stop), to = start_stop, by = (start_stop/5)), Inf)
  	heatmap_colors <- c(rev(brewer.pal(n = 9,name = 'Blues')[2:7]), brewer.pal(n = 9,name = 'Reds')[2:7])
 
  	results_df <- results_df %>%
  		arrange(desc(cluster_size))
- 	
  	results_df$cluster_name <- 1:nrow(results_df)
 	
  	# duplicated sizes will mess up the graph because the axis expects unique values
@@ -20,11 +20,28 @@ cluster_heatmap <- function(results_df, start_stop=1)
 		unique_names <- paste(results_df$cluster_name, '-', results_df$cluster_size)
 		results_df$cluster_size <- factor(unique_names, levels = rev(unique_names))
 	}
-
-	results_df_long <- results_df %>% gather(variable, value, -cluster_name, - cluster_size)
+ 	
+ 	results_df_long <- results_df %>% gather(variable, value, -cluster_name, - cluster_size)
 	results_df_long$means <- cut(results_df_long$value, breaks = heatmap_breaks)
 
-	heatmap <- ggplot(data=results_df_long, aes(x = factor(variable, levels = unique(variable)), y = factor(cluster_size, levels = sort(unique(cluster_size))))) +
+	if(!is.null(original_means)){
+		
+		original_means_long <- original_means %>%
+			gather(variable, original_mean, -cluster_name) %>%
+			mutate(original_mean = as.character(round(original_mean,
+													  ifelse(abs(original_mean) < 1,
+													  	   2,
+													  	   ifelse(abs(original_mean) < 10,
+													  	   	   1,
+													  	   	   0)))))
+		results_df_long <- inner_join(results_df_long, original_means_long, by=c('variable', 'cluster_name'))
+	}
+	
+	results_df_long <- results_df_long %>%
+		mutate(variable = factor(variable, levels = unique(variable)),
+			   cluster_size = factor(cluster_size, levels = sort(unique(cluster_size))))
+	
+	heatmap <- ggplot(data=results_df_long, aes(x = variable, y = cluster_size)) +
 		geom_tile(aes(fill = means), colour = "white") +
 		theme(axis.text.x = element_text(angle = 60, hjust = 1)) + 
 		scale_fill_manual(values = heatmap_colors, drop = FALSE) + # drop=FALSE so that scale shows every value, even if not in dataset
@@ -40,11 +57,16 @@ cluster_heatmap <- function(results_df, start_stop=1)
 			 "\n(i.e. the average value of all the samples that were classified into the paricular segment)",
 			 "\nis outside ", start_stop," standard deviations (on the low side) compared with all values for the entire variable.",
 			 "\nA deep red color `(", start_stop,", Inf]` means the average value is outside ", start_stop," standard deviations on the high-side."))
+	
+	if(!is.null(original_means)){
+
+		heatmap <- heatmap + geom_text(aes(label = original_mean), size=means_size)
+	}
 
 	return (heatmap)
 }
 
-save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='', height = 7, width = 10, units = c('in'))
+save_kmeans_heatmaps <- function(kmeans_results, folder, merged_data=NULL, means_size = 3, subscript='', height = 7, width = 10, units = c('in'))
 {
 	if(subscript != '')
 	{
@@ -55,7 +77,17 @@ save_kmeans_heatmaps <- function(kmeans_results, folder, subscript='', height = 
 		results_df <- as.data.frame(kmeans_result$centers)
 		results_df$cluster_size <- kmeans_result$size
 		
-		heatmap_plot <- cluster_heatmap(results_df = results_df)
+		original_means <- NULL
+		if(!is.null(merged_data)){
+			num_clusters <- nrow(results_df)
+			original_means <- merged_data %>% 
+				select(-contains('cluster')) %>%
+				mutate(cluster_name = merged_data[, paste0('cluster_',num_clusters)]) %>%
+				group_by(cluster_name) %>%
+				summarise_all(funs(mean(., na.rm = TRUE)))
+		}
+		
+		heatmap_plot <- cluster_heatmap(results_df = results_df, original_means = original_means, means_size = means_size)
 		ggsave(	filename = sprintf("./%s/kmeans%s_%s_clusters_%s.png", folder, subscript, length(kmeans_result$size), Sys.Date()),
 				plot = heatmap_plot,
 				height = height,

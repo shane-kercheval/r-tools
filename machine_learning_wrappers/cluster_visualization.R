@@ -27,14 +27,14 @@ cluster_heatmap <- function(results_df, start_stop=1, original_means=NULL, means
 	if(!is.null(original_means)){
 		
 		original_means_long <- original_means %>%
-			gather(variable, original_mean, -cluster_name) %>%
+			gather(variable, original_mean, -cluster_name, -cluster_size) %>%
 			mutate(original_mean = as.character(round(original_mean,
 													  ifelse(abs(original_mean) < 1,
 													  	   2,
 													  	   ifelse(abs(original_mean) < 10,
 													  	   	   1,
 													  	   	   0)))))
-		results_df_long <- inner_join(results_df_long, original_means_long, by=c('variable', 'cluster_name'))
+		results_df_long <- inner_join(results_df_long, original_means_long, by=c('variable', 'cluster_size'))
 	}
 	
 	results_df_long <- results_df_long %>%
@@ -80,11 +80,26 @@ save_kmeans_heatmaps <- function(kmeans_results, folder, merged_data=NULL, means
 		original_means <- NULL
 		if(!is.null(merged_data)){
 			num_clusters <- nrow(results_df)
-			original_means <- merged_data %>% 
+			
+			temp <- merged_data %>% 
 				select(-contains('cluster')) %>%
-				mutate(cluster_name = merged_data[, paste0('cluster_',num_clusters)]) %>%
+				mutate(cluster_name = merged_data[, paste0('cluster_',num_clusters)])
+				
+			cluster_sizes <- temp %>%
 				group_by(cluster_name) %>%
-				summarise_all(funs(mean(., na.rm = TRUE)))
+				summarise(cluster_size=n())
+			
+			# if the cluster sizes are duplicated than we will be joining on multiple rows that share the same size
+			# don't have a good solution right now
+			if(!any(duplicated(cluster_sizes$cluster_size))){
+			
+				original_means <- temp %>%
+					group_by(cluster_name) %>%
+					summarise_all(funs(mean(., na.rm = TRUE)))
+				
+				# TODO: will get fucked up if there are clusters with the same size
+				original_means <- inner_join(cluster_sizes, original_means, by='cluster_name')
+			}
 		}
 		
 		heatmap_plot <- cluster_heatmap(results_df = results_df, original_means = original_means, means_size = means_size)
